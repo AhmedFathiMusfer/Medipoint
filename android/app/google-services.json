@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "684839310707",
+    "project_id": "doc-app-202cc",
+    "storage_bucket": "doc-app-202cc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:684839310707:android:455a33efc7687e71432106",
+        "android_client_info": {
+          "package_name": "com.example.diagno_bot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0RRJCq0QRVFntHzyW8p8eDL6cYDORTAg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
