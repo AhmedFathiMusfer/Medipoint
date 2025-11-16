@@ -4,7 +4,11 @@ import 'package:carousel_slider/carousel_options.dart' show CarouselOptions;
 import 'package:carousel_slider/carousel_slider.dart' show CarouselSlider;
 import 'package:diagno_bot/core/baseView/base.view.dart';
 import 'package:diagno_bot/core/database/drift_db.dart';
+import 'package:diagno_bot/core/enum/pages.dart';
+import 'package:diagno_bot/core/helpers/extensions.dart';
 import 'package:diagno_bot/core/model/doctor.model.dart';
+import 'package:diagno_bot/core/routing/router.dart';
+import 'package:diagno_bot/core/stror/appStore.dart';
 import 'package:diagno_bot/core/widgets/newsCard.dart';
 import 'package:diagno_bot/features/home/cubit/home.cubit.dart';
 import 'package:diagno_bot/features/home/cubit/home.state.dart';
@@ -26,7 +30,7 @@ class HomeView extends StatelessWidget {
       title: 'Home',
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: EdgeInsets.symmetric(horizontal: 16.0.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -34,13 +38,13 @@ class HomeView extends StatelessWidget {
               Container(
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: TextField(
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 12,
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 12.h,
+                      horizontal: 12.w,
                     ),
                     hintText: 'Search doctor...',
                     hintStyle: const TextStyle(color: Colors.grey),
@@ -49,14 +53,14 @@ class HomeView extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              20.verticalSpace,
               CarouselSlider(
                 items:
                     homeCubit.news.map((slider) {
                       return NewsCard();
                     }).toList(),
                 options: CarouselOptions(
-                  height: 200,
+                  height: 200.h,
                   enlargeCenterPage: true,
                   viewportFraction: 0.88,
                   autoPlay: true,
@@ -69,8 +73,8 @@ class HomeView extends StatelessWidget {
                 children:
                     homeCubit.news.asMap().entries.map((entry) {
                       return Container(
-                        width: 9,
-                        height: 9,
+                        width: 9.w,
+                        height: 9.h,
                         margin: const EdgeInsets.symmetric(horizontal: 4),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
@@ -83,15 +87,18 @@ class HomeView extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Specialties',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   TextButton(
                     onPressed: () {},
-                    child: const Text(
+                    child: Text(
                       'See All',
-                      style: TextStyle(color: Colors.blue, fontSize: 14),
+                      style: TextStyle(color: Colors.blue, fontSize: 12.sp),
                     ),
                   ),
                 ],
@@ -132,15 +139,24 @@ class HomeView extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Doctors',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   TextButton(
-                    onPressed: () {},
-                    child: const Text(
+                    onPressed: () {
+                      context.pushNamedAndRemoveUntil(
+                        Routers.doctorsView,
+                        predicate: (root) => false,
+                      );
+                      Appstore.instanse.currentPage = PagesEnum.doctor;
+                    },
+                    child: Text(
                       'See All',
-                      style: TextStyle(color: Colors.blue, fontSize: 14),
+                      style: TextStyle(color: Colors.blue, fontSize: 12.sp),
                     ),
                   ),
                 ],
@@ -157,7 +173,7 @@ class HomeView extends StatelessWidget {
                     return DoctorShimmer();
                   }
                   return SizedBox(
-                    height: 140,
+                    height: 150.h,
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       children: [

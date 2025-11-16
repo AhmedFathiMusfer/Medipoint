@@ -51,6 +51,7 @@ class BaseView extends StatelessWidget {
     return AppBar(
       elevation: 0,
       backgroundColor: ColorManager.primaryColor,
+      automaticallyImplyLeading: false,
       centerTitle: true,
       title: Text(
         title,
@@ -154,13 +155,13 @@ class BaseView extends StatelessWidget {
                         page: PagesEnum.home,
                       ),
                       NavItem(
-                        icon: Icons.star_rounded,
+                        icon: Icons.people_outlined,
                         pageRouter: Routers.doctorsView,
                         page: PagesEnum.doctor,
                       ),
                       NavItem(
                         icon: Icons.calendar_month_rounded,
-                        pageRouter: Routers.doctorDetailsView,
+                        pageRouter: Routers.bookAppointmentView,
                         page: PagesEnum.appointment,
                       ),
                       NavItem(
@@ -199,7 +200,7 @@ class NavItem extends StatelessWidget {
     return InkWell(
       onTap: () {
         Appstore.instanse.currentPage = page;
-        context.pushReplacementNamed(pageRouter);
+        context.pushNamedAndRemoveUntil(pageRouter, predicate: (root) => false);
       },
       borderRadius: BorderRadius.circular(20),
       child: Padding(

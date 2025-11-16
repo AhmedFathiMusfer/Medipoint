@@ -85,7 +85,7 @@ class HomeCubit extends Cubit<HomeState> {
       AppSnackBar.error(
         ' please check your internt connection ${e.toString()}',
       );
-      emit(HomeState.error(e.toString()));
+      // emit(HomeState.error(e.toString()));
     }
   }
 

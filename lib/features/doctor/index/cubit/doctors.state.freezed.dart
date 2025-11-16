@@ -21,21 +21,36 @@ mixin _$DoctorsState {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(List<DoctorModel> doctors) success,
+    required TResult Function(
+      List<DoctorModel> doctors,
+      String specialtySelected,
+      List<Specialty> specialities,
+    )
+    success,
     required TResult Function(String message) error,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(List<DoctorModel> doctors)? success,
+    TResult? Function(
+      List<DoctorModel> doctors,
+      String specialtySelected,
+      List<Specialty> specialities,
+    )?
+    success,
     TResult? Function(String message)? error,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(List<DoctorModel> doctors)? success,
+    TResult Function(
+      List<DoctorModel> doctors,
+      String specialtySelected,
+      List<Specialty> specialities,
+    )?
+    success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
@@ -130,7 +145,12 @@ class _$InitialImpl implements _Initial {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(List<DoctorModel> doctors) success,
+    required TResult Function(
+      List<DoctorModel> doctors,
+      String specialtySelected,
+      List<Specialty> specialities,
+    )
+    success,
     required TResult Function(String message) error,
   }) {
     return initial();
@@ -141,7 +161,12 @@ class _$InitialImpl implements _Initial {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(List<DoctorModel> doctors)? success,
+    TResult? Function(
+      List<DoctorModel> doctors,
+      String specialtySelected,
+      List<Specialty> specialities,
+    )?
+    success,
     TResult? Function(String message)? error,
   }) {
     return initial?.call();
@@ -152,7 +177,12 @@ class _$InitialImpl implements _Initial {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(List<DoctorModel> doctors)? success,
+    TResult Function(
+      List<DoctorModel> doctors,
+      String specialtySelected,
+      List<Specialty> specialities,
+    )?
+    success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -249,7 +279,12 @@ class _$LoadingImpl implements _Loading {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(List<DoctorModel> doctors) success,
+    required TResult Function(
+      List<DoctorModel> doctors,
+      String specialtySelected,
+      List<Specialty> specialities,
+    )
+    success,
     required TResult Function(String message) error,
   }) {
     return loading();
@@ -260,7 +295,12 @@ class _$LoadingImpl implements _Loading {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(List<DoctorModel> doctors)? success,
+    TResult? Function(
+      List<DoctorModel> doctors,
+      String specialtySelected,
+      List<Specialty> specialities,
+    )?
+    success,
     TResult? Function(String message)? error,
   }) {
     return loading?.call();
@@ -271,7 +311,12 @@ class _$LoadingImpl implements _Loading {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(List<DoctorModel> doctors)? success,
+    TResult Function(
+      List<DoctorModel> doctors,
+      String specialtySelected,
+      List<Specialty> specialities,
+    )?
+    success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -330,7 +375,11 @@ abstract class _$$SuccessImplCopyWith<$Res> {
     $Res Function(_$SuccessImpl) then,
   ) = __$$SuccessImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({List<DoctorModel> doctors});
+  $Res call({
+    List<DoctorModel> doctors,
+    String specialtySelected,
+    List<Specialty> specialities,
+  });
 }
 
 /// @nodoc
@@ -346,7 +395,11 @@ class __$$SuccessImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? doctors = null}) {
+  $Res call({
+    Object? doctors = null,
+    Object? specialtySelected = null,
+    Object? specialities = null,
+  }) {
     return _then(
       _$SuccessImpl(
         doctors:
@@ -354,6 +407,16 @@ class __$$SuccessImplCopyWithImpl<$Res>
                 ? _value._doctors
                 : doctors // ignore: cast_nullable_to_non_nullable
                     as List<DoctorModel>,
+        specialtySelected:
+            null == specialtySelected
+                ? _value.specialtySelected
+                : specialtySelected // ignore: cast_nullable_to_non_nullable
+                    as String,
+        specialities:
+            null == specialities
+                ? _value._specialities
+                : specialities // ignore: cast_nullable_to_non_nullable
+                    as List<Specialty>,
       ),
     );
   }
@@ -362,8 +425,12 @@ class __$$SuccessImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$SuccessImpl implements _Success {
-  const _$SuccessImpl({required final List<DoctorModel> doctors})
-    : _doctors = doctors;
+  const _$SuccessImpl({
+    required final List<DoctorModel> doctors,
+    this.specialtySelected = 'All',
+    required final List<Specialty> specialities,
+  }) : _doctors = doctors,
+       _specialities = specialities;
 
   final List<DoctorModel> _doctors;
   @override
@@ -374,8 +441,19 @@ class _$SuccessImpl implements _Success {
   }
 
   @override
+  @JsonKey()
+  final String specialtySelected;
+  final List<Specialty> _specialities;
+  @override
+  List<Specialty> get specialities {
+    if (_specialities is EqualUnmodifiableListView) return _specialities;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_specialities);
+  }
+
+  @override
   String toString() {
-    return 'DoctorsState.success(doctors: $doctors)';
+    return 'DoctorsState.success(doctors: $doctors, specialtySelected: $specialtySelected, specialities: $specialities)';
   }
 
   @override
@@ -383,12 +461,22 @@ class _$SuccessImpl implements _Success {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$SuccessImpl &&
-            const DeepCollectionEquality().equals(other._doctors, _doctors));
+            const DeepCollectionEquality().equals(other._doctors, _doctors) &&
+            (identical(other.specialtySelected, specialtySelected) ||
+                other.specialtySelected == specialtySelected) &&
+            const DeepCollectionEquality().equals(
+              other._specialities,
+              _specialities,
+            ));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_doctors));
+  int get hashCode => Object.hash(
+    runtimeType,
+    const DeepCollectionEquality().hash(_doctors),
+    specialtySelected,
+    const DeepCollectionEquality().hash(_specialities),
+  );
 
   /// Create a copy of DoctorsState
   /// with the given fields replaced by the non-null parameter values.
@@ -403,10 +491,15 @@ class _$SuccessImpl implements _Success {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(List<DoctorModel> doctors) success,
+    required TResult Function(
+      List<DoctorModel> doctors,
+      String specialtySelected,
+      List<Specialty> specialities,
+    )
+    success,
     required TResult Function(String message) error,
   }) {
-    return success(doctors);
+    return success(doctors, specialtySelected, specialities);
   }
 
   @override
@@ -414,10 +507,15 @@ class _$SuccessImpl implements _Success {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(List<DoctorModel> doctors)? success,
+    TResult? Function(
+      List<DoctorModel> doctors,
+      String specialtySelected,
+      List<Specialty> specialities,
+    )?
+    success,
     TResult? Function(String message)? error,
   }) {
-    return success?.call(doctors);
+    return success?.call(doctors, specialtySelected, specialities);
   }
 
   @override
@@ -425,12 +523,17 @@ class _$SuccessImpl implements _Success {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(List<DoctorModel> doctors)? success,
+    TResult Function(
+      List<DoctorModel> doctors,
+      String specialtySelected,
+      List<Specialty> specialities,
+    )?
+    success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
     if (success != null) {
-      return success(doctors);
+      return success(doctors, specialtySelected, specialities);
     }
     return orElse();
   }
@@ -474,10 +577,15 @@ class _$SuccessImpl implements _Success {
 }
 
 abstract class _Success implements DoctorsState {
-  const factory _Success({required final List<DoctorModel> doctors}) =
-      _$SuccessImpl;
+  const factory _Success({
+    required final List<DoctorModel> doctors,
+    final String specialtySelected,
+    required final List<Specialty> specialities,
+  }) = _$SuccessImpl;
 
   List<DoctorModel> get doctors;
+  String get specialtySelected;
+  List<Specialty> get specialities;
 
   /// Create a copy of DoctorsState
   /// with the given fields replaced by the non-null parameter values.
@@ -558,7 +666,12 @@ class _$ErrorImpl implements _Error {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(List<DoctorModel> doctors) success,
+    required TResult Function(
+      List<DoctorModel> doctors,
+      String specialtySelected,
+      List<Specialty> specialities,
+    )
+    success,
     required TResult Function(String message) error,
   }) {
     return error(message);
@@ -569,7 +682,12 @@ class _$ErrorImpl implements _Error {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(List<DoctorModel> doctors)? success,
+    TResult? Function(
+      List<DoctorModel> doctors,
+      String specialtySelected,
+      List<Specialty> specialities,
+    )?
+    success,
     TResult? Function(String message)? error,
   }) {
     return error?.call(message);
@@ -580,7 +698,12 @@ class _$ErrorImpl implements _Error {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(List<DoctorModel> doctors)? success,
+    TResult Function(
+      List<DoctorModel> doctors,
+      String specialtySelected,
+      List<Specialty> specialities,
+    )?
+    success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {

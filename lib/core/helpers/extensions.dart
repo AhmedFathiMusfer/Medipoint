@@ -18,6 +18,7 @@ extension Navigations on BuildContext {
   }) {
     return Navigator.of(
       this,
+      rootNavigator: true,
     ).pushNamedAndRemoveUntil(routeName, predicate, arguments: arguments);
   }
 

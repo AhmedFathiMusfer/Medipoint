@@ -53,7 +53,7 @@ class DoctorCard extends StatelessWidget {
                             Icon(Icons.person, size: 60.r),
                   ),
                 ),
-                const SizedBox(width: 12),
+                10.horizontalSpace,
                 // معلومات الدكتور
                 Expanded(
                   child: Column(

@@ -5,10 +5,12 @@ import 'package:diagno_bot/features/auth/login/view/login.view.dart';
 import 'package:diagno_bot/features/auth/registration/cubit/registration.cubit.dart';
 import 'package:diagno_bot/features/auth/registration/view/registration.view%20.dart';
 import 'package:diagno_bot/features/bookAppointment/cubit/bookAppointment.cubit.dart';
+import 'package:diagno_bot/features/bookAppointment/index/view/bookAppointment.view.dart';
 import 'package:diagno_bot/features/bookAppointment/view/bookAppointment.view.dart';
 import 'package:diagno_bot/features/doctor/doctorDetails/cubit/doctorDetails.cubit.dart';
 import 'package:diagno_bot/features/doctor/doctorDetails/cubit/doctorDetails.state.dart';
 import 'package:diagno_bot/features/doctor/doctorDetails/view/doctorDetails.view.dart';
+import 'package:diagno_bot/features/doctor/index/cubit/doctors.cubit.dart';
 import 'package:diagno_bot/features/doctor/index/view/index.view.dart';
 import 'package:diagno_bot/features/home/cubit/home.cubit.dart';
 import 'package:diagno_bot/features/home/view/home.view.dart';
@@ -31,6 +33,7 @@ class AppRouter {
           transitionDuration: Duration.zero,
         );
       case Routers.doctorDetailsView:
+        var doctorId = settings.arguments as String? ?? '';
         return PageRouteBuilder(
           pageBuilder:
               (context, animation, secondaryAnimation) => BlocProvider(
@@ -44,14 +47,17 @@ class AppRouter {
           pageBuilder:
               (context, animation, secondaryAnimation) => BlocProvider(
                 create: (_) => BookAppointmentCubit(),
-                child: BookAppointmentView(),
+                child: MyBookingsPage(),
               ),
           transitionDuration: Duration.zero,
         );
       case Routers.doctorsView:
         return PageRouteBuilder(
           pageBuilder:
-              (context, animation, secondaryAnimation) => const DoctorsView(),
+              (context, animation, secondaryAnimation) => BlocProvider(
+                create: (_) => DoctorsCubit()..loadAll(),
+                child: const DoctorsView(),
+              ),
           transitionDuration: Duration.zero,
         );
       case Routers.chatView:

@@ -84,7 +84,10 @@ class _OnboardingViewState extends State<OnboardingView> {
                       curve: Curves.easeInOut,
                     );
                   } else {
-                    context.pushReplacementNamed(Routers.registrationView);
+                    context.pushNamedAndRemoveUntil(
+                      Routers.registrationView,
+                      predicate: (root) => true,
+                    );
                   }
                 },
               ),
@@ -111,7 +114,10 @@ class _OnboardingViewState extends State<OnboardingView> {
             20.verticalSpace,
             TextButton(
               onPressed: () {
-                context.pushReplacementNamed(Routers.registrationView);
+                context.pushNamedAndRemoveUntil(
+                  Routers.registrationView,
+                  predicate: (root) => true,
+                );
               },
               child: Text(
                 'Skip',

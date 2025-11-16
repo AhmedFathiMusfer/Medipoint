@@ -17,6 +17,9 @@ class DoctorsCubit extends Cubit<DoctorsState> {
   DoctorsCubit() : super(const DoctorsState.initial());
   AppDatabase db = AppDatabase();
   Future<void> loadAll() async {
+    if (!isClosed) {
+      emit(DoctorsState.loading());
+    }
     await loadLocalData();
     await loadOnlineData();
   }
@@ -29,7 +32,9 @@ class DoctorsCubit extends Cubit<DoctorsState> {
       ]);
       final specialties = results[0] as List<Specialty>;
       final doctors = results[1] as List<DoctorModel>;
-      emit(DoctorsState.success(doctors: doctors));
+      if (!isClosed) {
+        emit(DoctorsState.success(doctors: doctors, specialities: specialties));
+      }
     } catch (e) {
       AppSnackBar.error(
         ' please check your internt connection ${e.toString()}',
@@ -43,7 +48,7 @@ class DoctorsCubit extends Cubit<DoctorsState> {
     try {
       bool isConnected = await NetworkHelper.isConnected();
       if (isConnected) {
-        await Future.wait([fetchSpecialties(), fetchDoctors()]);
+        await Future.wait([fetchDoctors()]);
       } else {
         AppSnackBar.error(' please check your internt connection');
       }
@@ -52,10 +57,27 @@ class DoctorsCubit extends Cubit<DoctorsState> {
       AppSnackBar.error(
         ' please check your internt connection ${e.toString()}',
       );
-      emit(DoctorsState.error(e.toString()));
+      if (!isClosed) {
+        emit(DoctorsState.error(e.toString()));
+      }
     }
   }
 
+  fillterDoctorBySpecialty(String? specialty) async {
+    final filteredDoctors = await getDoctors(specialty: specialty);
+    state.mapOrNull(
+      success: (state) {
+        if (!isClosed) {
+          emit(
+            state.copyWith(
+              doctors: filteredDoctors,
+              specialtySelected: specialty ?? 'All',
+            ),
+          );
+        }
+      },
+    );
+  }
   // ******************************************Api************************************************************
 
   Future<void> fetchSpecialties() async {
@@ -124,12 +146,14 @@ class DoctorsCubit extends Cubit<DoctorsState> {
     });
   }
 
-  Future<List<DoctorModel>> getDoctors() async {
-    final result =
-        await (db.select(db.doctors).join([
-          innerJoin(db.users, db.users.id.equalsExp(db.doctors.userId)),
-        ])).get();
-
+  Future<List<DoctorModel>> getDoctors({String? specialty}) async {
+    var temp = (db.select(db.doctors).join([
+      innerJoin(db.users, db.users.id.equalsExp(db.doctors.userId)),
+    ]));
+    if (specialty != null) {
+      temp = temp..where(db.doctors.specialty.equals(specialty));
+    }
+    final result = await temp.get();
     final jsonList =
         result.map((row) {
           var doctor = row.readTable(db.doctors).toJson();

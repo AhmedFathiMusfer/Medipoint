@@ -154,8 +154,9 @@ class _LoginViewState extends State<LoginView> {
                       ),
                       TextButton(
                         onPressed: () {
-                          context.pushReplacementNamed(
-                            Routers.registrationView,
+                          context.pushNamedAndRemoveUntil(
+                            Routers.homeView,
+                            predicate: (root) => false,
                           );
                         },
                         child: Text(

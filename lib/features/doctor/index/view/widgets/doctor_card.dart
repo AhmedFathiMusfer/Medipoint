@@ -1,10 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DoctorCard extends StatelessWidget {
   final String name, speciality, location, image;
   final double rating;
   final int reviews;
-  final Color color;
 
   const DoctorCard({
     super.key,
@@ -14,14 +15,13 @@ class DoctorCard extends StatelessWidget {
     required this.rating,
     required this.reviews,
     required this.image,
-    required this.color,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(12),
+      margin: EdgeInsets.only(bottom: 16.h),
+      padding: EdgeInsets.all(12.r),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -35,59 +35,65 @@ class DoctorCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // ✅ Doctor image
           Container(
-            width: 70,
-            height: 70,
+            width: 80,
+            height: 80,
             decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(16),
+              color: Color(0xffF6DFE6),
+              borderRadius: BorderRadius.circular(16.r),
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Image.network(image, fit: BoxFit.cover),
+              borderRadius: BorderRadius.circular(16.r),
+              child: CachedNetworkImage(
+                imageUrl: image,
+                fit: BoxFit.cover,
+                errorWidget: (contex, url, _) {
+                  return Image.asset(
+                    "assets/image/final_on_obourding_image.png",
+                    fit: BoxFit.cover,
+                  );
+                },
+              ),
             ),
           ),
 
-          const SizedBox(width: 16),
+          15.horizontalSpace,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   name,
-                  style: const TextStyle(
-                    fontSize: 16,
+                  style: TextStyle(
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
 
-                const SizedBox(height: 4),
+                5.verticalSpace,
                 Text(speciality, style: const TextStyle(color: Colors.grey)),
 
-                const SizedBox(height: 4),
+                5.verticalSpace,
                 Text(
                   location,
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  style: TextStyle(fontSize: 10.sp, color: Colors.grey),
                 ),
 
-                const SizedBox(height: 6),
+                5.verticalSpace,
 
                 Row(
                   children: [
-                    const Icon(Icons.star, size: 16, color: Colors.orange),
+                    Icon(Icons.star, size: 16.r, color: Colors.orange),
                     Text(" $rating"),
                     Text(
                       "  |  $reviews Reviews",
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                      style: TextStyle(fontSize: 10.sp, color: Colors.grey),
                     ),
                   ],
                 ),
               ],
             ),
           ),
-
-          const Icon(Icons.favorite_border),
         ],
       ),
     );

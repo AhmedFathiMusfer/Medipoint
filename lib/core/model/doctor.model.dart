@@ -17,6 +17,9 @@ class DoctorModel {
   final String education;
   final String specialty;
   final String? about;
+  final String? reviews;
+  final String? rating;
+
   final String? addressLine1;
   final String? addressLine2;
   @DoctorModelStatusConverter()
@@ -37,6 +40,8 @@ class DoctorModel {
     required this.education,
     required this.specialty,
     this.about,
+    this.rating,
+    this.reviews,
     this.addressLine1,
     this.addressLine2,
     required this.status,
