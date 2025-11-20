@@ -1,11 +1,16 @@
 import 'package:diagno_bot/core/baseView/base.view.dart';
+import 'package:diagno_bot/core/database/drift_db.dart';
 import 'package:diagno_bot/core/helpers/extensions.dart';
 import 'package:diagno_bot/core/routing/router.dart';
 
 import 'package:diagno_bot/core/widgets/simpleButton.dart';
+import 'package:diagno_bot/features/doctor/doctorDetails/cubit/doctorDetails.cubit.dart';
+import 'package:diagno_bot/features/doctor/doctorDetails/cubit/doctorDetails.state.dart';
 import 'package:diagno_bot/features/doctor/doctorDetails/view/widgets/doctor_card.dart';
 import 'package:diagno_bot/features/doctor/doctorDetails/view/widgets/single_stat.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -14,47 +19,87 @@ class DoctorDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var doctorDetailsCubit = context.read<DoctorDetailsCubit>();
     return BaseView(
       title: 'Doctor Details',
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            20.verticalSpace,
-            DoctorCard(),
-            30.verticalSpace,
-            _infoStats(),
-            30.verticalSpace,
-            _aboutSection(),
-            30.verticalSpace,
-            _workingTime(),
-            30.verticalSpace,
-            SimpleButton(
-              onPressed: () {
-                context.pushNamed(Routers.bookAppointmentView);
+        child: BlocBuilder<DoctorDetailsCubit, DoctorDetailsState>(
+          builder: (context, state) {
+            return state.maybeMap(
+              success: (state) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    20.verticalSpace,
+                    DoctorCard(doctor: state.doctor),
+                    30.verticalSpace,
+                    _infoStats(
+                      experience: state.doctor.experience,
+                      rating: state.doctor.rating.toString(),
+                      reviews: state.doctor.reviews.toString(),
+                    ),
+                    30.verticalSpace,
+                    _aboutSection(about: state.doctor.about),
+                    30.verticalSpace,
+                    _workingTime(state.doctor.workingHours),
+                    30.verticalSpace,
+                    SimpleButton(
+                      onPressed: () {
+                        context.pushNamed(
+                          Routers.bookingView,
+                          arguments: state.doctor,
+                        );
+                      },
+                      text: 'Book Appointment',
+                    ),
+                  ],
+                );
               },
-              text: 'Book Appointment',
-            ),
-          ],
+              orElse: () {
+                return Container();
+              },
+            );
+          },
         ),
       ),
     );
   }
 
-  Widget _infoStats() {
+  Widget _infoStats({
+    String? patients,
+    String? experience,
+    String? rating,
+    String? reviews,
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        singleStat(icon: Icons.people, number: "2,000+", title: "patients"),
-        singleStat(icon: Icons.star, number: "10+", title: "experience"),
-        singleStat(icon: Icons.favorite, number: "5", title: "rating"),
-        singleStat(icon: Icons.chat, number: "1,872", title: "reviews"),
+        singleStat(
+          icon: Icons.people,
+          number: patients ?? "2,000+",
+          title: "patients",
+        ),
+        singleStat(
+          icon: Icons.star,
+          number: experience ?? "10+",
+          title: "experience",
+        ),
+        singleStat(
+          icon: Icons.favorite,
+          number: rating ?? "5",
+          title: "rating",
+        ),
+        singleStat(
+          icon: Icons.chat,
+          number: reviews ?? "1,872",
+          title: "reviews",
+        ),
       ],
     );
   }
 
-  Widget _aboutSection() {
+  Widget _aboutSection({String? about}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -64,14 +109,15 @@ class DoctorDetailsView extends StatelessWidget {
         ),
         10.verticalSpace,
         Text(
-          "Dr. David Patel, a dedicated cardiologist, brings a wealth of experience…",
+          about ??
+              "Dr. David Patel, a dedicated cardiologist, brings a wealth of experience…",
           style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400),
         ),
       ],
     );
   }
 
-  Widget _workingTime() {
+  Widget _workingTime(List<WorkingHour> workingHours) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -80,10 +126,17 @@ class DoctorDetailsView extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.sp),
         ),
         10.verticalSpace,
-        Text(
-          "Monday–Friday, 08:00 AM–18:00 PM",
-          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400),
-        ),
+        ...workingHours.map((workingHour) {
+          final startTime = DateTime.parse(workingHour.startTime);
+          final endTime = DateTime.parse(workingHour.endTime);
+          final day = DateFormat('EEEE').format(startTime);
+          final firstHour = DateFormat('hh:mm a').format(startTime);
+          final endHour = DateFormat('hh:mm a').format(endTime);
+          return Text(
+            "$day, $firstHour–$endHour",
+            style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400),
+          );
+        }),
       ],
     );
   }

@@ -98,6 +98,7 @@ class DoctorsView extends StatelessWidget {
                         itemBuilder: (context, index) {
                           var doctor = state.doctors[index];
                           return DoctorCard(
+                            doctor: doctor,
                             name: doctor.fullName,
                             speciality: doctor.specialty,
                             location: doctor.addressLine1 ?? '',

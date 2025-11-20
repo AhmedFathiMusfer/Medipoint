@@ -6,5 +6,5 @@ class WorkingHours extends Table {
   TextColumn get startTime => text()();
   TextColumn get endTime => text()();
   TextColumn get doctorId => text().references(Doctors, #userId)();
-  TextColumn get patientLeft => text().nullable()();
+  IntColumn get patientLeft => integer().nullable()();
 }

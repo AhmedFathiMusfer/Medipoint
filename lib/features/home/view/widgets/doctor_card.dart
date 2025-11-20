@@ -12,6 +12,7 @@ class DoctorCard extends StatelessWidget {
   final String experience;
   final String fees;
   final String imageUrl;
+  final String id;
 
   const DoctorCard({
     super.key,
@@ -20,13 +21,14 @@ class DoctorCard extends StatelessWidget {
     required this.experience,
     required this.fees,
     required this.imageUrl,
+    required this.id,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.pushNamed(Routers.doctorDetailsView);
+        context.pushNamed(Routers.doctorDetailsView, arguments: id);
       },
       child: SizedBox(
         width: 260.w,

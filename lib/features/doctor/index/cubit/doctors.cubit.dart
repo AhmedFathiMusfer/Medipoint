@@ -4,10 +4,11 @@ import 'package:diagno_bot/core/auth/authManager.dart';
 import 'package:diagno_bot/core/database/drift_db.dart';
 import 'package:diagno_bot/core/helpers/networkHelper.dart';
 import 'package:diagno_bot/core/model/doctor.model.dart';
+import 'package:diagno_bot/core/networking/errors/errorMesage.dart';
+import 'package:diagno_bot/core/networking/errors/exceptions.enum.dart';
 import 'package:diagno_bot/core/networking/remote/apiConstants.dart';
-import 'package:diagno_bot/core/networking/remote/methods.enums..dart';
-import 'package:diagno_bot/core/networking/remote/remote.dart';
-import 'package:diagno_bot/core/networking/remote/request.dart';
+import 'package:diagno_bot/core/networking/remote/remoteProvider.dart';
+import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/features/doctor/index/cubit/doctors.state.dart';
 import 'package:drift/drift.dart';
@@ -37,10 +38,8 @@ class DoctorsCubit extends Cubit<DoctorsState> {
       }
     } catch (e) {
       AppSnackBar.error(
-        ' please check your internt connection ${e.toString()}',
+        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
       );
-
-      emit(DoctorsState.error(e.toString()));
     }
   }
 
@@ -50,16 +49,15 @@ class DoctorsCubit extends Cubit<DoctorsState> {
       if (isConnected) {
         await Future.wait([fetchDoctors()]);
       } else {
-        AppSnackBar.error(' please check your internt connection');
+        AppSnackBar.error(
+          ErrorMessages.instance.fromExceptionType(ExceptionTypes.connection),
+        );
       }
       await loadLocalData();
     } catch (e) {
       AppSnackBar.error(
-        ' please check your internt connection ${e.toString()}',
+        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
       );
-      if (!isClosed) {
-        emit(DoctorsState.error(e.toString()));
-      }
     }
   }
 
@@ -82,10 +80,7 @@ class DoctorsCubit extends Cubit<DoctorsState> {
 
   Future<void> fetchSpecialties() async {
     await RemoteProvider().send(
-      request: Request(
-        url: ApiConstants.specialtyEndpoint,
-        header: {'Authorization': 'Bearer ${AuthManager().accessToken}'},
-      ),
+      request: Request(url: ApiConstants.specialtyEndpoint),
       method: RemoteMethod.get,
       onSuccess: (res, statsCode) async {
         try {
@@ -93,45 +88,36 @@ class DoctorsCubit extends Cubit<DoctorsState> {
             await insertSpecialties(res.data['results']);
           }
         } catch (ex) {
-          AppSnackBar.error('an error ocurred ${ex.toString()}');
+          AppSnackBar.error(
+            ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+          );
         }
       },
       onError: (_, statsCode) {
-        AppSnackBar.error(
-          'an error ocurred. please check your internt connection ',
-        );
+        AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statsCode));
       },
     );
   }
 
   Future<void> fetchDoctors() async {
-    bool isConnected = await NetworkHelper.isConnected();
-
-    if (isConnected) {
-      await RemoteProvider().send(
-        request: Request(
-          url: ApiConstants.doctorEndpoint,
-          header: {'Authorization': 'Bearer ${AuthManager().accessToken}'},
-        ),
-        method: RemoteMethod.get,
-        onSuccess: (res, statsCode) async {
-          try {
-            if (res.data['results'].isNotEmpty) {
-              await insertDoctorWithUser(res.data['results']);
-            }
-          } catch (ex) {
-            AppSnackBar.error('an error ocurred ${ex.toString()}');
+    await RemoteProvider().send(
+      request: Request(url: ApiConstants.doctorEndpoint),
+      method: RemoteMethod.get,
+      onSuccess: (res, statsCode) async {
+        try {
+          if (res.data['results'].isNotEmpty) {
+            await insertDoctorWithUser(res.data['results']);
           }
-        },
-        onError: (_, statsCode) {
+        } catch (ex) {
           AppSnackBar.error(
-            'an error ocurred. please check your internt connection ',
+            ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
           );
-        },
-      );
-    } else {
-      // AppSnackBar.error(' please check your internt connection');
-    }
+        }
+      },
+      onError: (_, statsCode) {
+        AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statsCode));
+      },
+    );
   }
 
   // ******************************************db************************************************************
@@ -207,6 +193,19 @@ class DoctorsCubit extends Cubit<DoctorsState> {
           mode: InsertMode.insertOrReplace,
         );
       }
+    });
+  }
+
+  insertWorkerHouers(data) async {
+    await db.batch((batch) {
+      batch.insertAllOnConflictUpdate(
+        db.workingHours,
+        data
+            .map<WorkingHour>(
+              (workingHour) => WorkingHour.fromJson(workingHour),
+            )
+            .toList(),
+      );
     });
   }
 }

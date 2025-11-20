@@ -1,7 +1,9 @@
+import 'package:diagno_bot/core/database/drift_db.dart';
 import 'package:diagno_bot/core/theming/color.dart';
 import 'package:diagno_bot/core/widgets/simpleButton.dart';
 import 'package:diagno_bot/features/bookAppointment/cubit/bookAppointment.cubit.dart';
 import 'package:diagno_bot/features/bookAppointment/cubit/bookAppointment.state.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -383,5 +385,172 @@ class DatePickerCard extends StatelessWidget {
       'December',
     ];
     return names[m];
+  }
+}
+
+class BookingPage extends StatefulWidget {
+  final List<WorkingHour> workingHours;
+  final String doctorId;
+
+  const BookingPage({
+    super.key,
+    required this.workingHours,
+    required this.doctorId,
+  });
+
+  @override
+  State<BookingPage> createState() => _BookingPageState();
+}
+
+class _BookingPageState extends State<BookingPage> {
+  WorkingHour? selectedDay;
+  String? selectedTime;
+
+  // تقسيم اليوم إلى مواعيد (كل 30 دقيقة)
+  List<String> generateSlots(String start, String end) {
+    final startDt = DateTime.parse(start);
+    final endDt = DateTime.parse(end);
+
+    final times = <String>[];
+    var current = startDt;
+
+    while (current.isBefore(endDt)) {
+      times.add(DateFormat('hh:mm a').format(current));
+      current = current.add(const Duration(minutes: 30));
+    }
+
+    return times;
+  }
+
+  // زر الحجز
+  void confirmBooking() {
+    if (selectedDay == null || selectedTime == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("اختر يوم ووقت أولاً")));
+      return;
+    }
+
+    // هنا تبعث API الحجز
+    // sendBooking(doctorId, selectedDay["date"], selectedTime);
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text("تم الحجز بنجاح")));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("حجز موعد")),
+      body: Column(
+        children: [
+          const SizedBox(height: 10),
+          const Text(
+            "اختر يوم العمل",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+
+          // قائمة الأيام
+          Expanded(
+            child: ListView.builder(
+              itemCount: widget.workingHours.length,
+              itemBuilder: (context, index) {
+                final w = widget.workingHours[index];
+                final date = DateTime.parse(w.startTime);
+                final formatted = DateFormat('EEEE, dd MMM').format(date);
+
+                return Card(
+                  child: ListTile(
+                    title: Text(formatted),
+                    subtitle: Text("المتبقي: ${w.patientLeft.toString()}"),
+                    onTap: () {
+                      setState(() {
+                        selectedDay = w;
+                        selectedTime = null;
+                      });
+                    },
+                    trailing:
+                        selectedDay == w
+                            ? const Icon(
+                              Icons.check_circle,
+                              color: Colors.green,
+                            )
+                            : null,
+                  ),
+                );
+              },
+            ),
+          ),
+
+          if (selectedDay != null) ...[
+            const SizedBox(height: 10),
+            const Text(
+              "اختر الوقت",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+
+            // قائمة المواعيد
+            SizedBox(
+              height: 180,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children:
+                    generateSlots(
+                      selectedDay!.startTime,
+                      selectedDay!.endTime,
+                    ).map((time) {
+                      final isSelected = time == selectedTime;
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() => selectedTime = time);
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 12,
+                          ),
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: isSelected ? Colors.blue : Colors.white,
+                            border: Border.all(
+                              color:
+                                  isSelected
+                                      ? Colors.blue
+                                      : Colors.grey.shade400,
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              time,
+                              style: TextStyle(
+                                color:
+                                    isSelected ? Colors.white : Colors.black87,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+              ),
+            ),
+          ],
+
+          // زر تأكيد الحجز
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: ElevatedButton(
+              onPressed: confirmBooking,
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 50),
+              ),
+              child: const Text("تأكيد الحجز", style: TextStyle(fontSize: 18)),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -6,5 +6,7 @@ class Routers {
   static const String doctorsView = '/doctorsView';
   static const String doctorDetailsView = '/doctorDetailsView';
   static const String bookAppointmentView = '/bookAppointmentView ';
+  static const String bookingView = '/bookAppointmentView ';
+
   static const String chatView = '/ChatView';
 }

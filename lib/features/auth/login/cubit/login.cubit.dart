@@ -1,11 +1,9 @@
 import 'dart:developer';
-
 import 'package:diagno_bot/core/auth/authManager.dart';
 import 'package:diagno_bot/core/helpers/networkHelper.dart';
 import 'package:diagno_bot/core/networking/remote/apiConstants.dart';
-import 'package:diagno_bot/core/networking/remote/methods.enums..dart';
-import 'package:diagno_bot/core/networking/remote/remote.dart';
-import 'package:diagno_bot/core/networking/remote/request.dart';
+import 'package:diagno_bot/core/networking/remote/remoteProvider.dart';
+import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/features/auth/login/cubit/login.state.dart';
 import 'package:diagno_bot/features/auth/login/form/login.form.dart';

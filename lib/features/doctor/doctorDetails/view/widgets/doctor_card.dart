@@ -1,9 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:diagno_bot/core/helpers/extensions.dart';
+import 'package:diagno_bot/core/model/doctor.model.dart';
+import 'package:diagno_bot/core/routing/router.dart';
 import 'package:diagno_bot/core/theming/color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DoctorCard extends StatelessWidget {
-  const DoctorCard({super.key});
+  final DoctorModel doctor;
+  const DoctorCard({super.key, required this.doctor});
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +30,19 @@ class DoctorCard extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(14),
-            child: Image.asset(
-              "assets/image/final_on_obourding_image.png",
+            child: CachedNetworkImage(
+              imageUrl: doctor.image ?? '',
               width: 70,
               height: 70,
               fit: BoxFit.cover,
+              errorWidget: (contex, url, _) {
+                return Image.asset(
+                  "assets/image/final_on_obourding_image.png",
+                  width: 70,
+                  height: 70,
+                  fit: BoxFit.cover,
+                );
+              },
             ),
           ),
           15.horizontalSpace,
@@ -36,17 +50,17 @@ class DoctorCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Dr. David Patel",
+                doctor.fullName,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               5.verticalSpace,
               5.verticalSpace,
-              Text("Cardiologist"),
+              Text(doctor.specialty),
               5.verticalSpace,
               Row(
                 children: [
                   Icon(Icons.location_on, size: 16),
-                  Text(" Golden Cardiology Center"),
+                  Text(doctor.addressLine1 ?? doctor.addressLine2 ?? ""),
                 ],
               ),
             ],

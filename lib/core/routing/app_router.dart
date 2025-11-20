@@ -1,3 +1,4 @@
+import 'package:diagno_bot/core/model/doctor.model.dart';
 import 'package:diagno_bot/core/routing/router.dart';
 import 'package:diagno_bot/features/ai/chat/view/chat.view.dart';
 import 'package:diagno_bot/features/auth/login/cubit/login.cubit.dart';
@@ -21,6 +22,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class AppRouter {
   Route generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case Routers.bookingView:
+        var doctor = settings.arguments as DoctorModel?;
+        return MaterialPageRoute(
+          builder:
+              (_) => BookingPage(
+                workingHours: doctor?.workingHours ?? [],
+                doctorId: doctor?.userId ?? '',
+              ),
+        );
       case Routers.onBoardingView:
         return MaterialPageRoute(builder: (_) => const OnboardingView());
       case Routers.homeView:
@@ -37,7 +47,11 @@ class AppRouter {
         return PageRouteBuilder(
           pageBuilder:
               (context, animation, secondaryAnimation) => BlocProvider(
-                create: (_) => DoctorDetailsCubit(DoctorDetailsState.initial()),
+                create:
+                    (_) => DoctorDetailsCubit(
+                      doctorId: doctorId,
+                      DoctorDetailsState.initial(),
+                    )..loadAll(),
                 child: DoctorDetailsView(),
               ),
           transitionDuration: Duration.zero,

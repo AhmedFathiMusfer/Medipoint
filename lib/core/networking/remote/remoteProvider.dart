@@ -2,8 +2,7 @@ import 'dart:developer';
 import 'package:diagno_bot/core/networking/remote/dioFactory.dart';
 import 'package:diagno_bot/core/networking/errors/exceptions.enum.dart';
 import 'package:diagno_bot/core/networking/errors/exceptions.app.dart';
-import 'package:diagno_bot/core/networking/remote/methods.enums..dart';
-import 'package:diagno_bot/core/networking/remote/request.dart';
+import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:dio/dio.dart';
 
 class RemoteProvider {
@@ -33,7 +32,7 @@ class RemoteProvider {
     Response<dynamic> response = Response(requestOptions: RequestOptions());
     int statusCode = 500;
     try {
-      Response<dynamic> response = await dio
+      response = await dio
           .request(
             request.urlQueryString,
             data: request.body,
@@ -77,8 +76,7 @@ class RemoteProvider {
             },
           );
 
-      var statusCode = response.statusCode!;
-      // log("kkkkk");
+      statusCode = response.statusCode!;
       if (successStates.contains(statusCode)) {
         if (onSuccess != null) await onSuccess(response, statusCode);
       } else {
@@ -92,14 +90,11 @@ class RemoteProvider {
       return response;
     } catch (exception) {
       log(exception.toString());
-      //statusCode = 500;
       if (onError != null) {
         onError(response, statusCode);
       } else {
         throw ApiException.fromStatusCode(statusCode);
       }
-      //  throw ApiException.fromStatusCode(statusCode);
-      _catchExceptions(exception);
     }
   }
 }

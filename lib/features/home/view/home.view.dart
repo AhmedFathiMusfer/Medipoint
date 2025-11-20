@@ -184,6 +184,7 @@ class HomeView extends StatelessWidget {
                             experience: doctor.experience,
                             specialty: doctor.specialty,
                             fees: doctor.fees,
+                            id: doctor.userId,
                           ),
                         ),
                       ],

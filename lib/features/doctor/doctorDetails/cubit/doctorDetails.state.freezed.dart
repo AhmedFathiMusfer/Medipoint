@@ -21,21 +21,21 @@ mixin _$DoctorDetailsState {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(Doctor doctor) success,
+    required TResult Function(DoctorModel doctor) success,
     required TResult Function(String message) error,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(Doctor doctor)? success,
+    TResult? Function(DoctorModel doctor)? success,
     TResult? Function(String message)? error,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(Doctor doctor)? success,
+    TResult Function(DoctorModel doctor)? success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
@@ -136,7 +136,7 @@ class _$InitialImpl with DiagnosticableTreeMixin implements _Initial {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(Doctor doctor) success,
+    required TResult Function(DoctorModel doctor) success,
     required TResult Function(String message) error,
   }) {
     return initial();
@@ -147,7 +147,7 @@ class _$InitialImpl with DiagnosticableTreeMixin implements _Initial {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(Doctor doctor)? success,
+    TResult? Function(DoctorModel doctor)? success,
     TResult? Function(String message)? error,
   }) {
     return initial?.call();
@@ -158,7 +158,7 @@ class _$InitialImpl with DiagnosticableTreeMixin implements _Initial {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(Doctor doctor)? success,
+    TResult Function(DoctorModel doctor)? success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -261,7 +261,7 @@ class _$LoadingImpl with DiagnosticableTreeMixin implements _Loading {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(Doctor doctor) success,
+    required TResult Function(DoctorModel doctor) success,
     required TResult Function(String message) error,
   }) {
     return loading();
@@ -272,7 +272,7 @@ class _$LoadingImpl with DiagnosticableTreeMixin implements _Loading {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(Doctor doctor)? success,
+    TResult? Function(DoctorModel doctor)? success,
     TResult? Function(String message)? error,
   }) {
     return loading?.call();
@@ -283,7 +283,7 @@ class _$LoadingImpl with DiagnosticableTreeMixin implements _Loading {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(Doctor doctor)? success,
+    TResult Function(DoctorModel doctor)? success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -342,7 +342,7 @@ abstract class _$$SuccessImplCopyWith<$Res> {
     $Res Function(_$SuccessImpl) then,
   ) = __$$SuccessImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({Doctor doctor});
+  $Res call({DoctorModel doctor});
 }
 
 /// @nodoc
@@ -365,7 +365,7 @@ class __$$SuccessImplCopyWithImpl<$Res>
             null == doctor
                 ? _value.doctor
                 : doctor // ignore: cast_nullable_to_non_nullable
-                    as Doctor,
+                    as DoctorModel,
       ),
     );
   }
@@ -377,7 +377,7 @@ class _$SuccessImpl with DiagnosticableTreeMixin implements _Success {
   const _$SuccessImpl({required this.doctor});
 
   @override
-  final Doctor doctor;
+  final DoctorModel doctor;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -416,7 +416,7 @@ class _$SuccessImpl with DiagnosticableTreeMixin implements _Success {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(Doctor doctor) success,
+    required TResult Function(DoctorModel doctor) success,
     required TResult Function(String message) error,
   }) {
     return success(doctor);
@@ -427,7 +427,7 @@ class _$SuccessImpl with DiagnosticableTreeMixin implements _Success {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(Doctor doctor)? success,
+    TResult? Function(DoctorModel doctor)? success,
     TResult? Function(String message)? error,
   }) {
     return success?.call(doctor);
@@ -438,7 +438,7 @@ class _$SuccessImpl with DiagnosticableTreeMixin implements _Success {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(Doctor doctor)? success,
+    TResult Function(DoctorModel doctor)? success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -487,9 +487,9 @@ class _$SuccessImpl with DiagnosticableTreeMixin implements _Success {
 }
 
 abstract class _Success implements DoctorDetailsState {
-  const factory _Success({required final Doctor doctor}) = _$SuccessImpl;
+  const factory _Success({required final DoctorModel doctor}) = _$SuccessImpl;
 
-  Doctor get doctor;
+  DoctorModel get doctor;
 
   /// Create a copy of DoctorDetailsState
   /// with the given fields replaced by the non-null parameter values.
@@ -578,7 +578,7 @@ class _$ErrorImpl with DiagnosticableTreeMixin implements _Error {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(Doctor doctor) success,
+    required TResult Function(DoctorModel doctor) success,
     required TResult Function(String message) error,
   }) {
     return error(message);
@@ -589,7 +589,7 @@ class _$ErrorImpl with DiagnosticableTreeMixin implements _Error {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(Doctor doctor)? success,
+    TResult? Function(DoctorModel doctor)? success,
     TResult? Function(String message)? error,
   }) {
     return error?.call(message);
@@ -600,7 +600,7 @@ class _$ErrorImpl with DiagnosticableTreeMixin implements _Error {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(Doctor doctor)? success,
+    TResult Function(DoctorModel doctor)? success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {

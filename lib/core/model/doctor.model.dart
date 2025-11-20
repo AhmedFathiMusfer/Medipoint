@@ -1,3 +1,4 @@
+import 'package:diagno_bot/core/database/drift_db.dart';
 import 'package:diagno_bot/core/database/tables/doctor_tables.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'doctor.model.g.dart';
@@ -17,8 +18,8 @@ class DoctorModel {
   final String education;
   final String specialty;
   final String? about;
-  final String? reviews;
-  final String? rating;
+  final int? reviews;
+  final double? rating;
 
   final String? addressLine1;
   final String? addressLine2;
@@ -26,6 +27,8 @@ class DoctorModel {
   final DoctorStatus status;
   final bool isVerified;
   final String? degreeDocument;
+  @JsonKey(ignore: true)
+  List<WorkingHour> workingHours;
 
   DoctorModel({
     required this.userId,
@@ -47,6 +50,7 @@ class DoctorModel {
     required this.status,
     required this.isVerified,
     this.degreeDocument,
+    this.workingHours = const [],
   });
   factory DoctorModel.fromJson(Map<String, dynamic> json) =>
       _$DoctorModelFromJson(json);

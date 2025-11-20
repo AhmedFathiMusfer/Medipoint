@@ -1969,11 +1969,11 @@ class $WorkingHoursTable extends WorkingHours
     'patientLeft',
   );
   @override
-  late final GeneratedColumn<String> patientLeft = GeneratedColumn<String>(
+  late final GeneratedColumn<int> patientLeft = GeneratedColumn<int>(
     'patient_left',
     aliasedName,
     true,
-    type: DriftSqlType.string,
+    type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
   @override
@@ -2062,7 +2062,7 @@ class $WorkingHoursTable extends WorkingHours
             data['${effectivePrefix}doctor_id'],
           )!,
       patientLeft: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
+        DriftSqlType.int,
         data['${effectivePrefix}patient_left'],
       ),
     );
@@ -2079,7 +2079,7 @@ class WorkingHour extends DataClass implements Insertable<WorkingHour> {
   final String startTime;
   final String endTime;
   final String doctorId;
-  final String? patientLeft;
+  final int? patientLeft;
   const WorkingHour({
     required this.id,
     required this.startTime,
@@ -2095,7 +2095,7 @@ class WorkingHour extends DataClass implements Insertable<WorkingHour> {
     map['end_time'] = Variable<String>(endTime);
     map['doctor_id'] = Variable<String>(doctorId);
     if (!nullToAbsent || patientLeft != null) {
-      map['patient_left'] = Variable<String>(patientLeft);
+      map['patient_left'] = Variable<int>(patientLeft);
     }
     return map;
   }
@@ -2123,7 +2123,7 @@ class WorkingHour extends DataClass implements Insertable<WorkingHour> {
       startTime: serializer.fromJson<String>(json['startTime']),
       endTime: serializer.fromJson<String>(json['endTime']),
       doctorId: serializer.fromJson<String>(json['doctorId']),
-      patientLeft: serializer.fromJson<String?>(json['patientLeft']),
+      patientLeft: serializer.fromJson<int?>(json['patientLeft']),
     );
   }
   @override
@@ -2134,7 +2134,7 @@ class WorkingHour extends DataClass implements Insertable<WorkingHour> {
       'startTime': serializer.toJson<String>(startTime),
       'endTime': serializer.toJson<String>(endTime),
       'doctorId': serializer.toJson<String>(doctorId),
-      'patientLeft': serializer.toJson<String?>(patientLeft),
+      'patientLeft': serializer.toJson<int?>(patientLeft),
     };
   }
 
@@ -2143,7 +2143,7 @@ class WorkingHour extends DataClass implements Insertable<WorkingHour> {
     String? startTime,
     String? endTime,
     String? doctorId,
-    Value<String?> patientLeft = const Value.absent(),
+    Value<int?> patientLeft = const Value.absent(),
   }) => WorkingHour(
     id: id ?? this.id,
     startTime: startTime ?? this.startTime,
@@ -2193,7 +2193,7 @@ class WorkingHoursCompanion extends UpdateCompanion<WorkingHour> {
   final Value<String> startTime;
   final Value<String> endTime;
   final Value<String> doctorId;
-  final Value<String?> patientLeft;
+  final Value<int?> patientLeft;
   const WorkingHoursCompanion({
     this.id = const Value.absent(),
     this.startTime = const Value.absent(),
@@ -2215,7 +2215,7 @@ class WorkingHoursCompanion extends UpdateCompanion<WorkingHour> {
     Expression<String>? startTime,
     Expression<String>? endTime,
     Expression<String>? doctorId,
-    Expression<String>? patientLeft,
+    Expression<int>? patientLeft,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -2231,7 +2231,7 @@ class WorkingHoursCompanion extends UpdateCompanion<WorkingHour> {
     Value<String>? startTime,
     Value<String>? endTime,
     Value<String>? doctorId,
-    Value<String?>? patientLeft,
+    Value<int?>? patientLeft,
   }) {
     return WorkingHoursCompanion(
       id: id ?? this.id,
@@ -2258,7 +2258,7 @@ class WorkingHoursCompanion extends UpdateCompanion<WorkingHour> {
       map['doctor_id'] = Variable<String>(doctorId.value);
     }
     if (patientLeft.present) {
-      map['patient_left'] = Variable<String>(patientLeft.value);
+      map['patient_left'] = Variable<int>(patientLeft.value);
     }
     return map;
   }
@@ -5310,7 +5310,7 @@ typedef $$WorkingHoursTableCreateCompanionBuilder =
       required String startTime,
       required String endTime,
       required String doctorId,
-      Value<String?> patientLeft,
+      Value<int?> patientLeft,
     });
 typedef $$WorkingHoursTableUpdateCompanionBuilder =
     WorkingHoursCompanion Function({
@@ -5318,7 +5318,7 @@ typedef $$WorkingHoursTableUpdateCompanionBuilder =
       Value<String> startTime,
       Value<String> endTime,
       Value<String> doctorId,
-      Value<String?> patientLeft,
+      Value<int?> patientLeft,
     });
 
 final class $$WorkingHoursTableReferences
@@ -5371,7 +5371,7 @@ class $$WorkingHoursTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get patientLeft => $composableBuilder(
+  ColumnFilters<int> get patientLeft => $composableBuilder(
     column: $table.patientLeft,
     builder: (column) => ColumnFilters(column),
   );
@@ -5426,7 +5426,7 @@ class $$WorkingHoursTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get patientLeft => $composableBuilder(
+  ColumnOrderings<int> get patientLeft => $composableBuilder(
     column: $table.patientLeft,
     builder: (column) => ColumnOrderings(column),
   );
@@ -5450,7 +5450,7 @@ class $$WorkingHoursTableAnnotationComposer
   GeneratedColumn<String> get endTime =>
       $composableBuilder(column: $table.endTime, builder: (column) => column);
 
-  GeneratedColumn<String> get patientLeft => $composableBuilder(
+  GeneratedColumn<int> get patientLeft => $composableBuilder(
     column: $table.patientLeft,
     builder: (column) => column,
   );
@@ -5514,7 +5514,7 @@ class $$WorkingHoursTableTableManager
                 Value<String> startTime = const Value.absent(),
                 Value<String> endTime = const Value.absent(),
                 Value<String> doctorId = const Value.absent(),
-                Value<String?> patientLeft = const Value.absent(),
+                Value<int?> patientLeft = const Value.absent(),
               }) => WorkingHoursCompanion(
                 id: id,
                 startTime: startTime,
@@ -5528,7 +5528,7 @@ class $$WorkingHoursTableTableManager
                 required String startTime,
                 required String endTime,
                 required String doctorId,
-                Value<String?> patientLeft = const Value.absent(),
+                Value<int?> patientLeft = const Value.absent(),
               }) => WorkingHoursCompanion.insert(
                 id: id,
                 startTime: startTime,

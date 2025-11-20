@@ -1,5 +1,7 @@
 import 'package:diagno_bot/core/networking/remote/apiConstants.dart';
 
+enum RemoteMethod { get, post, put, delete }
+
 class Request {
   String url;
   bool shouldCache;

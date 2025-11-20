@@ -19,7 +19,7 @@ class AppSnackBar {
         duration: duration,
         backgroundColor: backgroundColor ?? Colors.black87,
         behavior: SnackBarBehavior.floating,
-        margin: const EdgeInsets.all(16),
+        margin: const EdgeInsets.all(8),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.r),
         ),
@@ -34,7 +34,7 @@ class AppSnackBar {
   static void error(String message) {
     show(
       message: message,
-      backgroundColor: const Color.fromARGB(255, 244, 67, 54).withOpacity(0.5),
+      backgroundColor: const Color.fromARGB(255, 255, 17, 0).withOpacity(0.8),
     );
   }
 
