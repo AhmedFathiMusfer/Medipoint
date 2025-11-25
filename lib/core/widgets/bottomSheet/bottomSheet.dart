@@ -1,23 +1,6 @@
-import 'package:diagno_bot/core/helpers/extensions.dart';
 import 'package:diagno_bot/core/theming/color.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-// class Bottomsheet extends StatelessWidget {
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text("BottomSheet Example")),
-//       body: Center(
-//         child: ElevatedButton(
-//           onPressed: () => _showBottomSheet(context),
-//           child: Text("Show Bottom Sheet"),
-//         ),
-//       ),
-//     );
-//   }
-// }
 void bottomSheet({
   required BuildContext context,
   VoidCallback? onSave,
@@ -29,73 +12,78 @@ void bottomSheet({
 }) {
   showModalBottomSheet(
     context: context,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-    ),
-    builder: (context) {
-      return SafeArea(
-        child: Container(
-          padding: EdgeInsets.all(16),
-          decoration: BoxDecoration(color: Colors.white),
-          height: 150,
+    backgroundColor: Colors.transparent, // to allow rounded top container
+    isScrollControlled: false,
+    builder: (c) {
+      return Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
+        child: SafeArea(
+          top: false,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
+              Container(
+                height: 6,
+                width: 50,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(3),
+                ),
+              ),
+              const SizedBox(height: 14),
               Text(
                 title,
-                style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold),
+                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
               ),
-              10.verticalSpace,
-              Text(message),
-              10.verticalSpace,
+              const SizedBox(height: 8),
+              Text(
+                message,
+                style: TextStyle(color: Colors.grey[700], fontSize: 13),
+              ),
+              const SizedBox(height: 18),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Expanded(
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all<Color?>(
-                          ColorManager.primaryColor,
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
                         ),
-                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.r),
-                          ),
+                      ),
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(color: ColorManager.primaryColor),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        backgroundColor: ColorManager.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
                         ),
                       ),
                       onPressed: () {
-                        context.pop();
+                        Navigator.of(context).pop();
                         if (onSave != null) {
                           onSave();
                         }
                       },
-                      child: Text(
-                        buttonTitle,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all<Color?>(
-                          Colors.red,
-                        ),
-                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.r),
-                          ),
-                        ),
-                      ),
-                      onPressed: () => Navigator.pop(context),
-                      child: Text(
-                        "cancel",
-                        style: TextStyle(color: Colors.white),
-                      ),
+                      child: Text(buttonTitle),
                     ),
                   ),
                 ],
               ),
+              const SizedBox(height: 8),
             ],
           ),
         ),

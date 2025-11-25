@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomTextField extends StatelessWidget {
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String hint;
   final bool isPassword;
-  final IconData icon;
+  final IconData? icon;
   final bool validator;
   final bool isEmail;
   final bool isConfirmPassword;
@@ -14,9 +14,9 @@ class CustomTextField extends StatelessWidget {
 
   const CustomTextField({
     super.key,
-    required this.controller,
+    this.controller,
     required this.hint,
-    required this.icon,
+    this.icon,
     this.isPassword = false,
     this.validator = true,
     this.isEmail = false,
@@ -35,7 +35,10 @@ class CustomTextField extends StatelessWidget {
 
       width: double.infinity,
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 4.0.w),
+        padding: EdgeInsets.symmetric(
+          vertical: 6.0.h,
+          horizontal: icon != null ? 4.0.w : 8.0.w,
+        ),
         child: TextFormField(
           validator:
               validator
@@ -72,7 +75,10 @@ class CustomTextField extends StatelessWidget {
               fontWeight: FontWeight.w400,
               color: Colors.grey[400],
             ),
-            prefixIcon: Icon(icon, size: 18.w, color: Colors.grey[400]),
+            prefixIcon:
+                icon != null
+                    ? Icon(icon, size: 18.w, color: Colors.grey[400])
+                    : null,
 
             hintText: hint,
             border: InputBorder.none,

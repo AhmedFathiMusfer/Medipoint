@@ -10,10 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // تهيئة Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  // await testFirestore();
   await di.init();
   await AuthManager().init();
   runApp(DocApp(appRouter: AppRouter()));

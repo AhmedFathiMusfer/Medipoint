@@ -26,7 +26,7 @@ class DoctorCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.pushNamed(Routers.bookingView, arguments: doctor);
+        context.pushNamed(Routers.doctorDetailsView, arguments: doctor.userId);
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 16.h),

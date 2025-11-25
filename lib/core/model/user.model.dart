@@ -8,6 +8,8 @@ class UserModel {
   final String fullName;
   final String email;
   final String password;
+  final String? image;
+  final String? gender;
   final String role;
 
   UserModel({
@@ -16,6 +18,8 @@ class UserModel {
     required this.email,
     required this.password,
     required this.role,
+    this.image,
+    this.gender,
   });
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);

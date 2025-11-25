@@ -19,6 +19,7 @@ class DocApp extends StatelessWidget {
       minTextAdapt: true,
       child: MaterialApp(
         scaffoldMessengerKey: AppSnackBar.messengerKey,
+        navigatorKey: AppRouter.navigatorKey,
         title: 'Doc App',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

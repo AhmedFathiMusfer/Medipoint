@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:diagno_bot/core/model/user.model.dart';
+import 'package:diagno_bot/core/routing/app_router.dart';
+import 'package:diagno_bot/core/routing/router.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -137,9 +139,11 @@ class AuthManager {
     accessToken = null;
     refreshToken = null;
     currentUser = null;
-
-    // await storage.deleteAll();
     final prefs = await SharedPreferences.getInstance();
     prefs.clear();
+    AppRouter.navigatorKey.currentState!.pushNamedAndRemoveUntil(
+      Routers.loginView,
+      (_) => false,
+    );
   }
 }

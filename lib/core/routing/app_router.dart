@@ -1,5 +1,6 @@
 import 'package:diagno_bot/core/model/doctor.model.dart';
 import 'package:diagno_bot/core/routing/router.dart';
+import 'package:diagno_bot/features/ai/chat/cubit/chat.cubit.dart';
 import 'package:diagno_bot/features/ai/chat/view/chat.view.dart';
 import 'package:diagno_bot/features/auth/login/cubit/login.cubit.dart';
 import 'package:diagno_bot/features/auth/login/view/login.view.dart';
@@ -16,12 +17,28 @@ import 'package:diagno_bot/features/doctor/index/view/index.view.dart';
 import 'package:diagno_bot/features/home/cubit/home.cubit.dart';
 import 'package:diagno_bot/features/home/view/home.view.dart';
 import 'package:diagno_bot/features/onBoarding/onBoarding.view.dart';
+import 'package:diagno_bot/features/profile/EditProfile/view/editProfile.view.dart';
+import 'package:diagno_bot/features/profile/editProfile/cubit/editProfile.cubit.dart';
+import 'package:diagno_bot/features/profile/index/view/profile.view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppRouter {
+  static final navigatorKey = GlobalKey<NavigatorState>();
   Route generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case Routers.editProfileView:
+        var newImagePath = settings.arguments as String?;
+        return PageRouteBuilder(
+          pageBuilder:
+              (context, animation, secondaryAnimation) => BlocProvider(
+                create: (_) => EditProfileCubit(newImagePath),
+                child: EditProfilePage(),
+              ),
+          transitionDuration: Duration.zero,
+        );
+      case Routers.profileView:
+        return MaterialPageRoute(builder: (_) => const ProfilePage());
       case Routers.bookingView:
         var doctor = settings.arguments as DoctorModel?;
         return MaterialPageRoute(
@@ -56,15 +73,6 @@ class AppRouter {
               ),
           transitionDuration: Duration.zero,
         );
-      case Routers.bookAppointmentView:
-        return PageRouteBuilder(
-          pageBuilder:
-              (context, animation, secondaryAnimation) => BlocProvider(
-                create: (_) => BookAppointmentCubit(),
-                child: MyBookingsPage(),
-              ),
-          transitionDuration: Duration.zero,
-        );
       case Routers.doctorsView:
         return PageRouteBuilder(
           pageBuilder:
@@ -77,7 +85,10 @@ class AppRouter {
       case Routers.chatView:
         return PageRouteBuilder(
           pageBuilder:
-              (context, animation, secondaryAnimation) => const ChatView(),
+              (context, animation, secondaryAnimation) => BlocProvider(
+                create: (_) => ChatCubit()..createSession(),
+                child: const ChatView(),
+              ),
           transitionDuration: Duration.zero,
         );
       case Routers.registrationView:

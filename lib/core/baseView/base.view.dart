@@ -1,9 +1,11 @@
 import 'package:diagno_bot/core/auth/authManager.dart';
 import 'package:diagno_bot/core/enum/pages.dart';
 import 'package:diagno_bot/core/helpers/extensions.dart';
+import 'package:diagno_bot/core/routing/app_router.dart';
 import 'package:diagno_bot/core/routing/router.dart';
 import 'package:diagno_bot/core/stror/appStore.dart';
 import 'package:diagno_bot/core/theming/color.dart';
+import 'package:diagno_bot/core/widgets/BottomNavBar/bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -32,7 +34,7 @@ class BaseView extends StatelessWidget {
       backgroundColor: Colors.white,
       body: SafeArea(child: child),
 
-      bottomNavigationBar: buildBottomNav ?? _buildBottomNav(context),
+      bottomNavigationBar: buildBottomNav ?? BottomNavBar(context: context),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton:
           floatingActionButton ?? _buildFloatingActionButton(context),
@@ -50,7 +52,7 @@ class BaseView extends StatelessWidget {
   }) {
     return AppBar(
       elevation: 0,
-      backgroundColor: ColorManager.primaryColor,
+      backgroundColor: Colors.white,
       automaticallyImplyLeading: false,
       centerTitle: true,
       title: Text(
@@ -58,7 +60,7 @@ class BaseView extends StatelessWidget {
         style: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,
-          color: Colors.white,
+          color: ColorManager.primaryColor,
         ),
       ),
 
@@ -70,7 +72,11 @@ class BaseView extends StatelessWidget {
           icon: Stack(
             clipBehavior: Clip.none,
             children: [
-              Icon(Icons.notifications_none, color: Colors.white, size: 28),
+              Icon(
+                Icons.notifications_none,
+                color: ColorManager.primaryColor,
+                size: 28,
+              ),
               Positioned(
                 right: -2,
                 top: -2,
@@ -92,12 +98,16 @@ class BaseView extends StatelessWidget {
 
         // بروفايل
         PopupMenuButton<String>(
-          icon: CircleAvatar(radius: 18, backgroundColor: Colors.white),
+          icon: CircleAvatar(
+            radius: 18,
+            backgroundColor: ColorManager.primaryColor,
+          ),
           onSelected: (value) {
             if (value == "profile") {
-              // context.pushNamed(Routers.profileView);
+              AppRouter.navigatorKey.currentState!.pushNamed(
+                Routers.profileView,
+              );
             } else if (value == "logout") {
-              //  logoutUser();
               AuthManager().logout();
             }
           },
@@ -113,7 +123,7 @@ class BaseView extends StatelessWidget {
 
       // ✅ ظل بسيط تحت الأب بار
       shadowColor: Colors.black12,
-      surfaceTintColor: Colors.white,
+      surfaceTintColor: ColorManager.primaryColor,
     );
   }
 

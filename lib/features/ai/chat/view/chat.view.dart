@@ -1,9 +1,13 @@
 import 'package:diagno_bot/core/baseView/base.view.dart';
+import 'package:diagno_bot/features/ai/chat/cubit/chat.cubit.dart';
+import 'package:diagno_bot/features/ai/chat/cubit/chat.state.dart';
 import 'package:diagno_bot/features/bookAppointment/view/bookAppointment.view.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -12,57 +16,69 @@ class ChatView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var chatCubit = context.read<ChatCubit>();
     return BaseView(
       title: 'HealthPal',
       child: Column(
         children: [
           Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                // ✅ User message bubble
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Text(
-                      "My left eye hurts me",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
+            child: BlocBuilder<ChatCubit, ChatState>(
+              builder: (context, state) {
+                final messages = state.maybeMap(
+                  success: (s) => s.messages,
+                  orElse: () => [],
+                );
 
-                const SizedBox(height: 16),
-
-                // ✅ Bot response
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: const Text("""
-Thank you for clarifying 🙏. Pain inside the eye can have several causes:
-
-• Eye strain or dryness  
-• Infection or inflammation  
-• Glaucoma  
-• Injury or small foreign body  
-
-👆 The best specialist for this is an ophthalmologist.
-
-⚠️ If you notice sudden vision loss, halos, severe headache or very high pain, seek urgent medical care immediately.
-""", style: TextStyle(fontSize: 15, height: 1.4)),
-                ),
-              ],
+                return ListView.builder(
+                  controller: chatCubit.scrollController,
+                  padding: const EdgeInsets.all(16),
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    final msg = messages[index];
+                    return Align(
+                      alignment:
+                          msg.isUser
+                              ? Alignment.centerRight
+                              : Alignment.centerLeft,
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color:
+                              msg.isUser ? Colors.black : Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child:
+                            msg.isLoading == true
+                                ? Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(
+                                      width: 16,
+                                      height: 16,
+                                      child: LoadingAnimationWidget.waveDots(
+                                        color: ColorManager.primaryColor,
+                                        size: 16,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                                : Text(
+                                  msg.text,
+                                  style: TextStyle(
+                                    color:
+                                        msg.isUser
+                                            ? Colors.white
+                                            : Colors.black,
+                                  ),
+                                ),
+                      ),
+                    );
+                  },
+                );
+              },
             ),
           ),
-
-          // ✅ Input Field
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
@@ -73,6 +89,7 @@ Thank you for clarifying 🙏. Pain inside the eye can have several causes:
               children: [
                 Expanded(
                   child: TextField(
+                    controller: chatCubit.chatMessageController,
                     decoration: InputDecoration(
                       hintText: "Ask anything",
                       filled: true,
@@ -88,9 +105,17 @@ Thank you for clarifying 🙏. Pain inside the eye can have several causes:
                   ),
                 ),
                 const SizedBox(width: 8),
-                CircleAvatar(
-                  backgroundColor: Colors.black,
-                  child: Icon(Icons.send, color: Colors.white),
+                GestureDetector(
+                  onTap: () async {
+                    await chatCubit.sendTextMessage(
+                      chatCubit.chatMessageController.text.trim(),
+                    );
+                    // Call the sendTextMessage method from your ChatCubit or handle the send action here
+                  },
+                  child: CircleAvatar(
+                    backgroundColor: Colors.black,
+                    child: Icon(Icons.send, color: Colors.white),
+                  ),
                 ),
               ],
             ),
