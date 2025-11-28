@@ -16,8 +16,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+class ProfileView extends StatelessWidget {
+  const ProfileView({super.key});
 
   final String avatarPath =
       '/mnt/data/c2304567-a6b1-45ca-8c5f-841ef95135ae.png';
@@ -122,7 +122,8 @@ class ProfilePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 22),
                   Card(
-                    elevation: 0,
+                    elevation: 5,
+                    color: Colors.white,
                     margin: EdgeInsets.zero,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -140,9 +141,7 @@ class ProfilePage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 100,
-                  ), // extra space so bottom nav doesn't overlap
+                  80.verticalSpace,
                 ],
               ),
             ),

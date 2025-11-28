@@ -19,6 +19,7 @@ import 'package:diagno_bot/features/home/view/home.view.dart';
 import 'package:diagno_bot/features/onBoarding/onBoarding.view.dart';
 import 'package:diagno_bot/features/profile/EditProfile/view/editProfile.view.dart';
 import 'package:diagno_bot/features/profile/editProfile/cubit/editProfile.cubit.dart';
+import 'package:diagno_bot/features/profile/index/cubit/profile.cubit.dart';
 import 'package:diagno_bot/features/profile/index/view/profile.view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,16 +39,29 @@ class AppRouter {
           transitionDuration: Duration.zero,
         );
       case Routers.profileView:
-        return MaterialPageRoute(builder: (_) => const ProfilePage());
+        return PageRouteBuilder(
+          pageBuilder:
+              (context, animation, secondaryAnimation) => BlocProvider(
+                create: (_) => ProfileCubit(),
+                child: ProfileView(),
+              ),
+          transitionDuration: Duration.zero,
+        );
       case Routers.bookingView:
         var doctor = settings.arguments as DoctorModel?;
-        return MaterialPageRoute(
-          builder:
-              (_) => BookingPage(
-                workingHours: doctor?.workingHours ?? [],
-                doctorId: doctor?.userId ?? '',
+        return PageRouteBuilder(
+          pageBuilder:
+              (context, animation, secondaryAnimation) => BlocProvider(
+                create:
+                    (_) => BookAppointmentCubit(
+                      workingHours: doctor?.workingHours ?? [],
+                      doctorId: doctor?.userId ?? '',
+                    )..loading(),
+                child: BookAppointmentPage(),
               ),
+          transitionDuration: Duration.zero,
         );
+
       case Routers.onBoardingView:
         return MaterialPageRoute(builder: (_) => const OnboardingView());
       case Routers.homeView:

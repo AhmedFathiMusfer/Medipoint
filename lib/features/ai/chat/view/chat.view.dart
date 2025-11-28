@@ -1,4 +1,5 @@
 import 'package:diagno_bot/core/baseView/base.view.dart';
+import 'package:diagno_bot/core/theming/color.dart';
 import 'package:diagno_bot/features/ai/chat/cubit/chat.cubit.dart';
 import 'package:diagno_bot/features/ai/chat/cubit/chat.state.dart';
 import 'package:diagno_bot/features/bookAppointment/view/bookAppointment.view.dart';

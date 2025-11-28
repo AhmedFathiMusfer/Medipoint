@@ -15,7 +15,7 @@ void imagePickerBottomSheet({
       return SafeArea(
         child: Container(
           height: 170,
-          margin: const EdgeInsets.all(16),
+
           padding: const EdgeInsets.all(16).copyWith(bottom: 2),
           decoration: BoxDecoration(
             color: Colors.white,

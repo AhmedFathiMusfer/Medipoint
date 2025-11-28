@@ -60,7 +60,7 @@ class HomeView extends StatelessWidget {
                       return NewsCard();
                     }).toList(),
                 options: CarouselOptions(
-                  height: 200.h,
+                  height: 200,
                   enlargeCenterPage: true,
                   viewportFraction: 0.88,
                   autoPlay: true,
@@ -173,7 +173,7 @@ class HomeView extends StatelessWidget {
                     return DoctorShimmer();
                   }
                   return SizedBox(
-                    height: 150.h,
+                    height: 150,
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       children: [

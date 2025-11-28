@@ -31,7 +31,7 @@ class DoctorCard extends StatelessWidget {
         context.pushNamed(Routers.doctorDetailsView, arguments: id);
       },
       child: SizedBox(
-        width: 260.w,
+        width: 260,
         child: Card(
           color: Colors.white,
           shape: RoundedRectangleBorder(
@@ -47,8 +47,8 @@ class DoctorCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(50.r),
                   child: Image.network(
                     imageUrl,
-                    width: 60.w,
-                    height: 60.h,
+                    width: 60,
+                    height: 60,
                     fit: BoxFit.cover,
                     errorBuilder:
                         (context, error, stackTrace) =>
@@ -56,7 +56,6 @@ class DoctorCard extends StatelessWidget {
                   ),
                 ),
                 10.horizontalSpace,
-                // معلومات الدكتور
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

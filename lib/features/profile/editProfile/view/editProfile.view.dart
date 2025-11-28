@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:diagno_bot/core/theming/color.dart';
 import 'package:diagno_bot/core/widgets/TextField.dart';
 import 'package:diagno_bot/core/widgets/simpleButton.dart';
 import 'package:diagno_bot/features/bookAppointment/view/bookAppointment.view.dart';

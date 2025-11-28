@@ -48,6 +48,8 @@ class LoginCubit extends Cubit<LoginState> {
           },
         );
       } else {
+        emit(LoginState.initial(loading: false));
+
         AppSnackBar.error(' please check your internt connection');
       }
     }

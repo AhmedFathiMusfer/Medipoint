@@ -78,7 +78,10 @@ void bottomSheet({
                           onSave();
                         }
                       },
-                      child: Text(buttonTitle),
+                      child: Text(
+                        buttonTitle,
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                 ],

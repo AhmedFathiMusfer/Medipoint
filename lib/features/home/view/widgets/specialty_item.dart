@@ -18,7 +18,7 @@ class SpecialtyItem extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
-          child: CachedNetworkSVGImage(icon, height: 50.h, width: 50.w),
+          child: CachedNetworkSVGImage(icon, height: 50, width: 50),
         ),
         5.verticalSpace,
         Text(
