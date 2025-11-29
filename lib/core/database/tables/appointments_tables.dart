@@ -31,6 +31,25 @@ class AppointmentStatusConverter
 
   @override
   String toSql(AppointmentStatus value) => value.name;
+
+  AppointmentStatus fromJson(String fromDb) {
+    switch (fromDb) {
+      case 'PE':
+        return AppointmentStatus.PE; // Pending
+      case 'PA':
+        return AppointmentStatus.PA; // Paid
+      case 'D':
+        return AppointmentStatus.D; // Done
+      case 'M':
+        return AppointmentStatus.M; // Missed
+      case 'C':
+        return AppointmentStatus.C; // Canceled
+      case 'DE':
+        return AppointmentStatus.DE; // Deleted / Declined
+      default:
+        throw ArgumentError('Unknown AppointmentStatus value: $fromDb');
+    }
+  }
 }
 
 class Appointments extends Table {

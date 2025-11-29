@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:diagno_bot/core/baseView/base.view.dart';
 import 'package:diagno_bot/core/theming/color.dart';
-import 'package:diagno_bot/features/bookAppointment/cubit/bookAppointment.cubit.dart';
-import 'package:diagno_bot/features/bookAppointment/cubit/bookAppointment.state.dart';
+import 'package:diagno_bot/core/widgets/simpleButton.dart';
+import 'package:diagno_bot/features/appointment/bookAppointment/cubit/bookAppointment.cubit.dart';
+import 'package:diagno_bot/features/appointment/bookAppointment/cubit/bookAppointment.state.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -278,16 +280,16 @@ class BookAppointmentPage extends StatelessWidget {
                           lastDay: DateTime.utc(2030),
                           focusedDay: value.selectedDate ?? DateTime.now(),
                           calendarFormat: CalendarFormat.month,
+                          daysOfWeekVisible: false,
                           selectedDayPredicate:
                               (day) => isSameDay(day, value.selectedDate),
                           enabledDayPredicate: (day) {
-                            return value.allowedWeekdays.contains(day.weekday);
+                            return value.allowedWeekdays.contains(day);
                           },
                           onDaySelected: (selectedDay, focusedDay) {
-                            if (!value.allowedWeekdays.contains(
-                              selectedDay.weekday,
-                            ))
+                            if (!value.allowedWeekdays.contains(selectedDay)) {
                               return;
+                            }
 
                             bookAppointmentCubit.selectDate(selectedDay);
                           },
@@ -324,10 +326,15 @@ class BookAppointmentPage extends StatelessWidget {
                         children:
                             value.availableTimes.map((t) {
                               final isSelected = value.selectedHour == t;
-
+                              final firstHour = DateFormat(
+                                'hh:mm a',
+                              ).format(DateTime.parse(t.startTime));
+                              final endHour = DateFormat(
+                                'hh:mm a',
+                              ).format(DateTime.parse(t.endTime));
                               return GestureDetector(
                                 onTap: () {
-                                  bookAppointmentCubit.selectHour(t);
+                                  bookAppointmentCubit.selectPeriod(t);
                                 },
                                 child: Container(
                                   padding: EdgeInsets.symmetric(
@@ -342,7 +349,7 @@ class BookAppointmentPage extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
-                                    t,
+                                    "$firstHour–$endHour",
                                     style: TextStyle(
                                       color:
                                           isSelected
@@ -356,22 +363,17 @@ class BookAppointmentPage extends StatelessWidget {
                             }).toList(),
                       ),
                       30.verticalSpace,
-                      Container(
-                        width: double.infinity,
-                        height: 55,
-                        decoration: BoxDecoration(
-                          color: Color(0xff0D1B2A),
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          "Confirm",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 17,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                      SimpleButton(
+                        isLoading: value.isBookingInProgress,
+                        text: 'Book',
+                        onPressed: () async {
+                          if (value.selectedHour == null) {
+                            return;
+                          }
+                          await bookAppointmentCubit.booKing(
+                            value.selectedHour!.id,
+                          );
+                        },
                       ),
                     ],
                   ),

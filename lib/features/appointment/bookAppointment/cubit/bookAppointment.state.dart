@@ -1,3 +1,4 @@
+import 'package:diagno_bot/core/database/drift_db.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'bookAppointment.state.freezed.dart';
@@ -8,9 +9,11 @@ class BookAppointmentState with _$BookAppointmentState {
   const factory BookAppointmentState.loading() = _Loading;
   const factory BookAppointmentState.success({
     DateTime? selectedDate,
-    String? selectedHour,
-    required List<int> allowedWeekdays,
-    required List<String> availableTimes,
+    WorkingHour? selectedHour,
+    @Default(false) bool isBookingInProgress,
+    @Default(false) bool isSuccessBooking,
+    required List<DateTime> allowedWeekdays,
+    required List<WorkingHour> availableTimes,
   }) = _Success;
   const factory BookAppointmentState.error(String message) = _Error;
 }

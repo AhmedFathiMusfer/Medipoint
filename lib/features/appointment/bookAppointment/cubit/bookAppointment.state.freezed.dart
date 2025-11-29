@@ -23,9 +23,11 @@ mixin _$BookAppointmentState {
     required TResult Function() loading,
     required TResult Function(
       DateTime? selectedDate,
-      String? selectedHour,
-      List<int> allowedWeekdays,
-      List<String> availableTimes,
+      WorkingHour? selectedHour,
+      bool isBookingInProgress,
+      bool isSuccessBooking,
+      List<DateTime> allowedWeekdays,
+      List<WorkingHour> availableTimes,
     )
     success,
     required TResult Function(String message) error,
@@ -36,9 +38,11 @@ mixin _$BookAppointmentState {
     TResult? Function()? loading,
     TResult? Function(
       DateTime? selectedDate,
-      String? selectedHour,
-      List<int> allowedWeekdays,
-      List<String> availableTimes,
+      WorkingHour? selectedHour,
+      bool isBookingInProgress,
+      bool isSuccessBooking,
+      List<DateTime> allowedWeekdays,
+      List<WorkingHour> availableTimes,
     )?
     success,
     TResult? Function(String message)? error,
@@ -49,9 +53,11 @@ mixin _$BookAppointmentState {
     TResult Function()? loading,
     TResult Function(
       DateTime? selectedDate,
-      String? selectedHour,
-      List<int> allowedWeekdays,
-      List<String> availableTimes,
+      WorkingHour? selectedHour,
+      bool isBookingInProgress,
+      bool isSuccessBooking,
+      List<DateTime> allowedWeekdays,
+      List<WorkingHour> availableTimes,
     )?
     success,
     TResult Function(String message)? error,
@@ -153,9 +159,11 @@ class _$InitialImpl implements _Initial {
     required TResult Function() loading,
     required TResult Function(
       DateTime? selectedDate,
-      String? selectedHour,
-      List<int> allowedWeekdays,
-      List<String> availableTimes,
+      WorkingHour? selectedHour,
+      bool isBookingInProgress,
+      bool isSuccessBooking,
+      List<DateTime> allowedWeekdays,
+      List<WorkingHour> availableTimes,
     )
     success,
     required TResult Function(String message) error,
@@ -170,9 +178,11 @@ class _$InitialImpl implements _Initial {
     TResult? Function()? loading,
     TResult? Function(
       DateTime? selectedDate,
-      String? selectedHour,
-      List<int> allowedWeekdays,
-      List<String> availableTimes,
+      WorkingHour? selectedHour,
+      bool isBookingInProgress,
+      bool isSuccessBooking,
+      List<DateTime> allowedWeekdays,
+      List<WorkingHour> availableTimes,
     )?
     success,
     TResult? Function(String message)? error,
@@ -187,9 +197,11 @@ class _$InitialImpl implements _Initial {
     TResult Function()? loading,
     TResult Function(
       DateTime? selectedDate,
-      String? selectedHour,
-      List<int> allowedWeekdays,
-      List<String> availableTimes,
+      WorkingHour? selectedHour,
+      bool isBookingInProgress,
+      bool isSuccessBooking,
+      List<DateTime> allowedWeekdays,
+      List<WorkingHour> availableTimes,
     )?
     success,
     TResult Function(String message)? error,
@@ -290,9 +302,11 @@ class _$LoadingImpl implements _Loading {
     required TResult Function() loading,
     required TResult Function(
       DateTime? selectedDate,
-      String? selectedHour,
-      List<int> allowedWeekdays,
-      List<String> availableTimes,
+      WorkingHour? selectedHour,
+      bool isBookingInProgress,
+      bool isSuccessBooking,
+      List<DateTime> allowedWeekdays,
+      List<WorkingHour> availableTimes,
     )
     success,
     required TResult Function(String message) error,
@@ -307,9 +321,11 @@ class _$LoadingImpl implements _Loading {
     TResult? Function()? loading,
     TResult? Function(
       DateTime? selectedDate,
-      String? selectedHour,
-      List<int> allowedWeekdays,
-      List<String> availableTimes,
+      WorkingHour? selectedHour,
+      bool isBookingInProgress,
+      bool isSuccessBooking,
+      List<DateTime> allowedWeekdays,
+      List<WorkingHour> availableTimes,
     )?
     success,
     TResult? Function(String message)? error,
@@ -324,9 +340,11 @@ class _$LoadingImpl implements _Loading {
     TResult Function()? loading,
     TResult Function(
       DateTime? selectedDate,
-      String? selectedHour,
-      List<int> allowedWeekdays,
-      List<String> availableTimes,
+      WorkingHour? selectedHour,
+      bool isBookingInProgress,
+      bool isSuccessBooking,
+      List<DateTime> allowedWeekdays,
+      List<WorkingHour> availableTimes,
     )?
     success,
     TResult Function(String message)? error,
@@ -389,9 +407,11 @@ abstract class _$$SuccessImplCopyWith<$Res> {
   @useResult
   $Res call({
     DateTime? selectedDate,
-    String? selectedHour,
-    List<int> allowedWeekdays,
-    List<String> availableTimes,
+    WorkingHour? selectedHour,
+    bool isBookingInProgress,
+    bool isSuccessBooking,
+    List<DateTime> allowedWeekdays,
+    List<WorkingHour> availableTimes,
   });
 }
 
@@ -411,6 +431,8 @@ class __$$SuccessImplCopyWithImpl<$Res>
   $Res call({
     Object? selectedDate = freezed,
     Object? selectedHour = freezed,
+    Object? isBookingInProgress = null,
+    Object? isSuccessBooking = null,
     Object? allowedWeekdays = null,
     Object? availableTimes = null,
   }) {
@@ -425,17 +447,27 @@ class __$$SuccessImplCopyWithImpl<$Res>
             freezed == selectedHour
                 ? _value.selectedHour
                 : selectedHour // ignore: cast_nullable_to_non_nullable
-                    as String?,
+                    as WorkingHour?,
+        isBookingInProgress:
+            null == isBookingInProgress
+                ? _value.isBookingInProgress
+                : isBookingInProgress // ignore: cast_nullable_to_non_nullable
+                    as bool,
+        isSuccessBooking:
+            null == isSuccessBooking
+                ? _value.isSuccessBooking
+                : isSuccessBooking // ignore: cast_nullable_to_non_nullable
+                    as bool,
         allowedWeekdays:
             null == allowedWeekdays
                 ? _value._allowedWeekdays
                 : allowedWeekdays // ignore: cast_nullable_to_non_nullable
-                    as List<int>,
+                    as List<DateTime>,
         availableTimes:
             null == availableTimes
                 ? _value._availableTimes
                 : availableTimes // ignore: cast_nullable_to_non_nullable
-                    as List<String>,
+                    as List<WorkingHour>,
       ),
     );
   }
@@ -447,26 +479,34 @@ class _$SuccessImpl implements _Success {
   const _$SuccessImpl({
     this.selectedDate,
     this.selectedHour,
-    required final List<int> allowedWeekdays,
-    required final List<String> availableTimes,
+    this.isBookingInProgress = false,
+    this.isSuccessBooking = false,
+    required final List<DateTime> allowedWeekdays,
+    required final List<WorkingHour> availableTimes,
   }) : _allowedWeekdays = allowedWeekdays,
        _availableTimes = availableTimes;
 
   @override
   final DateTime? selectedDate;
   @override
-  final String? selectedHour;
-  final List<int> _allowedWeekdays;
+  final WorkingHour? selectedHour;
   @override
-  List<int> get allowedWeekdays {
+  @JsonKey()
+  final bool isBookingInProgress;
+  @override
+  @JsonKey()
+  final bool isSuccessBooking;
+  final List<DateTime> _allowedWeekdays;
+  @override
+  List<DateTime> get allowedWeekdays {
     if (_allowedWeekdays is EqualUnmodifiableListView) return _allowedWeekdays;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_allowedWeekdays);
   }
 
-  final List<String> _availableTimes;
+  final List<WorkingHour> _availableTimes;
   @override
-  List<String> get availableTimes {
+  List<WorkingHour> get availableTimes {
     if (_availableTimes is EqualUnmodifiableListView) return _availableTimes;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_availableTimes);
@@ -474,7 +514,7 @@ class _$SuccessImpl implements _Success {
 
   @override
   String toString() {
-    return 'BookAppointmentState.success(selectedDate: $selectedDate, selectedHour: $selectedHour, allowedWeekdays: $allowedWeekdays, availableTimes: $availableTimes)';
+    return 'BookAppointmentState.success(selectedDate: $selectedDate, selectedHour: $selectedHour, isBookingInProgress: $isBookingInProgress, isSuccessBooking: $isSuccessBooking, allowedWeekdays: $allowedWeekdays, availableTimes: $availableTimes)';
   }
 
   @override
@@ -484,8 +524,14 @@ class _$SuccessImpl implements _Success {
             other is _$SuccessImpl &&
             (identical(other.selectedDate, selectedDate) ||
                 other.selectedDate == selectedDate) &&
-            (identical(other.selectedHour, selectedHour) ||
-                other.selectedHour == selectedHour) &&
+            const DeepCollectionEquality().equals(
+              other.selectedHour,
+              selectedHour,
+            ) &&
+            (identical(other.isBookingInProgress, isBookingInProgress) ||
+                other.isBookingInProgress == isBookingInProgress) &&
+            (identical(other.isSuccessBooking, isSuccessBooking) ||
+                other.isSuccessBooking == isSuccessBooking) &&
             const DeepCollectionEquality().equals(
               other._allowedWeekdays,
               _allowedWeekdays,
@@ -500,7 +546,9 @@ class _$SuccessImpl implements _Success {
   int get hashCode => Object.hash(
     runtimeType,
     selectedDate,
-    selectedHour,
+    const DeepCollectionEquality().hash(selectedHour),
+    isBookingInProgress,
+    isSuccessBooking,
     const DeepCollectionEquality().hash(_allowedWeekdays),
     const DeepCollectionEquality().hash(_availableTimes),
   );
@@ -520,14 +568,23 @@ class _$SuccessImpl implements _Success {
     required TResult Function() loading,
     required TResult Function(
       DateTime? selectedDate,
-      String? selectedHour,
-      List<int> allowedWeekdays,
-      List<String> availableTimes,
+      WorkingHour? selectedHour,
+      bool isBookingInProgress,
+      bool isSuccessBooking,
+      List<DateTime> allowedWeekdays,
+      List<WorkingHour> availableTimes,
     )
     success,
     required TResult Function(String message) error,
   }) {
-    return success(selectedDate, selectedHour, allowedWeekdays, availableTimes);
+    return success(
+      selectedDate,
+      selectedHour,
+      isBookingInProgress,
+      isSuccessBooking,
+      allowedWeekdays,
+      availableTimes,
+    );
   }
 
   @override
@@ -537,9 +594,11 @@ class _$SuccessImpl implements _Success {
     TResult? Function()? loading,
     TResult? Function(
       DateTime? selectedDate,
-      String? selectedHour,
-      List<int> allowedWeekdays,
-      List<String> availableTimes,
+      WorkingHour? selectedHour,
+      bool isBookingInProgress,
+      bool isSuccessBooking,
+      List<DateTime> allowedWeekdays,
+      List<WorkingHour> availableTimes,
     )?
     success,
     TResult? Function(String message)? error,
@@ -547,6 +606,8 @@ class _$SuccessImpl implements _Success {
     return success?.call(
       selectedDate,
       selectedHour,
+      isBookingInProgress,
+      isSuccessBooking,
       allowedWeekdays,
       availableTimes,
     );
@@ -559,9 +620,11 @@ class _$SuccessImpl implements _Success {
     TResult Function()? loading,
     TResult Function(
       DateTime? selectedDate,
-      String? selectedHour,
-      List<int> allowedWeekdays,
-      List<String> availableTimes,
+      WorkingHour? selectedHour,
+      bool isBookingInProgress,
+      bool isSuccessBooking,
+      List<DateTime> allowedWeekdays,
+      List<WorkingHour> availableTimes,
     )?
     success,
     TResult Function(String message)? error,
@@ -571,6 +634,8 @@ class _$SuccessImpl implements _Success {
       return success(
         selectedDate,
         selectedHour,
+        isBookingInProgress,
+        isSuccessBooking,
         allowedWeekdays,
         availableTimes,
       );
@@ -619,15 +684,19 @@ class _$SuccessImpl implements _Success {
 abstract class _Success implements BookAppointmentState {
   const factory _Success({
     final DateTime? selectedDate,
-    final String? selectedHour,
-    required final List<int> allowedWeekdays,
-    required final List<String> availableTimes,
+    final WorkingHour? selectedHour,
+    final bool isBookingInProgress,
+    final bool isSuccessBooking,
+    required final List<DateTime> allowedWeekdays,
+    required final List<WorkingHour> availableTimes,
   }) = _$SuccessImpl;
 
   DateTime? get selectedDate;
-  String? get selectedHour;
-  List<int> get allowedWeekdays;
-  List<String> get availableTimes;
+  WorkingHour? get selectedHour;
+  bool get isBookingInProgress;
+  bool get isSuccessBooking;
+  List<DateTime> get allowedWeekdays;
+  List<WorkingHour> get availableTimes;
 
   /// Create a copy of BookAppointmentState
   /// with the given fields replaced by the non-null parameter values.
@@ -710,9 +779,11 @@ class _$ErrorImpl implements _Error {
     required TResult Function() loading,
     required TResult Function(
       DateTime? selectedDate,
-      String? selectedHour,
-      List<int> allowedWeekdays,
-      List<String> availableTimes,
+      WorkingHour? selectedHour,
+      bool isBookingInProgress,
+      bool isSuccessBooking,
+      List<DateTime> allowedWeekdays,
+      List<WorkingHour> availableTimes,
     )
     success,
     required TResult Function(String message) error,
@@ -727,9 +798,11 @@ class _$ErrorImpl implements _Error {
     TResult? Function()? loading,
     TResult? Function(
       DateTime? selectedDate,
-      String? selectedHour,
-      List<int> allowedWeekdays,
-      List<String> availableTimes,
+      WorkingHour? selectedHour,
+      bool isBookingInProgress,
+      bool isSuccessBooking,
+      List<DateTime> allowedWeekdays,
+      List<WorkingHour> availableTimes,
     )?
     success,
     TResult? Function(String message)? error,
@@ -744,9 +817,11 @@ class _$ErrorImpl implements _Error {
     TResult Function()? loading,
     TResult Function(
       DateTime? selectedDate,
-      String? selectedHour,
-      List<int> allowedWeekdays,
-      List<String> availableTimes,
+      WorkingHour? selectedHour,
+      bool isBookingInProgress,
+      bool isSuccessBooking,
+      List<DateTime> allowedWeekdays,
+      List<WorkingHour> availableTimes,
     )?
     success,
     TResult Function(String message)? error,

@@ -1,5 +1,5 @@
 import 'package:diagno_bot/core/theming/color.dart';
-import 'package:diagno_bot/features/bookAppointment/view/bookAppointment.view.dart';
+import 'package:diagno_bot/features/appointment/bookAppointment/view/bookAppointment.view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
