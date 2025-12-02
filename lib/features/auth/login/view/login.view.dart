@@ -155,7 +155,7 @@ class _LoginViewState extends State<LoginView> {
                       TextButton(
                         onPressed: () {
                           context.pushNamedAndRemoveUntil(
-                            Routers.homeView,
+                            Routers.registrationView,
                             predicate: (root) => false,
                           );
                         },

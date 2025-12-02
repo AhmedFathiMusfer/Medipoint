@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:diagno_bot/core/auth/authManager.dart';
 import 'package:diagno_bot/core/networking/remote/apiConstants.dart';
 import 'package:dio/dio.dart';
@@ -41,14 +43,12 @@ class DioFactory {
           }
           handler.next(options);
         },
-
-        onError: (DioException e, handler) async {
-          if (e.response?.statusCode == 401 &&
-              e.requestOptions.headers["isRetry"] != true) {
+        onResponse: (res, handler) async {
+          if (res.statusCode == 401) {
             final refreshToken = AuthManager().refreshToken;
             if (refreshToken == null) {
               await AuthManager().logout();
-              return handler.next(e);
+              return handler.next(res);
             }
             try {
               final refreshDio = Dio();
@@ -60,17 +60,20 @@ class DioFactory {
               await AuthManager().setToken(refreshResponse.data);
 
               final newToken = AuthManager().accessToken;
-              final requestOptions = e.requestOptions;
+              final requestOptions = res.requestOptions;
               requestOptions.headers["Authorization"] = "Bearer $newToken";
               requestOptions.headers["isRetry"] = true;
               final retryResponse = await dio!.fetch(requestOptions);
               return handler.resolve(retryResponse);
             } catch (_) {
               await AuthManager().logout();
-              return handler.next(e);
+              return handler.next(res);
             }
           }
 
+          handler.next(res);
+        },
+        onError: (DioException e, handler) async {
           handler.next(e);
         },
       ),

@@ -12,7 +12,7 @@ class RegisterForm {
   get body => {
     'full_name': nameController.text,
     'email': emailController.text,
-    'role': 'D',
+    'role': 'P',
     'password': Apphelper.convertDigitsLang(passwordController.text),
     'password2': Apphelper.convertDigitsLang(confirmPasswordController.text),
   };

@@ -31,7 +31,7 @@ class DoctorCard extends StatelessWidget {
         context.pushNamed(Routers.doctorDetailsView, arguments: id);
       },
       child: SizedBox(
-        width: 260,
+        width: 300,
         child: Card(
           color: Colors.white,
           shape: RoundedRectangleBorder(

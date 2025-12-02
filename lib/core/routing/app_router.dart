@@ -2,12 +2,14 @@ import 'package:diagno_bot/core/model/doctor.model.dart';
 import 'package:diagno_bot/core/routing/router.dart';
 import 'package:diagno_bot/features/ai/chat/cubit/chat.cubit.dart';
 import 'package:diagno_bot/features/ai/chat/view/chat.view.dart';
+import 'package:diagno_bot/features/appointment/bookAppointment/view/bookAppointment.view.dart';
+import 'package:diagno_bot/features/appointment/index/cubit/appointment.cubit.dart';
+import 'package:diagno_bot/features/appointment/index/view/appointment.view.dart';
 import 'package:diagno_bot/features/auth/login/cubit/login.cubit.dart';
 import 'package:diagno_bot/features/auth/login/view/login.view.dart';
 import 'package:diagno_bot/features/auth/registration/cubit/registration.cubit.dart';
 import 'package:diagno_bot/features/auth/registration/view/registration.view%20.dart';
 import 'package:diagno_bot/features/appointment/bookAppointment/cubit/bookAppointment.cubit.dart';
-import 'package:diagno_bot/features/appointment/index/view/bookAppointment.view.dart';
 import 'package:diagno_bot/features/doctor/doctorDetails/cubit/doctorDetails.cubit.dart';
 import 'package:diagno_bot/features/doctor/doctorDetails/cubit/doctorDetails.state.dart';
 import 'package:diagno_bot/features/doctor/doctorDetails/view/doctorDetails.view.dart';
@@ -46,6 +48,15 @@ class AppRouter {
               ),
           transitionDuration: Duration.zero,
         );
+      case Routers.appointmentView:
+        return PageRouteBuilder(
+          pageBuilder:
+              (context, animation, secondaryAnimation) => BlocProvider(
+                create: (_) => AppointmentCubit()..loadAll(),
+                child: AppointmentView(),
+              ),
+          transitionDuration: Duration.zero,
+        );
       case Routers.bookingView:
         var doctor = settings.arguments as DoctorModel?;
         return PageRouteBuilder(
@@ -56,7 +67,7 @@ class AppRouter {
                       workingHours: doctor?.workingHours ?? [],
                       doctorId: doctor?.userId ?? '',
                     )..loading(),
-                child: BookAppointmentPage(),
+                child: BookAppointmentView(),
               ),
           transitionDuration: Duration.zero,
         );

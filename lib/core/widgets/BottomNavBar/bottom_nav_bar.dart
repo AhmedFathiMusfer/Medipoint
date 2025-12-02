@@ -30,7 +30,7 @@ class BottomNavBar extends StatelessWidget {
           ),
           NavItem(
             icon: Icons.calendar_month_rounded,
-            pageRouter: Routers.bookAppointmentView,
+            pageRouter: Routers.appointmentView,
             page: PagesEnum.appointment,
           ),
           NavItem(

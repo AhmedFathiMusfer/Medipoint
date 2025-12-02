@@ -45,7 +45,13 @@ class BookAppointmentCubit extends Cubit<BookAppointmentState> {
     state.mapOrNull(
       success: (state) {
         if (!isClosed) {
-          emit(state.copyWith(selectedDate: date, availableTimes: time));
+          emit(
+            state.copyWith(
+              selectedDate: date,
+              availableTimes: time,
+              selectedHour: null,
+            ),
+          );
         }
       },
     );
@@ -57,6 +63,17 @@ class BookAppointmentCubit extends Cubit<BookAppointmentState> {
         emit(state.copyWith(selectedHour: period));
       },
     );
+  }
+
+  Future<void> addBooking(int workingHourId) async {
+    var result = await booKing(workingHourId);
+    if (result == true) {
+      state.mapOrNull(
+        success: (state) {
+          emit(state.copyWith(isSuccessBooking: true));
+        },
+      );
+    }
   }
 
   List<DateTime> getAllowedWeekdays(List<WorkingHour> workingHours) {
@@ -94,9 +111,9 @@ class BookAppointmentCubit extends Cubit<BookAppointmentState> {
       AppSnackBar.error(
         ErrorMessages.instance.fromExceptionType(ExceptionTypes.connection),
       );
-      return;
+      return false;
     }
-    await RemoteProvider().send(
+    var rsponse = await RemoteProvider().send(
       request: Request(
         url: ApiConstants.appointmentsEndpoint,
         body: {
@@ -121,6 +138,11 @@ class BookAppointmentCubit extends Cubit<BookAppointmentState> {
         AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statsCode));
       },
     );
+    if (rsponse.statusCode == 201) {
+      return true;
+    } else {
+      return false;
+    }
   }
   // ******************************************db************************************************************
 
@@ -132,7 +154,7 @@ class BookAppointmentCubit extends Cubit<BookAppointmentState> {
           id: Value(data['id']),
           additionalInfo: Value(data['additional_info']),
           datetime: Value(data['datetime']),
-          doctorId: Value(data['doctor']),
+          doctorId: Value(data['doctor']['user']['id']),
           patientId: Value(data['patient']),
           status: Value(
             const AppointmentStatusConverter().fromJson(data['status']),

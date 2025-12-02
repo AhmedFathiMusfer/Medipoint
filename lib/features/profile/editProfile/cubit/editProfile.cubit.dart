@@ -17,10 +17,8 @@ class EditProfileCubit extends Cubit<EditProfileState> {
     user: AuthManager().currentUser!,
     newImagePath: newImagePath,
   );
-
   save() async {
     if (form.key.currentState!.validate()) {
-      // emit(LoginState.initial(loading: true));
       bool isConnected = await NetworkHelper.isConnected();
       if (isConnected) {
         await RemoteProvider().send(
