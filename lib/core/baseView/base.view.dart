@@ -30,7 +30,7 @@ class BaseView extends StatelessWidget {
       body: SafeArea(child: child),
 
       bottomNavigationBar: buildBottomNav ?? BottomNavBar(context: context),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       floatingActionButton:
           floatingActionButton ?? _buildFloatingActionButton(context),
     );

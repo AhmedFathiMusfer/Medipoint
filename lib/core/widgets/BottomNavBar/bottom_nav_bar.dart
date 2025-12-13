@@ -38,6 +38,11 @@ class BottomNavBar extends StatelessWidget {
             pageRouter: Routers.chatView,
             page: PagesEnum.chat,
           ),
+          NavItem(
+            icon: Icons.folder,
+            pageRouter: Routers.folderView,
+            page: PagesEnum.folder,
+          ),
         ],
       ),
     );

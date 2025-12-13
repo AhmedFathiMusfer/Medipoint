@@ -1,1 +1,1 @@
-enum PagesEnum { home, chat, doctor, appointment }
+enum PagesEnum { home, chat, doctor, appointment, folder }

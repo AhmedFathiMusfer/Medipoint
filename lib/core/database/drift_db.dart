@@ -4,6 +4,8 @@ import 'package:diagno_bot/core/database/tables/appointments_tables.dart';
 import 'package:diagno_bot/core/database/tables/comments_tables.dart';
 import 'package:diagno_bot/core/database/tables/doctor_tables.dart';
 import 'package:diagno_bot/core/database/tables/news_tables.dart';
+import 'package:diagno_bot/core/database/tables/patient_files_tables.dart';
+import 'package:diagno_bot/core/database/tables/patient_folders_tables.dart';
 import 'package:diagno_bot/core/database/tables/patients_tables.dart';
 import 'package:diagno_bot/core/database/tables/reviews_tables.dart';
 import 'package:diagno_bot/core/database/tables/specialties_tables.dart';
@@ -27,6 +29,8 @@ part 'drift_db.g.dart';
     Reviews,
     Comments,
     Appointments,
+    PatientFolders,
+    PatientFiles,
   ],
   daos: [UsersDao],
 )

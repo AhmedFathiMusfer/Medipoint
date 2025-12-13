@@ -8,6 +8,10 @@ class Routers {
   static const String appointmentView = '/appointmentView ';
   static const String bookingView = '/bookAppointmentView ';
   static const String chatView = '/ChatView';
+  static const String folderView = '/folder';
+
+  static const String fileView = '/file';
+
   static const String profileView = '/profileView';
   static const String editProfileView = '/EditProfileView';
 }

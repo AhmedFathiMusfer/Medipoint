@@ -22,6 +22,10 @@ import 'package:diagno_bot/features/profile/EditProfile/view/editProfile.view.da
 import 'package:diagno_bot/features/profile/editProfile/cubit/editProfile.cubit.dart';
 import 'package:diagno_bot/features/profile/index/cubit/profile.cubit.dart';
 import 'package:diagno_bot/features/profile/index/view/profile.view.dart';
+import 'package:diagno_bot/features/recordFiles/Folders/cubit/folder.cubit.dart';
+import 'package:diagno_bot/features/recordFiles/Folders/view/folder.view.dart';
+import 'package:diagno_bot/features/recordFiles/files/cubit/file.cubit.dart';
+import 'package:diagno_bot/features/recordFiles/files/view/file.view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -29,6 +33,25 @@ class AppRouter {
   static final navigatorKey = GlobalKey<NavigatorState>();
   Route generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case Routers.fileView:
+        var folderId = settings.arguments as int;
+        return PageRouteBuilder(
+          pageBuilder:
+              (context, animation, secondaryAnimation) => BlocProvider(
+                create: (_) => FileCubit(folderId: folderId)..loadAll(),
+                child: PatientFilesView(),
+              ),
+          transitionDuration: Duration.zero,
+        );
+      case Routers.folderView:
+        return PageRouteBuilder(
+          pageBuilder:
+              (context, animation, secondaryAnimation) => BlocProvider(
+                create: (_) => FolderCubit()..loadAll(),
+                child: PatientFoldersView(),
+              ),
+          transitionDuration: Duration.zero,
+        );
       case Routers.editProfileView:
         var newImagePath = settings.arguments as String?;
         return PageRouteBuilder(
