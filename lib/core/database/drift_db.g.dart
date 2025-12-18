@@ -4182,6 +4182,17 @@ class $PatientFilesTable extends PatientFiles
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _localPathMeta = const VerificationMeta(
+    'localPath',
+  );
+  @override
+  late final GeneratedColumn<String> localPath = GeneratedColumn<String>(
+    'local_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _folderIdMeta = const VerificationMeta(
     'folderId',
   );
@@ -4223,6 +4234,7 @@ class $PatientFilesTable extends PatientFiles
     id,
     name,
     file,
+    localPath,
     folderId,
     createdAt,
     updatedAt,
@@ -4257,6 +4269,12 @@ class $PatientFilesTable extends PatientFiles
       );
     } else if (isInserting) {
       context.missing(_fileMeta);
+    }
+    if (data.containsKey('local_path')) {
+      context.handle(
+        _localPathMeta,
+        localPath.isAcceptableOrUnknown(data['local_path']!, _localPathMeta),
+      );
     }
     if (data.containsKey('folder')) {
       context.handle(
@@ -4306,6 +4324,10 @@ class $PatientFilesTable extends PatientFiles
             DriftSqlType.string,
             data['${effectivePrefix}file'],
           )!,
+      localPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}local_path'],
+      ),
       folderId:
           attachedDatabase.typeMapping.read(
             DriftSqlType.int,
@@ -4334,6 +4356,7 @@ class PatientFile extends DataClass implements Insertable<PatientFile> {
   final int id;
   final String name;
   final String file;
+  final String? localPath;
   final int folderId;
   final String createdAt;
   final String updatedAt;
@@ -4341,6 +4364,7 @@ class PatientFile extends DataClass implements Insertable<PatientFile> {
     required this.id,
     required this.name,
     required this.file,
+    this.localPath,
     required this.folderId,
     required this.createdAt,
     required this.updatedAt,
@@ -4351,6 +4375,9 @@ class PatientFile extends DataClass implements Insertable<PatientFile> {
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
     map['file'] = Variable<String>(file);
+    if (!nullToAbsent || localPath != null) {
+      map['local_path'] = Variable<String>(localPath);
+    }
     map['folder'] = Variable<int>(folderId);
     map['created_at'] = Variable<String>(createdAt);
     map['updated_at'] = Variable<String>(updatedAt);
@@ -4362,6 +4389,10 @@ class PatientFile extends DataClass implements Insertable<PatientFile> {
       id: Value(id),
       name: Value(name),
       file: Value(file),
+      localPath:
+          localPath == null && nullToAbsent
+              ? const Value.absent()
+              : Value(localPath),
       folderId: Value(folderId),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
@@ -4377,6 +4408,7 @@ class PatientFile extends DataClass implements Insertable<PatientFile> {
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       file: serializer.fromJson<String>(json['file']),
+      localPath: serializer.fromJson<String?>(json['localPath']),
       folderId: serializer.fromJson<int>(json['folderId']),
       createdAt: serializer.fromJson<String>(json['createdAt']),
       updatedAt: serializer.fromJson<String>(json['updatedAt']),
@@ -4389,6 +4421,7 @@ class PatientFile extends DataClass implements Insertable<PatientFile> {
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'file': serializer.toJson<String>(file),
+      'localPath': serializer.toJson<String?>(localPath),
       'folderId': serializer.toJson<int>(folderId),
       'createdAt': serializer.toJson<String>(createdAt),
       'updatedAt': serializer.toJson<String>(updatedAt),
@@ -4399,6 +4432,7 @@ class PatientFile extends DataClass implements Insertable<PatientFile> {
     int? id,
     String? name,
     String? file,
+    Value<String?> localPath = const Value.absent(),
     int? folderId,
     String? createdAt,
     String? updatedAt,
@@ -4406,6 +4440,7 @@ class PatientFile extends DataClass implements Insertable<PatientFile> {
     id: id ?? this.id,
     name: name ?? this.name,
     file: file ?? this.file,
+    localPath: localPath.present ? localPath.value : this.localPath,
     folderId: folderId ?? this.folderId,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -4415,6 +4450,7 @@ class PatientFile extends DataClass implements Insertable<PatientFile> {
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       file: data.file.present ? data.file.value : this.file,
+      localPath: data.localPath.present ? data.localPath.value : this.localPath,
       folderId: data.folderId.present ? data.folderId.value : this.folderId,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
@@ -4427,6 +4463,7 @@ class PatientFile extends DataClass implements Insertable<PatientFile> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('file: $file, ')
+          ..write('localPath: $localPath, ')
           ..write('folderId: $folderId, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -4436,7 +4473,7 @@ class PatientFile extends DataClass implements Insertable<PatientFile> {
 
   @override
   int get hashCode =>
-      Object.hash(id, name, file, folderId, createdAt, updatedAt);
+      Object.hash(id, name, file, localPath, folderId, createdAt, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4444,6 +4481,7 @@ class PatientFile extends DataClass implements Insertable<PatientFile> {
           other.id == this.id &&
           other.name == this.name &&
           other.file == this.file &&
+          other.localPath == this.localPath &&
           other.folderId == this.folderId &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -4453,6 +4491,7 @@ class PatientFilesCompanion extends UpdateCompanion<PatientFile> {
   final Value<int> id;
   final Value<String> name;
   final Value<String> file;
+  final Value<String?> localPath;
   final Value<int> folderId;
   final Value<String> createdAt;
   final Value<String> updatedAt;
@@ -4460,6 +4499,7 @@ class PatientFilesCompanion extends UpdateCompanion<PatientFile> {
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.file = const Value.absent(),
+    this.localPath = const Value.absent(),
     this.folderId = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -4468,6 +4508,7 @@ class PatientFilesCompanion extends UpdateCompanion<PatientFile> {
     this.id = const Value.absent(),
     required String name,
     required String file,
+    this.localPath = const Value.absent(),
     required int folderId,
     required String createdAt,
     required String updatedAt,
@@ -4480,6 +4521,7 @@ class PatientFilesCompanion extends UpdateCompanion<PatientFile> {
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? file,
+    Expression<String>? localPath,
     Expression<int>? folderId,
     Expression<String>? createdAt,
     Expression<String>? updatedAt,
@@ -4488,6 +4530,7 @@ class PatientFilesCompanion extends UpdateCompanion<PatientFile> {
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (file != null) 'file': file,
+      if (localPath != null) 'local_path': localPath,
       if (folderId != null) 'folder': folderId,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -4498,6 +4541,7 @@ class PatientFilesCompanion extends UpdateCompanion<PatientFile> {
     Value<int>? id,
     Value<String>? name,
     Value<String>? file,
+    Value<String?>? localPath,
     Value<int>? folderId,
     Value<String>? createdAt,
     Value<String>? updatedAt,
@@ -4506,6 +4550,7 @@ class PatientFilesCompanion extends UpdateCompanion<PatientFile> {
       id: id ?? this.id,
       name: name ?? this.name,
       file: file ?? this.file,
+      localPath: localPath ?? this.localPath,
       folderId: folderId ?? this.folderId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -4523,6 +4568,9 @@ class PatientFilesCompanion extends UpdateCompanion<PatientFile> {
     }
     if (file.present) {
       map['file'] = Variable<String>(file.value);
+    }
+    if (localPath.present) {
+      map['local_path'] = Variable<String>(localPath.value);
     }
     if (folderId.present) {
       map['folder'] = Variable<int>(folderId.value);
@@ -4542,6 +4590,7 @@ class PatientFilesCompanion extends UpdateCompanion<PatientFile> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('file: $file, ')
+          ..write('localPath: $localPath, ')
           ..write('folderId: $folderId, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -4564,7 +4613,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $AppointmentsTable appointments = $AppointmentsTable(this);
   late final $PatientFoldersTable patientFolders = $PatientFoldersTable(this);
   late final $PatientFilesTable patientFiles = $PatientFilesTable(this);
-  late final UsersDao usersDao = UsersDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -7861,6 +7909,7 @@ typedef $$PatientFilesTableCreateCompanionBuilder =
       Value<int> id,
       required String name,
       required String file,
+      Value<String?> localPath,
       required int folderId,
       required String createdAt,
       required String updatedAt,
@@ -7870,6 +7919,7 @@ typedef $$PatientFilesTableUpdateCompanionBuilder =
       Value<int> id,
       Value<String> name,
       Value<String> file,
+      Value<String?> localPath,
       Value<int> folderId,
       Value<String> createdAt,
       Value<String> updatedAt,
@@ -7920,6 +7970,11 @@ class $$PatientFilesTableFilterComposer
 
   ColumnFilters<String> get file => $composableBuilder(
     column: $table.file,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get localPath => $composableBuilder(
+    column: $table.localPath,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -7981,6 +8036,11 @@ class $$PatientFilesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get localPath => $composableBuilder(
+    column: $table.localPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -8032,6 +8092,9 @@ class $$PatientFilesTableAnnotationComposer
 
   GeneratedColumn<String> get file =>
       $composableBuilder(column: $table.file, builder: (column) => column);
+
+  GeneratedColumn<String> get localPath =>
+      $composableBuilder(column: $table.localPath, builder: (column) => column);
 
   GeneratedColumn<String> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -8095,6 +8158,7 @@ class $$PatientFilesTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<String> file = const Value.absent(),
+                Value<String?> localPath = const Value.absent(),
                 Value<int> folderId = const Value.absent(),
                 Value<String> createdAt = const Value.absent(),
                 Value<String> updatedAt = const Value.absent(),
@@ -8102,6 +8166,7 @@ class $$PatientFilesTableTableManager
                 id: id,
                 name: name,
                 file: file,
+                localPath: localPath,
                 folderId: folderId,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -8111,6 +8176,7 @@ class $$PatientFilesTableTableManager
                 Value<int> id = const Value.absent(),
                 required String name,
                 required String file,
+                Value<String?> localPath = const Value.absent(),
                 required int folderId,
                 required String createdAt,
                 required String updatedAt,
@@ -8118,6 +8184,7 @@ class $$PatientFilesTableTableManager
                 id: id,
                 name: name,
                 file: file,
+                localPath: localPath,
                 folderId: folderId,
                 createdAt: createdAt,
                 updatedAt: updatedAt,

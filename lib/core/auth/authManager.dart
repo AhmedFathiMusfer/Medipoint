@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:diagno_bot/core/database/drift_db.dart';
 import 'package:diagno_bot/core/model/user.model.dart';
 import 'package:diagno_bot/core/routing/app_router.dart';
 import 'package:diagno_bot/core/routing/router.dart';
@@ -56,7 +57,7 @@ class AuthManager {
     refreshToken = null;
     currentUser = null;
     final prefs = await SharedPreferences.getInstance();
-    prefs.clear();
+    await AppDatabase().clearAllTables();
     AppRouter.navigatorKey.currentState!.pushNamedAndRemoveUntil(
       Routers.loginView,
       (_) => false,

@@ -4,8 +4,8 @@ import 'package:drift/drift.dart';
 class PatientFiles extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get name => text().withLength(min: 1, max: 255)();
-  TextColumn get file => text().nullable()();
-  TextColumn get localPath => text()();
+  TextColumn get file => text()();
+  TextColumn get localPath => text().nullable()();
   IntColumn get folderId =>
       integer().named('folder').references(PatientFolders, #id)();
   TextColumn get createdAt => text().named('created_at')();

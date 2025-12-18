@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 class NetworkHelper {
   static Future<bool> isConnected() async {
     try {
-      return true;
       final result = await http
           .get(
             Uri.parse('https://www.google.com/'),

@@ -68,7 +68,19 @@ class FolderCubit extends Cubit<FolderState> {
         ),
         method: RemoteMethod.post,
         onSuccess: (res, statsCode) async {
-          fetchFolders();
+          try {
+            if (res.data != null) {
+              await insertFolder(res.data);
+            }
+            AppSnackBar.success("the folder is created");
+            await loadLocalData();
+          } catch (ex) {
+            AppSnackBar.error(
+              ErrorMessages.instance.fromExceptionType(
+                ExceptionTypes.unexpected,
+              ),
+            );
+          }
           // AppSnackBar.success("the folder is created");
           // try {
           //   if (res.data['results'].isNotEmpty) {
@@ -133,6 +145,13 @@ class FolderCubit extends Cubit<FolderState> {
   }
 
   // ******************************************db************************************************************
+  insertFolder(folder) async {
+    folder['createdAt'] = folder['created_at'];
+    folder['updatedAt'] = folder['updated_at'];
+
+    await db.into(db.patientFolders).insert(PatientFolder.fromJson(folder));
+  }
+
   insertFolders(data) async {
     await db.batch((batch) {
       batch.insertAllOnConflictUpdate(

@@ -1,5 +1,3 @@
-// lib/core/di/injector.dart
-import 'package:diagno_bot/core/database/daos/users_dao.dart';
 import 'package:diagno_bot/core/database/drift_db.dart';
 import 'package:get_it/get_it.dart';
 
@@ -11,5 +9,5 @@ Future<void> init() async {
   sl.registerSingleton<AppDatabase>(db);
 
   // DAO
-  sl.registerLazySingleton<UsersDao>(() => UsersDao(sl()));
+  // sl.registerLazySingleton<UsersDao>(() => UsersDao(sl()));
 }

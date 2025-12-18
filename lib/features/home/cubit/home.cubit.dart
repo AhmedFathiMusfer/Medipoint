@@ -123,7 +123,7 @@ class HomeCubit extends Cubit<HomeState> {
             }
           } catch (ex) {
             AppSnackBar.error(
-              '${ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected)} ${ex.toString()}',
+              '${ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected)}}',
             );
           }
         },

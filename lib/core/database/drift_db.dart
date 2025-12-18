@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:diagno_bot/core/database/daos/users_dao.dart';
 import 'package:diagno_bot/core/database/tables/appointments_tables.dart';
 import 'package:diagno_bot/core/database/tables/comments_tables.dart';
 import 'package:diagno_bot/core/database/tables/doctor_tables.dart';
@@ -32,7 +31,6 @@ part 'drift_db.g.dart';
     PatientFolders,
     PatientFiles,
   ],
-  daos: [UsersDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase._internal() : super(_openConnection());
@@ -67,4 +65,24 @@ LazyDatabase _openConnection() {
     final file = File(p.join(dbFolder.path, 'app_db.sqlite'));
     return NativeDatabase(file);
   });
+}
+
+extension AppDatabaseClear on AppDatabase {
+  Future<void> clearAllTables() async {
+    await transaction(() async {
+      await batch((batch) {
+        batch.deleteAll(users);
+        batch.deleteAll(doctors);
+        batch.deleteAll(news);
+        batch.deleteAll(specialties);
+        batch.deleteAll(patients);
+        batch.deleteAll(workingHours);
+        batch.deleteAll(reviews);
+        batch.deleteAll(comments);
+        batch.deleteAll(appointments);
+        batch.deleteAll(patientFolders);
+        batch.deleteAll(patientFiles);
+      });
+    });
+  }
 }

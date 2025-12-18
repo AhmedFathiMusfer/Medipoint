@@ -27,9 +27,10 @@ class FileCubit extends Cubit<FileState> {
 
   Future<void> loadLocalData() async {
     try {
-      final results = await Future.wait([db.select(db.patientFiles).get()]);
+      final files =
+          await (db.select(db.patientFiles)
+            ..where((t) => t.folderId.equals(folderId))).get();
 
-      final files = results[0];
       if (!isClosed) {
         emit(FileState.success(files: files));
       }
@@ -59,21 +60,7 @@ class FileCubit extends Cubit<FileState> {
     }
   }
 
-  fillterFolderByName(String? specialty) async {
-    // final filteredDoctors = await getDoctors(specialty: specialty);
-    // state.mapOrNull(
-    //   success: (state) {
-    //     if (!isClosed) {
-    //       emit(
-    //         state.copyWith(
-    //           doctors: filteredDoctors,
-    //           specialtySelected: specialty ?? 'All',
-    //         ),
-    //       );
-    //     }
-    //   },
-    // );
-  }
+  fillterFolderByName(String? specialty) async {}
   // ******************************************Api************************************************************
   createNewFile(String name, String filePath) async {
     bool isConnected = await NetworkHelper.isConnected();
@@ -91,8 +78,6 @@ class FileCubit extends Cubit<FileState> {
         ),
         method: RemoteMethod.post,
         onSuccess: (res, statsCode) async {
-          //fetchFolders();
-
           try {
             if (res.data != null) {
               await insertFile(res.data, filePath);

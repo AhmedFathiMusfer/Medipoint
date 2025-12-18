@@ -10,7 +10,7 @@ class FileState with _$FileState {
   const factory FileState.loading() = _Loading;
   const factory FileState.success({
     required List<PatientFile> files,
-    Map<String, FileUploadStatus>? uploads, // key = file id
+    // key = file id
   }) = _Success;
   const factory FileState.error(String message) = _Error;
 }

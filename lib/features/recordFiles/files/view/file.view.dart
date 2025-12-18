@@ -7,6 +7,7 @@ import 'package:diagno_bot/features/recordFiles/files/cubit/file.state.dart';
 import 'package:diagno_bot/features/recordFiles/files/view/widgets/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:open_filex/open_filex.dart';
 
 class PatientFilesView extends StatelessWidget {
   PatientFilesView({super.key});
@@ -33,7 +34,7 @@ class PatientFilesView extends StatelessWidget {
             orElse: () {
               return SizedBox();
             },
-            success: (_, _) {
+            success: (_) {
               return FloatingActionButton.extended(
                 backgroundColor: ColorManager.primaryColor,
                 onPressed: () {
@@ -57,7 +58,7 @@ class PatientFilesView extends StatelessWidget {
             orElse: () {
               return SizedBox();
             },
-            success: (files, _) {
+            success: (files) {
               return ListView.separated(
                 padding: const EdgeInsets.all(16),
                 itemCount: files.length,
@@ -102,7 +103,7 @@ class PatientFilesView extends StatelessWidget {
                       ),
 
                       subtitle:
-                          file.file == null
+                          file.localPath == null
                               ? const Text(
                                 "Not downloaded yet",
                                 style: TextStyle(
@@ -119,7 +120,7 @@ class PatientFilesView extends StatelessWidget {
                               ),
 
                       trailing:
-                          file.file == null
+                          file.localPath == null
                               ? IconButton(
                                 icon: const Icon(
                                   Icons.download,
@@ -135,7 +136,12 @@ class PatientFilesView extends StatelessWidget {
                                 onPressed: () => {},
                               ),
 
-                      onTap: file.file != null ? () => {} : null,
+                      onTap:
+                          file.localPath != null
+                              ? () async {
+                                await OpenFilex.open(file.localPath!);
+                              }
+                              : null,
                     ),
                   );
                 },

@@ -15,8 +15,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 class PatientFoldersView extends StatelessWidget {
-  List<FolderItem> folders = dummyFolders;
-
   PatientFoldersView({super.key});
 
   @override
@@ -35,7 +33,7 @@ class PatientFoldersView extends StatelessWidget {
                   showCreateFolderDialog(
                     context: context,
                     onCreate: (name, description) async {
-                      folderCubit.createNewFolder(name, description);
+                      await folderCubit.createNewFolder(name, description);
                       return true;
                     },
                   );
@@ -83,9 +81,9 @@ class PatientFoldersView extends StatelessWidget {
                   ),
                   Expanded(
                     child: AnimationLimiter(
-                      child: ListView.builder(
+                      child: ListView.separated(
                         padding: const EdgeInsets.all(20),
-
+                        separatorBuilder: (_, __) => const SizedBox(height: 15),
                         itemCount: folders.length,
                         itemBuilder: (context, index) {
                           final folder = folders[index];
@@ -121,16 +119,25 @@ class FolderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      elevation: 4,
-      shadowColor: Colors.black12,
-      borderRadius: BorderRadius.circular(18),
+    return Container(
+      // padding: EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(color: Colors.black12, spreadRadius: 1, blurRadius: 6),
+        ],
+      ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(10),
         onTap: () => onTap(folder.id),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+          padding: const EdgeInsets.only(
+            top: 12,
+            right: 10,
+            left: 10,
+            bottom: 12,
+          ),
           child: Column(
             children: [
               Row(
@@ -152,7 +159,6 @@ class FolderCard extends StatelessWidget {
                   ),
                 ],
               ),
-              20.verticalSpace,
             ],
           ),
         ),
@@ -178,74 +184,6 @@ class FolderItem {
   });
 }
 
-final List<FolderItem> dummyFolders = [
-  FolderItem(
-    name: "Medical Reports",
-    description: "Blood test results and X‑ray scans",
-    createdAt: "2025-01-12",
-    onTap: () {
-      print("Open Medical Reports");
-    },
-    onMenuTap: () {
-      print("Menu Medical Reports");
-    },
-  ),
-  FolderItem(
-    name: "Prescriptions",
-    description: "Doctor prescriptions and medications list",
-    createdAt: "2025-01-10",
-    onTap: () {
-      print("Open Prescriptions");
-    },
-    onMenuTap: () {
-      print("Menu Prescriptions");
-    },
-  ),
-  FolderItem(
-    name: "Visits History",
-    description: "All hospital visit records",
-    createdAt: "2024-12-28",
-    onTap: () {
-      print("Open Visits History");
-    },
-    onMenuTap: () {
-      print("Menu Visits History");
-    },
-  ),
-  FolderItem(
-    name: "Lab Results",
-    description: "Latest lab results and diagnostic files",
-    createdAt: "2024-12-18",
-    onTap: () {
-      print("Open Lab Results");
-    },
-    onMenuTap: () {
-      print("Menu Lab Results");
-    },
-  ),
-  FolderItem(
-    name: "Radiology",
-    description: "CT scans, MRI, and ultrasound images",
-    createdAt: "2024-11-30",
-    onTap: () {
-      print("Open Radiology");
-    },
-    onMenuTap: () {
-      print("Menu Radiology");
-    },
-  ),
-  FolderItem(
-    name: "Insurance",
-    description: "Insurance documents & approvals",
-    createdAt: "2024-11-22",
-    onTap: () {
-      print("Open Insurance");
-    },
-    onMenuTap: () {
-      print("Menu Insurance");
-    },
-  ),
-];
 void showCreateFolderDialog({
   required BuildContext context,
   required Future<bool> Function(String name, String desc) onCreate,
@@ -284,7 +222,6 @@ void showCreateFolderDialog({
                     ),
                     const SizedBox(height: 18),
 
-                    // Name
                     CustomTextField(controller: nameController, hint: 'Name'),
 
                     const SizedBox(height: 14),

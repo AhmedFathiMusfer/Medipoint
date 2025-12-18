@@ -21,33 +21,21 @@ mixin _$FileState {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(
-      List<PatientFile> files,
-      Map<String, FileUploadStatus>? uploads,
-    )
-    success,
+    required TResult Function(List<PatientFile> files) success,
     required TResult Function(String message) error,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(
-      List<PatientFile> files,
-      Map<String, FileUploadStatus>? uploads,
-    )?
-    success,
+    TResult? Function(List<PatientFile> files)? success,
     TResult? Function(String message)? error,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(
-      List<PatientFile> files,
-      Map<String, FileUploadStatus>? uploads,
-    )?
-    success,
+    TResult Function(List<PatientFile> files)? success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
@@ -140,11 +128,7 @@ class _$InitialImpl implements _Initial {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(
-      List<PatientFile> files,
-      Map<String, FileUploadStatus>? uploads,
-    )
-    success,
+    required TResult Function(List<PatientFile> files) success,
     required TResult Function(String message) error,
   }) {
     return initial();
@@ -155,11 +139,7 @@ class _$InitialImpl implements _Initial {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(
-      List<PatientFile> files,
-      Map<String, FileUploadStatus>? uploads,
-    )?
-    success,
+    TResult? Function(List<PatientFile> files)? success,
     TResult? Function(String message)? error,
   }) {
     return initial?.call();
@@ -170,11 +150,7 @@ class _$InitialImpl implements _Initial {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(
-      List<PatientFile> files,
-      Map<String, FileUploadStatus>? uploads,
-    )?
-    success,
+    TResult Function(List<PatientFile> files)? success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -271,11 +247,7 @@ class _$LoadingImpl implements _Loading {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(
-      List<PatientFile> files,
-      Map<String, FileUploadStatus>? uploads,
-    )
-    success,
+    required TResult Function(List<PatientFile> files) success,
     required TResult Function(String message) error,
   }) {
     return loading();
@@ -286,11 +258,7 @@ class _$LoadingImpl implements _Loading {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(
-      List<PatientFile> files,
-      Map<String, FileUploadStatus>? uploads,
-    )?
-    success,
+    TResult? Function(List<PatientFile> files)? success,
     TResult? Function(String message)? error,
   }) {
     return loading?.call();
@@ -301,11 +269,7 @@ class _$LoadingImpl implements _Loading {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(
-      List<PatientFile> files,
-      Map<String, FileUploadStatus>? uploads,
-    )?
-    success,
+    TResult Function(List<PatientFile> files)? success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -364,7 +328,7 @@ abstract class _$$SuccessImplCopyWith<$Res> {
     $Res Function(_$SuccessImpl) then,
   ) = __$$SuccessImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({List<PatientFile> files, Map<String, FileUploadStatus>? uploads});
+  $Res call({List<PatientFile> files});
 }
 
 /// @nodoc
@@ -380,7 +344,7 @@ class __$$SuccessImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? files = null, Object? uploads = freezed}) {
+  $Res call({Object? files = null}) {
     return _then(
       _$SuccessImpl(
         files:
@@ -388,11 +352,6 @@ class __$$SuccessImplCopyWithImpl<$Res>
                 ? _value._files
                 : files // ignore: cast_nullable_to_non_nullable
                     as List<PatientFile>,
-        uploads:
-            freezed == uploads
-                ? _value._uploads
-                : uploads // ignore: cast_nullable_to_non_nullable
-                    as Map<String, FileUploadStatus>?,
       ),
     );
   }
@@ -401,11 +360,8 @@ class __$$SuccessImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$SuccessImpl implements _Success {
-  const _$SuccessImpl({
-    required final List<PatientFile> files,
-    final Map<String, FileUploadStatus>? uploads,
-  }) : _files = files,
-       _uploads = uploads;
+  const _$SuccessImpl({required final List<PatientFile> files})
+    : _files = files;
 
   final List<PatientFile> _files;
   @override
@@ -415,19 +371,9 @@ class _$SuccessImpl implements _Success {
     return EqualUnmodifiableListView(_files);
   }
 
-  final Map<String, FileUploadStatus>? _uploads;
-  @override
-  Map<String, FileUploadStatus>? get uploads {
-    final value = _uploads;
-    if (value == null) return null;
-    if (_uploads is EqualUnmodifiableMapView) return _uploads;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(value);
-  }
-
   @override
   String toString() {
-    return 'FileState.success(files: $files, uploads: $uploads)';
+    return 'FileState.success(files: $files)';
   }
 
   @override
@@ -435,16 +381,12 @@ class _$SuccessImpl implements _Success {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$SuccessImpl &&
-            const DeepCollectionEquality().equals(other._files, _files) &&
-            const DeepCollectionEquality().equals(other._uploads, _uploads));
+            const DeepCollectionEquality().equals(other._files, _files));
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    const DeepCollectionEquality().hash(_files),
-    const DeepCollectionEquality().hash(_uploads),
-  );
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_files));
 
   /// Create a copy of FileState
   /// with the given fields replaced by the non-null parameter values.
@@ -459,14 +401,10 @@ class _$SuccessImpl implements _Success {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(
-      List<PatientFile> files,
-      Map<String, FileUploadStatus>? uploads,
-    )
-    success,
+    required TResult Function(List<PatientFile> files) success,
     required TResult Function(String message) error,
   }) {
-    return success(files, uploads);
+    return success(files);
   }
 
   @override
@@ -474,14 +412,10 @@ class _$SuccessImpl implements _Success {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(
-      List<PatientFile> files,
-      Map<String, FileUploadStatus>? uploads,
-    )?
-    success,
+    TResult? Function(List<PatientFile> files)? success,
     TResult? Function(String message)? error,
   }) {
-    return success?.call(files, uploads);
+    return success?.call(files);
   }
 
   @override
@@ -489,16 +423,12 @@ class _$SuccessImpl implements _Success {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(
-      List<PatientFile> files,
-      Map<String, FileUploadStatus>? uploads,
-    )?
-    success,
+    TResult Function(List<PatientFile> files)? success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
     if (success != null) {
-      return success(files, uploads);
+      return success(files);
     }
     return orElse();
   }
@@ -542,13 +472,10 @@ class _$SuccessImpl implements _Success {
 }
 
 abstract class _Success implements FileState {
-  const factory _Success({
-    required final List<PatientFile> files,
-    final Map<String, FileUploadStatus>? uploads,
-  }) = _$SuccessImpl;
+  const factory _Success({required final List<PatientFile> files}) =
+      _$SuccessImpl;
 
   List<PatientFile> get files;
-  Map<String, FileUploadStatus>? get uploads;
 
   /// Create a copy of FileState
   /// with the given fields replaced by the non-null parameter values.
@@ -629,11 +556,7 @@ class _$ErrorImpl implements _Error {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(
-      List<PatientFile> files,
-      Map<String, FileUploadStatus>? uploads,
-    )
-    success,
+    required TResult Function(List<PatientFile> files) success,
     required TResult Function(String message) error,
   }) {
     return error(message);
@@ -644,11 +567,7 @@ class _$ErrorImpl implements _Error {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(
-      List<PatientFile> files,
-      Map<String, FileUploadStatus>? uploads,
-    )?
-    success,
+    TResult? Function(List<PatientFile> files)? success,
     TResult? Function(String message)? error,
   }) {
     return error?.call(message);
@@ -659,11 +578,7 @@ class _$ErrorImpl implements _Error {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(
-      List<PatientFile> files,
-      Map<String, FileUploadStatus>? uploads,
-    )?
-    success,
+    TResult Function(List<PatientFile> files)? success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
