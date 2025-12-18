@@ -3,11 +3,14 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:diagno_bot/core/theming/color.dart';
 import 'package:diagno_bot/core/widgets/TextField.dart';
+import 'package:diagno_bot/core/widgets/bottomSheet/ImagePickerBottomSheet.dart';
 import 'package:diagno_bot/core/widgets/simpleButton.dart';
 import 'package:diagno_bot/features/profile/editProfile/cubit/editProfile.cubit.dart';
+import 'package:diagno_bot/features/profile/editProfile/cubit/editProfile.state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -44,135 +47,137 @@ class _FillProfilePageState extends State<EditProfilePage> {
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                CircleAvatar(
-                  radius: 60,
-                  backgroundColor: Colors.grey[200],
-                  backgroundImage:
-                      editProfileCubit.newImagePath == null
-                          ? (editProfileCubit.form.imagePath.isNotEmpty
-                              ? CachedNetworkImageProvider(
-                                editProfileCubit.form.imagePath,
-                              )
-                              : null)
-                          : FileImage(File(editProfileCubit.newImagePath!)),
+        child: Form(
+          key: editProfileCubit.form.key,
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              BlocSelector<EditProfileCubit, EditProfileState, String?>(
+                selector:
+                    (state) => state.maybeMap(
+                      success: (s) => s.changeProfileImage,
+                      orElse: () => null,
+                    ),
+                builder: (context, filePath) {
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      CircleAvatar(
+                        radius: 60,
+                        backgroundColor: Colors.grey[200],
+                        backgroundImage:
+                            editProfileCubit.newImagePath == null
+                                ? (editProfileCubit.form.imagePath.isNotEmpty
+                                    ? CachedNetworkImageProvider(
+                                      editProfileCubit.form.imagePath,
+                                    )
+                                    : AssetImage(
+                                          'assets/avatar_placeholder.png',
+                                        )
+                                        as ImageProvider)
+                                : FileImage(
+                                  File(editProfileCubit.newImagePath!),
+                                ),
+                      ),
+                      Positioned(
+                        bottom: 5,
+                        right: MediaQuery.of(context).size.width / 2 - 110,
+                        child: Container(
+                          padding: const EdgeInsets.all(0),
+                          decoration: BoxDecoration(
+                            color: const Color(0xff0D1B2A),
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            onPressed: () async {
+                              imagePickerBottomSheet(
+                                context: context,
+                                onSelectCamera: () async {
+                                  Navigator.of(context).pop();
+                                  await editProfileCubit.pickImage(
+                                    ImageSource.camera,
+                                  );
+                                },
+                                onSelectGallery: () async {
+                                  Navigator.of(context).pop();
+                                  await editProfileCubit.pickImage(
+                                    ImageSource.gallery,
+                                  );
+                                },
+                              );
+                            },
+                            icon: const Icon(
+                              Icons.edit,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+
+              20.verticalSpace,
+              CustomTextField(
+                hint: 'Name',
+                controller: editProfileCubit.form.nameController,
+              ),
+              15.verticalSpace,
+              CustomTextField(
+                hint: 'Email',
+                isEmail: true,
+                controller: editProfileCubit.form.emailController,
+              ),
+              15.verticalSpace,
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  border: Border.all(color: Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                Positioned(
-                  bottom: 5,
-                  right: MediaQuery.of(context).size.width / 2 - 110,
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: const Color(0xff0D1B2A),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.edit,
-                      color: Colors.white,
-                      size: 16,
-                    ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: gender,
+                    isExpanded: true,
+                    dropdownColor: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(12), // 🔥 مهم
+                    icon: const Icon(Icons.keyboard_arrow_down),
+                    items:
+                        const ["Gender", "Male", "Female"]
+                            .map(
+                              (e) => DropdownMenuItem(
+                                value: e,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                  ),
+                                  child: Text(
+                                    e,
+                                    style: const TextStyle(fontSize: 13),
+                                  ),
+                                ),
+                              ),
+                            )
+                            .toList(),
+                    onChanged: (v) => setState(() => gender = v!),
                   ),
                 ),
-              ],
-            ),
-            20.verticalSpace,
-            CustomTextField(
-              hint: 'Name',
-              controller: editProfileCubit.form.nameController,
-            ),
-            15.verticalSpace,
-            CustomTextField(
-              hint: 'Email',
-              isEmail: true,
-              controller: editProfileCubit.form.emailController,
-            ),
-            15.verticalSpace,
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(8),
               ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  value: gender,
-                  items:
-                      ["Gender", "Male", "Female"]
-                          .map(
-                            (e) => DropdownMenuItem(value: e, child: Text(e)),
-                          )
-                          .toList(),
-                  onChanged: (v) => setState(() => gender = v!),
-                ),
+
+              20.verticalSpace,
+              SimpleButton(
+                onPressed: () async {
+                  await editProfileCubit.save();
+                },
+                text: 'Save',
               ),
-            ),
-            20.verticalSpace,
-            SimpleButton(onPressed: () {}, text: 'Save'),
-          ],
+            ],
+          ),
         ),
       ),
     );
-  }
-
-  void _showCongratsPopup(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder:
-          (_) => Center(
-            child: Container(
-              width: 300,
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(26),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    height: 80,
-                    width: 80,
-                    decoration: BoxDecoration(
-                      color: const Color(0xffA8DADC),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.check,
-                      size: 48,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  const Text(
-                    "Congratulations!",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-
-                  const Text(
-                    "Your account is ready to use. You will\nbe redirected to the Home Page in a\nfew seconds...",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black54),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  const CircularProgressIndicator(strokeWidth: 2),
-                ],
-              ),
-            ),
-          ),
-    );
-
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pop(context);
-    });
   }
 }

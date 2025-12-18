@@ -97,16 +97,74 @@ class RemoteProvider {
       }
     }
   }
-}
 
-void _catchExceptions(Object exception) {
-  var statusCode = 500;
-  if (exception is DioException) {
-    statusCode = exception.response?.statusCode ?? 500;
-    log(
-      exception.response?.data?.toString() ?? 'Error message is null',
-      name: 'dio error',
-    );
+  Future<Response<dynamic>> download({
+    required String url,
+    required String savePath,
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
+    List<int> successStates = const [200],
+    Function(int received, int total)? onReceiveProgress,
+    CancelToken? cancelToken,
+  }) async {
+    Response<dynamic> response = Response(requestOptions: RequestOptions());
+    int statusCode = 500;
+
+    try {
+      response = await dio
+          .download(
+            url,
+            savePath,
+            queryParameters: queryParameters,
+            options: Options(
+              headers: headers,
+              receiveTimeout: const Duration(days: 1),
+              validateStatus: (status) {
+                return status != null && status < 500;
+              },
+            ),
+            onReceiveProgress: (received, total) {
+              if (onReceiveProgress != null) {
+                if (total == -1) {
+                  total = 7340032;
+                }
+                if ((received / total) > 1) {
+                  received = total;
+                }
+                onReceiveProgress(received, total);
+              }
+            },
+            cancelToken: cancelToken,
+          )
+          .timeout(
+            Duration(milliseconds: dio.options.connectTimeout!.inMilliseconds),
+            onTimeout: () {
+              throw ApiException.fromEnumeration(ExceptionTypes.timeout);
+            },
+          );
+
+      statusCode = response.statusCode ?? 500;
+
+      if (!successStates.contains(statusCode)) {
+        throw ApiException.fromStatusCode(statusCode);
+      }
+
+      return response;
+    } catch (exception) {
+      log(exception.toString(), name: 'download error');
+      throw ApiException.fromStatusCode(statusCode);
+    }
   }
-  throw ApiException.fromStatusCode(statusCode);
+
+  void _catchExceptions(Object exception) {
+    var statusCode = 500;
+    if (exception is DioException) {
+      statusCode = exception.response?.statusCode ?? 500;
+      log(
+        exception.response?.data?.toString() ?? 'Error message is null',
+        name: 'dio error',
+      );
+    }
+    throw ApiException.fromStatusCode(statusCode);
+  }
 }

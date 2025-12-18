@@ -1,7 +1,5 @@
 import 'dart:developer';
-
 import 'package:diagno_bot/core/database/drift_db.dart';
-import 'package:diagno_bot/core/database/tables/patient_folders_tables.dart';
 import 'package:diagno_bot/core/helpers/networkHelper.dart';
 import 'package:diagno_bot/core/networking/errors/errorMesage.dart';
 import 'package:diagno_bot/core/networking/errors/exceptions.enum.dart';
@@ -10,30 +8,27 @@ import 'package:diagno_bot/core/networking/remote/remoteProvider.dart';
 import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/features/recordFiles/Folders/cubit/folder.state.dart';
-import 'package:flutter/services.dart';
+import 'package:drift/drift.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FolderCubit extends Cubit<FolderState> {
   FolderCubit() : super(FolderState.initial());
   AppDatabase db = AppDatabase();
   Future<void> loadAll() async {
-    if (!isClosed) {
-      emit(FolderState.loading());
-    }
+    emit(FolderState.loading());
     await loadLocalData();
     await loadOnlineData();
   }
 
   Future<void> loadLocalData() async {
     try {
-      final results = await Future.wait([db.select(db.patientFolders).get()]);
+      final results = await Future.wait([getFolder()]);
 
       final folders = results[0];
       if (!isClosed) {
         emit(FolderState.success(folders: folders));
       }
     } catch (e) {
-      //log(e.toString());
       AppSnackBar.error(
         ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
       );
@@ -58,6 +53,18 @@ class FolderCubit extends Cubit<FolderState> {
     }
   }
 
+  fillterFolderByName(String name) async {
+    final filteredFolders = await getFolder(name: name);
+    state.mapOrNull(
+      success: (state) {
+        if (!isClosed) {
+          emit(state.copyWith(folders: filteredFolders));
+        }
+      },
+    );
+  }
+  // ******************************************Api************************************************************
+
   createNewFolder(String name, String description) async {
     bool isConnected = await NetworkHelper.isConnected();
     if (isConnected) {
@@ -72,7 +79,6 @@ class FolderCubit extends Cubit<FolderState> {
             if (res.data != null) {
               await insertFolder(res.data);
             }
-            AppSnackBar.success("the folder is created");
             await loadLocalData();
           } catch (ex) {
             AppSnackBar.error(
@@ -81,18 +87,6 @@ class FolderCubit extends Cubit<FolderState> {
               ),
             );
           }
-          // AppSnackBar.success("the folder is created");
-          // try {
-          //   if (res.data['results'].isNotEmpty) {
-          //     await insertFolders(res.data['results']);
-          //   }
-          // } catch (ex) {
-          //   AppSnackBar.error(
-          //     ErrorMessages.instance.fromExceptionType(
-          //       ExceptionTypes.unexpected,
-          //     ),
-          //   );
-          // }
         },
         onError: (_, statsCode) {
           AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statsCode));
@@ -104,23 +98,6 @@ class FolderCubit extends Cubit<FolderState> {
       );
     }
   }
-
-  fillterFolderByName(String? specialty) async {
-    // final filteredDoctors = await getDoctors(specialty: specialty);
-    // state.mapOrNull(
-    //   success: (state) {
-    //     if (!isClosed) {
-    //       emit(
-    //         state.copyWith(
-    //           doctors: filteredDoctors,
-    //           specialtySelected: specialty ?? 'All',
-    //         ),
-    //       );
-    //     }
-    //   },
-    // );
-  }
-  // ******************************************Api************************************************************
 
   Future<void> fetchFolders() async {
     await RemoteProvider().send(
@@ -145,6 +122,14 @@ class FolderCubit extends Cubit<FolderState> {
   }
 
   // ******************************************db************************************************************
+  Future<List<PatientFolder>> getFolder({String? name}) async {
+    if (name == null || name.isEmpty) {
+      return await db.select(db.patientFolders).get();
+    }
+    return await (db.select(db.patientFolders)
+      ..where((f) => f.name.contains(name))).get();
+  }
+
   insertFolder(folder) async {
     folder['createdAt'] = folder['created_at'];
     folder['updatedAt'] = folder['updated_at'];

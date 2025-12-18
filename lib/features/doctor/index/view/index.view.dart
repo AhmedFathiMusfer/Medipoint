@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:diagno_bot/core/baseView/base.view.dart';
+import 'package:diagno_bot/core/widgets/noData.dart';
 import 'package:diagno_bot/features/doctor/index/cubit/doctors.cubit.dart';
 import 'package:diagno_bot/features/doctor/index/cubit/doctors.state.dart';
 import 'package:diagno_bot/features/doctor/index/view/widgets/doctor_card.dart';
@@ -26,9 +27,6 @@ class DoctorsView extends StatelessWidget {
                 return Center(child: CircularProgressIndicator());
               },
               success: (state) {
-                if (state.doctors.isEmpty) {
-                  return Center(child: Text('not found doctors'));
-                }
                 return SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,12 +38,18 @@ class DoctorsView extends StatelessWidget {
                           color: Colors.grey.shade100,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const TextField(
+                        child: TextField(
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(Icons.search),
                             hintText: "Search doctor...",
                           ),
+                          onChanged: (value) async {
+                            await doctorsCubit.fillterDoctorBySpecialtyOrName(
+                              null,
+                              value,
+                            );
+                          },
                         ),
                       ),
                       16.verticalSpace,
@@ -56,9 +60,8 @@ class DoctorsView extends StatelessWidget {
                           children: [
                             GestureDetector(
                               onTap: () async {
-                                await doctorsCubit.fillterDoctorBySpecialty(
-                                  null,
-                                );
+                                await doctorsCubit
+                                    .fillterDoctorBySpecialtyOrName(null, null);
                               },
                               child: SpecialtChip(
                                 text: "All",
@@ -68,9 +71,11 @@ class DoctorsView extends StatelessWidget {
                             ...state.specialities.map(
                               (specialty) => GestureDetector(
                                 onTap: () async {
-                                  await doctorsCubit.fillterDoctorBySpecialty(
-                                    specialty.name,
-                                  );
+                                  await doctorsCubit
+                                      .fillterDoctorBySpecialtyOrName(
+                                        specialty.name,
+                                        null,
+                                      );
                                 },
                                 child: SpecialtChip(
                                   text: specialty.name,
@@ -91,6 +96,7 @@ class DoctorsView extends StatelessWidget {
                         ),
                       ),
                       5.verticalSpace,
+                      if (state.doctors.isEmpty) Nodata(),
                       ListView.builder(
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),

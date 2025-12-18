@@ -8,10 +8,10 @@ import 'package:diagno_bot/core/networking/remote/remoteProvider.dart';
 import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/features/recordFiles/files/cubit/file.state.dart';
-import 'package:diagno_bot/features/recordFiles/files/cubit/fileUpload.state.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:drift/drift.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 
 class FileCubit extends Cubit<FileState> {
   final int folderId;
@@ -35,7 +35,6 @@ class FileCubit extends Cubit<FileState> {
         emit(FileState.success(files: files));
       }
     } catch (e) {
-      //log(e.toString());
       AppSnackBar.error(
         ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
       );
@@ -60,7 +59,17 @@ class FileCubit extends Cubit<FileState> {
     }
   }
 
-  fillterFolderByName(String? specialty) async {}
+  fillterFileByName(String name) async {
+    final filteredFiles = await getFiles(name: name);
+    state.mapOrNull(
+      success: (state) {
+        if (!isClosed) {
+          emit(state.copyWith(files: filteredFiles));
+        }
+      },
+    );
+  }
+
   // ******************************************Api************************************************************
   createNewFile(String name, String filePath) async {
     bool isConnected = await NetworkHelper.isConnected();
@@ -70,6 +79,11 @@ class FileCubit extends Cubit<FileState> {
         'folder': folderId,
         'file': await MultipartFile.fromFile(filePath, filename: name),
       });
+      state.mapOrNull(
+        success: (s) {
+          emit(s.copyWith(uploadProgress: 0));
+        },
+      );
       await RemoteProvider().send(
         request: Request(
           url: ApiConstants.filesEndpoint(folderId),
@@ -79,6 +93,11 @@ class FileCubit extends Cubit<FileState> {
         method: RemoteMethod.post,
         onSuccess: (res, statsCode) async {
           try {
+            state.mapOrNull(
+              success: (s) {
+                emit(s.copyWith(uploadProgress: null));
+              },
+            );
             if (res.data != null) {
               await insertFile(res.data, filePath);
             }
@@ -92,13 +111,90 @@ class FileCubit extends Cubit<FileState> {
             );
           }
         },
+        onSendProgress: (sent, total) {
+          final progress = total == 0 ? 0 : (sent / total);
+          state.mapOrNull(
+            success: (s) {
+              emit(s.copyWith(uploadProgress: progress.toDouble()));
+            },
+          );
+        },
         onError: (_, statsCode) {
+          state.mapOrNull(
+            success: (s) {
+              emit(s.copyWith(uploadProgress: null));
+            },
+          );
           AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statsCode));
         },
       );
     } else {
       AppSnackBar.error(
         ErrorMessages.instance.fromExceptionType(ExceptionTypes.connection),
+      );
+    }
+  }
+
+  Future<void> downloadFile(PatientFile file) async {
+    try {
+      final isConnected = await NetworkHelper.isConnected();
+      if (!isConnected) {
+        AppSnackBar.error(
+          ErrorMessages.instance.fromExceptionType(ExceptionTypes.connection),
+        );
+        return;
+      }
+
+      // مسار الحفظ
+      final dir = await getApplicationDocumentsDirectory();
+      final savePath = '${dir.path}/${file.name}';
+
+      final currentState = state;
+      currentState.maybeMap(
+        orElse: () {},
+        success: (s) {
+          emit(
+            s.copyWith(downloadsProgress: {...s.downloadsProgress, file.id: 0}),
+          );
+        },
+      );
+
+      var response = await RemoteProvider().download(
+        url: file.file,
+        savePath: savePath,
+        onReceiveProgress: (received, total) {
+          state.mapOrNull(
+            success: (s) {
+              emit(
+                s.copyWith(
+                  downloadsProgress: {
+                    ...s.downloadsProgress,
+                    file.id: total == 0 ? 0 : received / total,
+                  },
+                ),
+              );
+            },
+          );
+        },
+      );
+      if (response.statusCode == 200) {
+        await (db.update(db.patientFiles)..where(
+          (t) => t.id.equals(file.id),
+        )).write(PatientFilesCompanion(localPath: Value(savePath)));
+
+        state.mapOrNull(
+          success: (s) {
+            final updated = Map<int, double>.from(s.downloadsProgress)
+              ..remove(file.id);
+            emit(s.copyWith(downloadsProgress: updated));
+          },
+        );
+      }
+
+      await loadLocalData();
+    } catch (e) {
+      AppSnackBar.error(
+        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
       );
     }
   }
@@ -125,90 +221,18 @@ class FileCubit extends Cubit<FileState> {
     );
   }
 
-  // Future<void> uploadFile(String name, String path, String type) async {
-  //   // final id = UniqueKey().ro; // مؤقت لتحديد الملف
-  //   emit(
-  //     state.mapOrNull(
-  //       success:
-  //           (s) => state.copyWith(
-  //             uploads: {...?s.uploads, id: FileUploadStatus.uploading(0)},
-  //             files: [
-  //               ...s.files,
-  //               PatientFile(
-  //                 id: 1,
-  //                 name: name,
-  //                 file: path,
-  //                 folderId: folderId,
-  //                 createdAt: "",
-  //                 updatedAt: "",
-  //               ),
-  //             ],
-  //           ),
-  //     ),
-  //   );
-
-  //   try {
-  //     bool connected = await NetworkHelper.isConnected();
-  //     if (!connected) throw Exception("No connection");
-
-  //     await RemoteProvider().send(
-  //       request: Request(
-  //         url: ApiConstants.filesEndpoint(folderId),
-  //         body: FormData.fromMap({
-  //           'name': name,
-  //           'folder': folderId,
-  //           'file': MultipartFile.fromFile(path, filename: name),
-  //         }),
-  //       ),
-  //       method: RemoteMethod.post,
-  //       onSendProgress: (sent, total) {
-  //         final progress = sent / total;
-  //         emit(
-  //           state.mapOrNull(
-  //             success:
-  //                 (s) => state.copyWith(
-  //                   uploads: {
-  //                     ...?s.uploads,
-  //                     id: FileUploadStatus.uploading(progress),
-  //                   },
-  //                 ),
-  //           ),
-  //         );
-  //       },
-  //       onSuccess: (res, _) {
-  //         emit(
-  //           state.mapOrNull(
-  //             success:
-  //                 (s) => state.copyWith(
-  //                   uploads: {...?s.uploads, id: FileUploadStatus.success()},
-  //                 ),
-  //           ),
-  //         );
-  //       },
-  //       onError: (_, __) {
-  //         emit(
-  //           state.mapOrNull(
-  //             success:
-  //                 (s) => state.copyWith(
-  //                   uploads: {...?s.uploads, id: FileUploadStatus.failed()},
-  //                 ),
-  //           ),
-  //         );
-  //       },
-  //     );
-  //   } catch (e) {
-  //     emit(
-  //       state.mapOrNull(
-  //         success:
-  //             (s) => state.copyWith(
-  //               uploads: {...?s.uploads, id: FileUploadStatus.failed()},
-  //             ),
-  //       ),
-  //     );
-  //   }
-  // }
-
   // ******************************************db************************************************************
+  Future<List<PatientFile>> getFiles({String? name}) async {
+    if (name == null || name.isEmpty) {
+      return await (db.select(db.patientFiles)
+        ..where((t) => t.folderId.equals(folderId))).get();
+    }
+    return await (db.select(db.patientFiles)
+          ..where((t) => t.folderId.equals(folderId))
+          ..where((f) => f.name.contains(name)))
+        .get();
+  }
+
   insertFile(file, String localPath) async {
     file['createdAt'] = file['created_at'];
     file['updatedAt'] = file['updated_at'];

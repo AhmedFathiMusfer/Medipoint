@@ -6,7 +6,7 @@ class ApiConstants {
   static const String userProfileEndpoint = "user/profile";
   static const String doctorEndpoint = "doctors/";
   static const String specialtyEndpoint = "specialties/";
-  static const String profileEndpoint = "=auth/me/";
+  static const String profileEndpoint = "auth/me/";
   static const String chatEndpoint = "chat/";
   static const String appointmentsEndpoint = "appointments/";
   static const String foldersEndpoint = "patients/me/folders/";

@@ -15,7 +15,9 @@ import 'package:drift/drift.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DoctorsCubit extends Cubit<DoctorsState> {
-  DoctorsCubit() : super(const DoctorsState.initial());
+  String? specialty;
+  DoctorsCubit({this.specialty}) : super(const DoctorsState.initial());
+
   AppDatabase db = AppDatabase();
   Future<void> loadAll() async {
     if (!isClosed) {
@@ -23,18 +25,25 @@ class DoctorsCubit extends Cubit<DoctorsState> {
     }
     await loadLocalData();
     await loadOnlineData();
+    specialty = null;
   }
 
   Future<void> loadLocalData() async {
     try {
       final results = await Future.wait([
         db.select(db.specialties).get(),
-        getDoctors(),
+        getDoctors(specialty: specialty),
       ]);
       final specialties = results[0] as List<Specialty>;
       final doctors = results[1] as List<DoctorModel>;
       if (!isClosed) {
-        emit(DoctorsState.success(doctors: doctors, specialities: specialties));
+        emit(
+          DoctorsState.success(
+            doctors: doctors,
+            specialities: specialties,
+            specialtySelected: specialty ?? "All",
+          ),
+        );
       }
     } catch (e) {
       AppSnackBar.error(
@@ -61,8 +70,8 @@ class DoctorsCubit extends Cubit<DoctorsState> {
     }
   }
 
-  fillterDoctorBySpecialty(String? specialty) async {
-    final filteredDoctors = await getDoctors(specialty: specialty);
+  fillterDoctorBySpecialtyOrName(String? specialty, String? name) async {
+    final filteredDoctors = await getDoctors(specialty: specialty, name: name);
     state.mapOrNull(
       success: (state) {
         if (!isClosed) {
@@ -132,12 +141,18 @@ class DoctorsCubit extends Cubit<DoctorsState> {
     });
   }
 
-  Future<List<DoctorModel>> getDoctors({String? specialty}) async {
+  Future<List<DoctorModel>> getDoctors({
+    String? specialty,
+    String? name,
+  }) async {
     var temp = (db.select(db.doctors).join([
       innerJoin(db.users, db.users.id.equalsExp(db.doctors.userId)),
     ]));
     if (specialty != null) {
       temp = temp..where(db.doctors.specialty.equals(specialty));
+    }
+    if (name != null && name.isNotEmpty) {
+      temp = temp..where(db.users.fullName.contains(name));
     }
     final result = await temp.get();
     final jsonList =

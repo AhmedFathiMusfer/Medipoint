@@ -19,11 +19,13 @@ class EditProfileForm {
   String imagePath = '';
 
   get body => {
-    'email': emailController.text,
-    'full_name': nameController.text,
-    'Gender': gender,
-    'image': imagePath,
-    'role': user.role,
+    "User": {
+      'email': emailController.text,
+      'full_name': nameController.text,
+      'Gender': gender,
+      'image': imagePath,
+      'role': user.role,
+    },
   };
 
   void clear() {

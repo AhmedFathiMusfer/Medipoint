@@ -1,5 +1,7 @@
+import 'package:diagno_bot/core/enum/pages.dart';
 import 'package:diagno_bot/core/model/doctor.model.dart';
 import 'package:diagno_bot/core/routing/router.dart';
+import 'package:diagno_bot/core/stror/appStore.dart';
 import 'package:diagno_bot/features/ai/chat/cubit/chat.cubit.dart';
 import 'package:diagno_bot/features/ai/chat/view/chat.view.dart';
 import 'package:diagno_bot/features/appointment/bookAppointment/view/bookAppointment.view.dart';
@@ -26,6 +28,8 @@ import 'package:diagno_bot/features/recordFiles/Folders/cubit/folder.cubit.dart'
 import 'package:diagno_bot/features/recordFiles/Folders/view/folder.view.dart';
 import 'package:diagno_bot/features/recordFiles/files/cubit/file.cubit.dart';
 import 'package:diagno_bot/features/recordFiles/files/view/file.view.dart';
+import 'package:diagno_bot/features/specialty/cubit/specialties.cubit.dart';
+import 'package:diagno_bot/features/specialty/view/Specialties.view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -33,6 +37,15 @@ class AppRouter {
   static final navigatorKey = GlobalKey<NavigatorState>();
   Route generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case Routers.specialtiesView:
+        return PageRouteBuilder(
+          pageBuilder:
+              (context, animation, secondaryAnimation) => BlocProvider(
+                create: (_) => SpecialtiesCubit()..loadAll(),
+                child: SpecialtiesView(),
+              ),
+          transitionDuration: Duration.zero,
+        );
       case Routers.fileView:
         var folderId = settings.arguments as int;
         return PageRouteBuilder(
@@ -121,10 +134,12 @@ class AppRouter {
           transitionDuration: Duration.zero,
         );
       case Routers.doctorsView:
+        var specialty = settings.arguments as String?;
+        Appstore.instanse.currentPage = PagesEnum.doctor;
         return PageRouteBuilder(
           pageBuilder:
               (context, animation, secondaryAnimation) => BlocProvider(
-                create: (_) => DoctorsCubit()..loadAll(),
+                create: (_) => DoctorsCubit(specialty: specialty)..loadAll(),
                 child: const DoctorsView(),
               ),
           transitionDuration: Duration.zero,

@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'editProfile.state.dart';
+part of 'specialties.state.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -16,26 +16,26 @@ final _privateConstructorUsedError = UnsupportedError(
 );
 
 /// @nodoc
-mixin _$EditProfileState {
+mixin _$SpecialtiesState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(String? changeProfileImage) success,
+    required TResult Function(List<Specialty> specialities) success,
     required TResult Function(String message) error,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(String? changeProfileImage)? success,
+    TResult? Function(List<Specialty> specialities)? success,
     TResult? Function(String message)? error,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(String? changeProfileImage)? success,
+    TResult Function(List<Specialty> specialities)? success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
@@ -64,24 +64,24 @@ mixin _$EditProfileState {
 }
 
 /// @nodoc
-abstract class $EditProfileStateCopyWith<$Res> {
-  factory $EditProfileStateCopyWith(
-    EditProfileState value,
-    $Res Function(EditProfileState) then,
-  ) = _$EditProfileStateCopyWithImpl<$Res, EditProfileState>;
+abstract class $SpecialtiesStateCopyWith<$Res> {
+  factory $SpecialtiesStateCopyWith(
+    SpecialtiesState value,
+    $Res Function(SpecialtiesState) then,
+  ) = _$SpecialtiesStateCopyWithImpl<$Res, SpecialtiesState>;
 }
 
 /// @nodoc
-class _$EditProfileStateCopyWithImpl<$Res, $Val extends EditProfileState>
-    implements $EditProfileStateCopyWith<$Res> {
-  _$EditProfileStateCopyWithImpl(this._value, this._then);
+class _$SpecialtiesStateCopyWithImpl<$Res, $Val extends SpecialtiesState>
+    implements $SpecialtiesStateCopyWith<$Res> {
+  _$SpecialtiesStateCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of EditProfileState
+  /// Create a copy of SpecialtiesState
   /// with the given fields replaced by the non-null parameter values.
 }
 
@@ -95,14 +95,14 @@ abstract class _$$InitialImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$InitialImplCopyWithImpl<$Res>
-    extends _$EditProfileStateCopyWithImpl<$Res, _$InitialImpl>
+    extends _$SpecialtiesStateCopyWithImpl<$Res, _$InitialImpl>
     implements _$$InitialImplCopyWith<$Res> {
   __$$InitialImplCopyWithImpl(
     _$InitialImpl _value,
     $Res Function(_$InitialImpl) _then,
   ) : super(_value, _then);
 
-  /// Create a copy of EditProfileState
+  /// Create a copy of SpecialtiesState
   /// with the given fields replaced by the non-null parameter values.
 }
 
@@ -113,7 +113,7 @@ class _$InitialImpl implements _Initial {
 
   @override
   String toString() {
-    return 'EditProfileState.initial()';
+    return 'SpecialtiesState.initial()';
   }
 
   @override
@@ -130,7 +130,7 @@ class _$InitialImpl implements _Initial {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(String? changeProfileImage) success,
+    required TResult Function(List<Specialty> specialities) success,
     required TResult Function(String message) error,
   }) {
     return initial();
@@ -141,7 +141,7 @@ class _$InitialImpl implements _Initial {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(String? changeProfileImage)? success,
+    TResult? Function(List<Specialty> specialities)? success,
     TResult? Function(String message)? error,
   }) {
     return initial?.call();
@@ -152,7 +152,7 @@ class _$InitialImpl implements _Initial {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(String? changeProfileImage)? success,
+    TResult Function(List<Specialty> specialities)? success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -200,7 +200,7 @@ class _$InitialImpl implements _Initial {
   }
 }
 
-abstract class _Initial implements EditProfileState {
+abstract class _Initial implements SpecialtiesState {
   const factory _Initial() = _$InitialImpl;
 }
 
@@ -214,14 +214,14 @@ abstract class _$$LoadingImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$LoadingImplCopyWithImpl<$Res>
-    extends _$EditProfileStateCopyWithImpl<$Res, _$LoadingImpl>
+    extends _$SpecialtiesStateCopyWithImpl<$Res, _$LoadingImpl>
     implements _$$LoadingImplCopyWith<$Res> {
   __$$LoadingImplCopyWithImpl(
     _$LoadingImpl _value,
     $Res Function(_$LoadingImpl) _then,
   ) : super(_value, _then);
 
-  /// Create a copy of EditProfileState
+  /// Create a copy of SpecialtiesState
   /// with the given fields replaced by the non-null parameter values.
 }
 
@@ -232,7 +232,7 @@ class _$LoadingImpl implements _Loading {
 
   @override
   String toString() {
-    return 'EditProfileState.loading()';
+    return 'SpecialtiesState.loading()';
   }
 
   @override
@@ -249,7 +249,7 @@ class _$LoadingImpl implements _Loading {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(String? changeProfileImage) success,
+    required TResult Function(List<Specialty> specialities) success,
     required TResult Function(String message) error,
   }) {
     return loading();
@@ -260,7 +260,7 @@ class _$LoadingImpl implements _Loading {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(String? changeProfileImage)? success,
+    TResult? Function(List<Specialty> specialities)? success,
     TResult? Function(String message)? error,
   }) {
     return loading?.call();
@@ -271,7 +271,7 @@ class _$LoadingImpl implements _Loading {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(String? changeProfileImage)? success,
+    TResult Function(List<Specialty> specialities)? success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -319,7 +319,7 @@ class _$LoadingImpl implements _Loading {
   }
 }
 
-abstract class _Loading implements EditProfileState {
+abstract class _Loading implements SpecialtiesState {
   const factory _Loading() = _$LoadingImpl;
 }
 
@@ -330,30 +330,30 @@ abstract class _$$SuccessImplCopyWith<$Res> {
     $Res Function(_$SuccessImpl) then,
   ) = __$$SuccessImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({String? changeProfileImage});
+  $Res call({List<Specialty> specialities});
 }
 
 /// @nodoc
 class __$$SuccessImplCopyWithImpl<$Res>
-    extends _$EditProfileStateCopyWithImpl<$Res, _$SuccessImpl>
+    extends _$SpecialtiesStateCopyWithImpl<$Res, _$SuccessImpl>
     implements _$$SuccessImplCopyWith<$Res> {
   __$$SuccessImplCopyWithImpl(
     _$SuccessImpl _value,
     $Res Function(_$SuccessImpl) _then,
   ) : super(_value, _then);
 
-  /// Create a copy of EditProfileState
+  /// Create a copy of SpecialtiesState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? changeProfileImage = freezed}) {
+  $Res call({Object? specialities = null}) {
     return _then(
       _$SuccessImpl(
-        changeProfileImage:
-            freezed == changeProfileImage
-                ? _value.changeProfileImage
-                : changeProfileImage // ignore: cast_nullable_to_non_nullable
-                    as String?,
+        specialities:
+            null == specialities
+                ? _value._specialities
+                : specialities // ignore: cast_nullable_to_non_nullable
+                    as List<Specialty>,
       ),
     );
   }
@@ -362,15 +362,20 @@ class __$$SuccessImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$SuccessImpl implements _Success {
-  const _$SuccessImpl({this.changeProfileImage = null});
+  const _$SuccessImpl({required final List<Specialty> specialities})
+    : _specialities = specialities;
 
+  final List<Specialty> _specialities;
   @override
-  @JsonKey()
-  final String? changeProfileImage;
+  List<Specialty> get specialities {
+    if (_specialities is EqualUnmodifiableListView) return _specialities;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_specialities);
+  }
 
   @override
   String toString() {
-    return 'EditProfileState.success(changeProfileImage: $changeProfileImage)';
+    return 'SpecialtiesState.success(specialities: $specialities)';
   }
 
   @override
@@ -378,14 +383,19 @@ class _$SuccessImpl implements _Success {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$SuccessImpl &&
-            (identical(other.changeProfileImage, changeProfileImage) ||
-                other.changeProfileImage == changeProfileImage));
+            const DeepCollectionEquality().equals(
+              other._specialities,
+              _specialities,
+            ));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, changeProfileImage);
+  int get hashCode => Object.hash(
+    runtimeType,
+    const DeepCollectionEquality().hash(_specialities),
+  );
 
-  /// Create a copy of EditProfileState
+  /// Create a copy of SpecialtiesState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
@@ -398,10 +408,10 @@ class _$SuccessImpl implements _Success {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(String? changeProfileImage) success,
+    required TResult Function(List<Specialty> specialities) success,
     required TResult Function(String message) error,
   }) {
-    return success(changeProfileImage);
+    return success(specialities);
   }
 
   @override
@@ -409,10 +419,10 @@ class _$SuccessImpl implements _Success {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(String? changeProfileImage)? success,
+    TResult? Function(List<Specialty> specialities)? success,
     TResult? Function(String message)? error,
   }) {
-    return success?.call(changeProfileImage);
+    return success?.call(specialities);
   }
 
   @override
@@ -420,12 +430,12 @@ class _$SuccessImpl implements _Success {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(String? changeProfileImage)? success,
+    TResult Function(List<Specialty> specialities)? success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
     if (success != null) {
-      return success(changeProfileImage);
+      return success(specialities);
     }
     return orElse();
   }
@@ -468,12 +478,13 @@ class _$SuccessImpl implements _Success {
   }
 }
 
-abstract class _Success implements EditProfileState {
-  const factory _Success({final String? changeProfileImage}) = _$SuccessImpl;
+abstract class _Success implements SpecialtiesState {
+  const factory _Success({required final List<Specialty> specialities}) =
+      _$SuccessImpl;
 
-  String? get changeProfileImage;
+  List<Specialty> get specialities;
 
-  /// Create a copy of EditProfileState
+  /// Create a copy of SpecialtiesState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SuccessImplCopyWith<_$SuccessImpl> get copyWith =>
@@ -492,14 +503,14 @@ abstract class _$$ErrorImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$ErrorImplCopyWithImpl<$Res>
-    extends _$EditProfileStateCopyWithImpl<$Res, _$ErrorImpl>
+    extends _$SpecialtiesStateCopyWithImpl<$Res, _$ErrorImpl>
     implements _$$ErrorImplCopyWith<$Res> {
   __$$ErrorImplCopyWithImpl(
     _$ErrorImpl _value,
     $Res Function(_$ErrorImpl) _then,
   ) : super(_value, _then);
 
-  /// Create a copy of EditProfileState
+  /// Create a copy of SpecialtiesState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -525,7 +536,7 @@ class _$ErrorImpl implements _Error {
 
   @override
   String toString() {
-    return 'EditProfileState.error(message: $message)';
+    return 'SpecialtiesState.error(message: $message)';
   }
 
   @override
@@ -539,7 +550,7 @@ class _$ErrorImpl implements _Error {
   @override
   int get hashCode => Object.hash(runtimeType, message);
 
-  /// Create a copy of EditProfileState
+  /// Create a copy of SpecialtiesState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
@@ -552,7 +563,7 @@ class _$ErrorImpl implements _Error {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(String? changeProfileImage) success,
+    required TResult Function(List<Specialty> specialities) success,
     required TResult Function(String message) error,
   }) {
     return error(message);
@@ -563,7 +574,7 @@ class _$ErrorImpl implements _Error {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(String? changeProfileImage)? success,
+    TResult? Function(List<Specialty> specialities)? success,
     TResult? Function(String message)? error,
   }) {
     return error?.call(message);
@@ -574,7 +585,7 @@ class _$ErrorImpl implements _Error {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(String? changeProfileImage)? success,
+    TResult Function(List<Specialty> specialities)? success,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -622,12 +633,12 @@ class _$ErrorImpl implements _Error {
   }
 }
 
-abstract class _Error implements EditProfileState {
+abstract class _Error implements SpecialtiesState {
   const factory _Error(final String message) = _$ErrorImpl;
 
   String get message;
 
-  /// Create a copy of EditProfileState
+  /// Create a copy of SpecialtiesState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ErrorImplCopyWith<_$ErrorImpl> get copyWith =>

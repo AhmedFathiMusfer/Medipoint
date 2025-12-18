@@ -1,12 +1,9 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:diagno_bot/core/auth/authManager.dart';
 import 'package:diagno_bot/core/baseView/base.view.dart';
-import 'package:diagno_bot/core/enum/pages.dart';
 import 'package:diagno_bot/core/helpers/extensions.dart';
 import 'package:diagno_bot/core/routing/router.dart';
-import 'package:diagno_bot/core/stror/appStore.dart';
-import 'package:diagno_bot/core/theming/color.dart';
-import 'package:diagno_bot/core/widgets/BottomNavBar/bottom_nav_bar.dart';
 import 'package:diagno_bot/core/widgets/bottomSheet/ImagePickerBottomSheet.dart';
 import 'package:diagno_bot/core/widgets/bottomSheet/bottomSheet.dart';
 import 'package:diagno_bot/features/profile/index/cubit/profile.cubit.dart';
@@ -54,17 +51,22 @@ class ProfileView extends StatelessWidget {
                           backgroundImage:
                               File(avatarPath).existsSync()
                                   ? FileImage(File(avatarPath))
-                                  : AssetImage(
-                                        AuthManager().currentUser?.image ??
-                                            'assets/avatar_placeholder.png',
-                                      )
+                                  : (AuthManager().currentUser?.image != null &&
+                                      AuthManager()
+                                          .currentUser!
+                                          .image!
+                                          .isNotEmpty)
+                                  ? CachedNetworkImageProvider(
+                                    AuthManager().currentUser!.image!,
+                                  )
+                                  : AssetImage('assets/avatar_placeholder.png')
                                       as ImageProvider,
                         ),
                         Positioned(
                           bottom: 6,
                           right: MediaQuery.of(context).size.width / 2 - 120,
                           child: Container(
-                            padding: const EdgeInsets.all(6),
+                            padding: const EdgeInsets.all(0),
                             decoration: BoxDecoration(
                               color: Colors.blueGrey[900],
                               shape: BoxShape.circle,

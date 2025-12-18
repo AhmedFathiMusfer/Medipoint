@@ -35,24 +35,24 @@ class HomeView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               20.verticalSpace,
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(10.r),
-                ),
-                child: TextField(
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: 12.h,
-                      horizontal: 12.w,
-                    ),
-                    hintText: 'Search doctor...',
-                    hintStyle: const TextStyle(color: Colors.grey),
-                    border: InputBorder.none,
-                    prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                  ),
-                ),
-              ),
+              // Container(
+              //   decoration: BoxDecoration(
+              //     color: Colors.grey[200],
+              //     borderRadius: BorderRadius.circular(10.r),
+              //   ),
+              //   child: TextField(
+              //     decoration: InputDecoration(
+              //       contentPadding: EdgeInsets.symmetric(
+              //         vertical: 12.h,
+              //         horizontal: 12.w,
+              //       ),
+              //       hintText: 'Search doctor...',
+              //       hintStyle: const TextStyle(color: Colors.grey),
+              //       border: InputBorder.none,
+              //       prefixIcon: const Icon(Icons.search, color: Colors.grey),
+              //     ),
+              //   ),
+              // ),
               20.verticalSpace,
               CarouselSlider(
                 items:
@@ -95,7 +95,9 @@ class HomeView extends StatelessWidget {
                     ),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      context.pushNamed(Routers.specialtiesView);
+                    },
                     child: Text(
                       'See All',
                       style: TextStyle(color: Colors.blue, fontSize: 12.sp),
