@@ -21,15 +21,17 @@ class FileCubit extends Cubit<FileState> {
     if (!isClosed) {
       emit(FileState.loading());
     }
-    await loadLocalData();
-    await loadOnlineData();
+    if (await getFileLenght() == 0) {
+      await loadOnlineData();
+    } else {
+      await loadLocalData();
+      await loadOnlineData();
+    }
   }
 
   Future<void> loadLocalData() async {
     try {
-      final files =
-          await (db.select(db.patientFiles)
-            ..where((t) => t.folderId.equals(folderId))).get();
+      final files = await getFiles();
 
       if (!isClosed) {
         emit(FileState.success(files: files));
@@ -144,8 +146,6 @@ class FileCubit extends Cubit<FileState> {
         );
         return;
       }
-
-      // مسار الحفظ
       final dir = await getApplicationDocumentsDirectory();
       final savePath = '${dir.path}/${file.name}';
 
@@ -231,6 +231,12 @@ class FileCubit extends Cubit<FileState> {
           ..where((t) => t.folderId.equals(folderId))
           ..where((f) => f.name.contains(name)))
         .get();
+  }
+
+  Future<int> getFileLenght() async {
+    return (await (db.select(db.patientFiles)
+          ..where((t) => t.folderId.equals(folderId))).get())
+        .length;
   }
 
   insertFile(file, String localPath) async {

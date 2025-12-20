@@ -1,5 +1,3 @@
-import 'dart:developer';
-import 'package:diagno_bot/core/auth/authManager.dart';
 import 'package:diagno_bot/core/database/drift_db.dart';
 import 'package:diagno_bot/core/database/tables/doctor_tables.dart';
 import 'package:diagno_bot/core/helpers/networkHelper.dart';
@@ -10,7 +8,6 @@ import 'package:diagno_bot/core/networking/remote/apiConstants.dart';
 import 'package:diagno_bot/core/networking/remote/remoteProvider.dart';
 import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
-
 import 'package:diagno_bot/features/home/cubit/home.state.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -114,16 +111,16 @@ class HomeCubit extends Cubit<HomeState> {
 
     if (isConnected) {
       await RemoteProvider().send(
-        request: Request(url: ApiConstants.doctorEndpoint),
+        request: Request(url: ApiConstants.initEndpoint),
         method: RemoteMethod.get,
         onSuccess: (res, statsCode) async {
           try {
-            if (res.data['results'].isNotEmpty) {
-              await insertDoctorWithUser(res.data['results']);
+            if (res.data['doctors'].isNotEmpty) {
+              await insertDoctorWithUser(res.data['doctors']);
             }
           } catch (ex) {
             AppSnackBar.error(
-              '${ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected)}}',
+              '${ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected)}+${ex.toString()}',
             );
           }
         },
@@ -173,7 +170,11 @@ class HomeCubit extends Cubit<HomeState> {
     await db.batch((batch) {
       for (final doctorJson in data) {
         final userJson = doctorJson['user'];
-
+        final workingHours = doctorJson['working_hours'];
+        final reviews = doctorJson['reviews'];
+        if (doctorJson['specialty'] == null) {
+          continue;
+        }
         batch.insert(
           db.users,
           UsersCompanion(
@@ -203,6 +204,32 @@ class HomeCubit extends Cubit<HomeState> {
             isVerified: Value(doctorJson['is_verified'] ?? false),
           ),
           mode: InsertMode.insertOrReplace,
+        );
+        for (var workingHour in workingHours) {
+          batch.insert(
+            db.workingHours,
+            WorkingHoursCompanion(
+              id: Value(workingHour['id']),
+              startTime: Value(workingHour['start_time']),
+              endTime: Value(workingHour['end_time']),
+              doctorId: Value(workingHour['doctor']),
+              patientLeft: Value(workingHour['patient_left']),
+            ),
+            mode: InsertMode.insertOrReplace,
+          );
+        }
+        if (reviews.isNotEmpty) {}
+        batch.insertAllOnConflictUpdate(
+          db.reviews,
+          reviews.map<Review>((review) {
+            return Review.fromJson({
+              ...review,
+              'doctorId': review['doctor'],
+              'patientId': review['patient'],
+              'createdAt': review['created_at'],
+              'updatedAt': review['updated_at'],
+            });
+          }),
         );
       }
     });

@@ -3,13 +3,15 @@ part 'chat.state.freezed.dart';
 
 class ChatMessage {
   final String text;
-  final bool isUser; // ✅ جديد: true = رسالة المستخدم، false = رد AI
-  final bool isLoading; // ✅ جديد: true = رسالة تحميل (Typing...)
+  final bool isUser;
+  final bool isLoading;
+  final bool isErorr;
 
   ChatMessage({
     required this.text,
     required this.isUser,
     this.isLoading = false,
+    this.isErorr = false,
   });
 }
 

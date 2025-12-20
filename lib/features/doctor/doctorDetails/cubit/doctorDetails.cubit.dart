@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:diagno_bot/core/auth/authManager.dart';
 import 'package:diagno_bot/core/database/drift_db.dart';
 import 'package:diagno_bot/core/helpers/networkHelper.dart';
@@ -13,23 +12,11 @@ import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/features/doctor/doctorDetails/cubit/doctorDetails.state.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_sound/flutter_sound.dart';
 
 class DoctorDetailsCubit extends Cubit<DoctorDetailsState> {
   var db = AppDatabase();
   final String doctorId;
   DoctorDetailsCubit(super.initialState, {required this.doctorId});
-
-  add() {
-    // var user = User(id: 1, name: 'ahemed', email: 'kkdkd');
-    // var doctor = Doctor(id: 1, name: 'ahemed');
-    // db.into(db.users).insert(user);
-    // db.into(db.doctors).insert(doctor);
-    // db.select(db.doctors).join([
-    //   leftOuterJoin(db.doctors, db.doctors.id.equalsExp(db.users.id)),
-    // ]).get();
-    //  db.select(db.users)
-  }
 
   Future<void> loadAll() async {
     if (!isClosed) {
@@ -47,10 +34,8 @@ class DoctorDetailsCubit extends Cubit<DoctorDetailsState> {
       }
     } catch (e) {
       AppSnackBar.error(
-        ' please check your internt connection ${e.toString()}',
+        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
       );
-
-      emit(DoctorDetailsState.error(e.toString()));
     }
   }
 
@@ -60,12 +45,14 @@ class DoctorDetailsCubit extends Cubit<DoctorDetailsState> {
       if (isConnected) {
         await Future.wait([fetchDoctorById(doctorId)]);
       } else {
-        AppSnackBar.error(' please check your internt connection');
+        AppSnackBar.error(
+          ErrorMessages.instance.fromExceptionType(ExceptionTypes.connection),
+        );
       }
       await loadLocalData();
     } catch (e) {
       AppSnackBar.error(
-        ' please check your internt connection ${e.toString()}',
+        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
       );
       if (!isClosed) {
         emit(DoctorDetailsState.error(e.toString()));
@@ -133,6 +120,7 @@ class DoctorDetailsCubit extends Cubit<DoctorDetailsState> {
           ..where((tbl) => tbl.doctorId.equals(id))).get();
     final reviews = await getDoctorReviewsCount(id);
     final rating = await getDoctorAverageRating(id);
+    final defaultReview = await getLatestDoctorReviews(id);
     final data =
         result
             .map((row) {
@@ -147,7 +135,7 @@ class DoctorDetailsCubit extends Cubit<DoctorDetailsState> {
             .first;
     var doctor = DoctorModel.fromJson(data);
     doctor.workingHours = workingHours;
-
+    doctor.review = defaultReview;
     log(doctor.toString());
     return doctor;
   }
@@ -186,21 +174,7 @@ class DoctorDetailsCubit extends Cubit<DoctorDetailsState> {
         ),
         mode: InsertMode.insertOrReplace,
       );
-      log(doctorJson.toString());
-      // for (var workingHour in workingHours) {
-      //   batch.insert(
-      //     db.workingHours,
-      //     WorkingHour.fromJson(workingHour),
-      //     mode: InsertMode.insertOrReplace,
-      //   );
-      // }
-      await insertWorkerHouers(workingHours);
-    });
-  }
-
-  insertWorkerHouers(data) async {
-    await db.batch((batch) {
-      for (var workingHour in data) {
+      for (var workingHour in workingHours) {
         batch.insert(
           db.workingHours,
           WorkingHoursCompanion(
@@ -214,5 +188,23 @@ class DoctorDetailsCubit extends Cubit<DoctorDetailsState> {
         );
       }
     });
+  }
+
+  Future<Review?> getLatestDoctorReviews(String doctorId) async {
+    return (await (db.select(db.reviews)
+              ..where((tbl) => tbl.doctorId.equals(doctorId))
+              ..orderBy([(t) => OrderingTerm.desc(t.createdAt)])
+              ..limit(1))
+            .get())
+        .firstOrNull;
+  }
+
+  Future<bool> hasUserReviewed(String doctorId) async {
+    final userId = AuthManager().currentUser!.id;
+    final review =
+        await (db.select(db.reviews)..where(
+          (t) => t.doctorId.equals(doctorId) & t.patientId.equals(userId),
+        )).getSingleOrNull();
+    return review != null;
   }
 }

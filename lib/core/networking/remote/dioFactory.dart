@@ -13,6 +13,7 @@ class DioFactory {
     if (dio == null) {
       dio = Dio();
       dio!.options.receiveTimeout = timeout;
+      dio!.options.sendTimeout = timeout;
       dio!.options.connectTimeout = timeout;
       addTokenInterceptors();
       addInterceptors();

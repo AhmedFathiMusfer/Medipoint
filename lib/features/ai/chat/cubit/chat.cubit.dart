@@ -1,4 +1,5 @@
 import 'package:diagno_bot/core/networking/remote/apiConstants.dart';
+import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'chat.state.dart';
@@ -7,7 +8,6 @@ import 'package:diagno_bot/core/networking/remote/remoteProvider.dart';
 import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/networking/errors/errorMesage.dart';
 import 'package:diagno_bot/core/networking/errors/exceptions.enum.dart';
-import 'dart:developer';
 
 class ChatCubit extends Cubit<ChatState> {
   ChatCubit() : super(const ChatState.initial());
@@ -15,7 +15,7 @@ class ChatCubit extends Cubit<ChatState> {
   final List<ChatMessage> _messages = [];
   final scrollController = ScrollController();
 
-  String? _sessionId; // ✅ هنا نخزن session_id
+  String? _sessionId;
   var chatMessageController = TextEditingController();
 
   List<ChatMessage> get messages => _messages;
@@ -29,14 +29,30 @@ class ChatCubit extends Cubit<ChatState> {
     });
   }
 
-  // ✅ إنشاء جلسة جديدة
-  Future<void> createSession() async {
-    emit(ChatState.loading());
+  checkIfSessionIsExitOrNo() async {
+    if (_messages.isEmpty) {
+      _messages.add(
+        ChatMessage(text: "Hello! How can I assist you today?", isUser: false),
+      );
+      emit(ChatState.success(messages: List.from(_messages)));
+    }
+    if (_sessionId == null) {
+      await createSession();
+    }
+  }
 
+  Future<void> createSession() async {
     try {
       bool connected = await NetworkHelper.isConnected();
       if (!connected) {
-        emit(ChatState.error("No internet connection"));
+        _messages.add(
+          ChatMessage(
+            text: "No internet connection",
+            isErorr: true,
+            isUser: false,
+          ),
+        );
+        emit(ChatState.success(messages: List.from(_messages)));
         return;
       }
 
@@ -45,37 +61,23 @@ class ChatCubit extends Cubit<ChatState> {
         method: RemoteMethod.get,
         onSuccess: (res, statusCode) {
           _sessionId = res.data['chatbot_session_id'];
-          _messages.add(
-            ChatMessage(
-              text: "Hello! How can I assist you today?",
-              isUser: false,
-            ),
-          );
-          emit(ChatState.success(messages: List.from(_messages)));
         },
         onError: (res, statusCode) {
-          emit(
-            ChatState.error(ErrorMessages.instance.fromStatusCode(statusCode)),
-          );
+          AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statusCode));
         },
       );
     } catch (e) {
-      log(e.toString());
-      emit(
-        ChatState.error(
-          ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
-        ),
+      AppSnackBar.error(
+        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
       );
     }
   }
 
   Future sendTextMessage(String text) async {
+    chatMessageController.clear();
     if (text.trim().isEmpty) return;
-
-    // 1️⃣ إضافة رسالة المستخدم فوراً
     final userMessage = ChatMessage(text: text, isUser: true);
     _messages.add(userMessage);
-    chatMessageController.clear();
     final loadingMessage = ChatMessage(
       text: "Typing...",
       isUser: false,
@@ -84,11 +86,22 @@ class ChatCubit extends Cubit<ChatState> {
     _messages.add(loadingMessage);
     emit(ChatState.success(messages: List.from(_messages)));
     await scrollToBottom();
+    await checkIfSessionIsExitOrNo();
     await _sendMessageToApi(text);
   }
 
   Future<void> _sendMessageToApi(String text) async {
     try {
+      bool connected = await NetworkHelper.isConnected();
+      if (!connected) {
+        _messages.removeWhere((m) => m.isLoading == true);
+        emit(ChatState.success(messages: List.from(_messages)));
+
+        AppSnackBar.error(
+          ErrorMessages.instance.fromExceptionType(ExceptionTypes.connection),
+        );
+        return;
+      }
       final response = await RemoteProvider().send(
         request: Request(
           url: "${ApiConstants.chatEndpoint}$_sessionId/",
@@ -96,7 +109,6 @@ class ChatCubit extends Cubit<ChatState> {
         ),
         method: RemoteMethod.post,
       );
-      log("Response from API: ${response.data}");
       _messages.removeWhere((m) => m.isLoading == true);
 
       final botMessage = ChatMessage(
@@ -108,10 +120,19 @@ class ChatCubit extends Cubit<ChatState> {
       await scrollToBottom();
     } catch (e) {
       _messages.removeWhere((m) => m.isLoading == true);
+      _messages.add(
+        ChatMessage(
+          text: ErrorMessages.instance.fromExceptionType(
+            ExceptionTypes.unexpected,
+          ),
+          isErorr: true,
+          isUser: false,
+        ),
+      );
+      emit(ChatState.success(messages: List.from(_messages)));
     }
   }
 
-  // إنهاء الجلسة
   Future<void> endSession() async {
     if (_sessionId == null) return;
 
@@ -124,12 +145,10 @@ class ChatCubit extends Cubit<ChatState> {
       _messages.clear();
       emit(const ChatState.success(messages: []));
     } catch (e) {
-      log(e.toString());
-      emit(ChatState.error("Failed to end session"));
+      AppSnackBar.error("Failed to end session");
     }
   }
 
-  // مسح الدردشة
   void clearChat() {
     _messages.clear();
     emit(const ChatState.success(messages: []));

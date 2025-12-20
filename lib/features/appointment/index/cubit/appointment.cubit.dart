@@ -19,8 +19,13 @@ class AppointmentCubit extends Cubit<AppointmentState> {
   AppointmentCubit() : super(AppointmentState.initial());
   AppDatabase db = AppDatabase();
   Future<void> loadAll() async {
-    await loadLocalData();
-    await loadOnlineData();
+    emit(AppointmentState.loading());
+    if (await getAppointmentsLength() == 0) {
+      await loadOnlineData();
+    } else {
+      await loadLocalData();
+      await loadOnlineData();
+    }
   }
 
   Future<void> loadLocalData() async {
@@ -117,6 +122,10 @@ class AppointmentCubit extends Cubit<AppointmentState> {
             .toList();
     log(appointments.toString());
     return appointments;
+  }
+
+  Future<int> getAppointmentsLength() async {
+    return (await (db.select(db.appointments).get())).length;
   }
 
   insertAppointment(appointments) async {

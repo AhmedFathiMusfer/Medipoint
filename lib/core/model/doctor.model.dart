@@ -27,7 +27,9 @@ class DoctorModel {
   final DoctorStatus status;
   final bool isVerified;
   final String? degreeDocument;
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  Review? review;
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<WorkingHour> workingHours;
 
   DoctorModel({
@@ -45,6 +47,7 @@ class DoctorModel {
     this.about,
     this.rating,
     this.reviews,
+    this.review,
     this.addressLine1,
     this.addressLine2,
     required this.status,

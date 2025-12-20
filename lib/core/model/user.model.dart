@@ -7,7 +7,7 @@ class UserModel {
   @JsonKey(name: 'full_name')
   final String fullName;
   final String email;
-  final String password;
+  final String? password;
   final String? image;
   final String? gender;
   final String role;
@@ -16,7 +16,7 @@ class UserModel {
     required this.id,
     required this.fullName,
     required this.email,
-    required this.password,
+    this.password,
     required this.role,
     this.image,
     this.gender,

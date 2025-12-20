@@ -27,7 +27,7 @@ class BookAppointmentCubit extends Cubit<BookAppointmentState> {
               workingHours,
               DateTime.parse(workingHours[0].startTime),
             )
-            : [] as List<WorkingHour>;
+            : List<WorkingHour>.empty(growable: true);
     emit(
       BookAppointmentState.success(
         allowedWeekdays: allowedWeekdays,
@@ -66,6 +66,11 @@ class BookAppointmentCubit extends Cubit<BookAppointmentState> {
   }
 
   Future<void> addBooking(int workingHourId) async {
+    state.mapOrNull(
+      success: (state) {
+        emit(state.copyWith(isBookingInProgress: true));
+      },
+    );
     var result = await booKing(workingHourId);
     if (result == true) {
       state.mapOrNull(
@@ -74,6 +79,11 @@ class BookAppointmentCubit extends Cubit<BookAppointmentState> {
         },
       );
     }
+    state.mapOrNull(
+      success: (state) {
+        emit(state.copyWith(isBookingInProgress: false));
+      },
+    );
   }
 
   List<DateTime> getAllowedWeekdays(List<WorkingHour> workingHours) {

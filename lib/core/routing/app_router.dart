@@ -1,3 +1,4 @@
+import 'package:diagno_bot/core/database/drift_db.dart';
 import 'package:diagno_bot/core/enum/pages.dart';
 import 'package:diagno_bot/core/model/doctor.model.dart';
 import 'package:diagno_bot/core/routing/router.dart';
@@ -15,6 +16,8 @@ import 'package:diagno_bot/features/appointment/bookAppointment/cubit/bookAppoin
 import 'package:diagno_bot/features/doctor/doctorDetails/cubit/doctorDetails.cubit.dart';
 import 'package:diagno_bot/features/doctor/doctorDetails/cubit/doctorDetails.state.dart';
 import 'package:diagno_bot/features/doctor/doctorDetails/view/doctorDetails.view.dart';
+import 'package:diagno_bot/features/doctor/doctorReviews/cubit/doctorReviews.cubit.dart';
+import 'package:diagno_bot/features/doctor/doctorReviews/view/reviews.view.dart';
 import 'package:diagno_bot/features/doctor/index/cubit/doctors.cubit.dart';
 import 'package:diagno_bot/features/doctor/index/view/index.view.dart';
 import 'package:diagno_bot/features/home/cubit/home.cubit.dart';
@@ -37,6 +40,16 @@ class AppRouter {
   static final navigatorKey = GlobalKey<NavigatorState>();
   Route generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case Routers.doctorReviewsView:
+        var doctorId = settings.arguments as String? ?? "0";
+        return PageRouteBuilder(
+          pageBuilder:
+              (context, animation, secondaryAnimation) => BlocProvider(
+                create: (_) => DoctorReviewsCubit(doctorId)..loadAll(),
+                child: DoctorReviewsView(doctorId: doctorId),
+              ),
+          transitionDuration: Duration.zero,
+        );
       case Routers.specialtiesView:
         return PageRouteBuilder(
           pageBuilder:
@@ -100,7 +113,9 @@ class AppRouter {
               (context, animation, secondaryAnimation) => BlocProvider(
                 create:
                     (_) => BookAppointmentCubit(
-                      workingHours: doctor?.workingHours ?? [],
+                      workingHours:
+                          doctor?.workingHours ??
+                          List<WorkingHour>.empty(growable: true),
                       doctorId: doctor?.userId ?? '',
                     )..loading(),
                 child: BookAppointmentView(),
@@ -147,8 +162,11 @@ class AppRouter {
       case Routers.chatView:
         return PageRouteBuilder(
           pageBuilder:
-              (context, animation, secondaryAnimation) => BlocProvider(
-                create: (_) => ChatCubit()..createSession(),
+              (context, animation, secondaryAnimation) => BlocProvider.value(
+                value:
+                    BlocProvider.of<ChatCubit>(
+                      context,
+                    ).checkIfSessionIsExitOrNo(),
                 child: const ChatView(),
               ),
           transitionDuration: Duration.zero,

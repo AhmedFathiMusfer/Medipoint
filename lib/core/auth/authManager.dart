@@ -42,6 +42,7 @@ class AuthManager {
     log(token.toString(), name: 'token');
     accessToken = token["access"];
     refreshToken = token["refresh"];
+    await setUser(token["user"]);
     final prefs = await SharedPreferences.getInstance();
     prefs.setString("refresh", refreshToken!);
     prefs.setString("access", accessToken!);
@@ -58,6 +59,7 @@ class AuthManager {
     currentUser = null;
     final prefs = await SharedPreferences.getInstance();
     await AppDatabase().clearAllTables();
+    prefs.clear();
     AppRouter.navigatorKey.currentState!.pushNamedAndRemoveUntil(
       Routers.loginView,
       (_) => false,

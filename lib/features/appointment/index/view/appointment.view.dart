@@ -27,113 +27,79 @@ class _AppointmentViewState extends State<AppointmentView>
   Widget build(BuildContext context) {
     return BaseView(
       title: 'My Booking',
-
       child: BlocBuilder<AppointmentCubit, AppointmentState>(
-        builder:
-            (context, state) => Column(
-              children: [
-                // 🔥 TabBar خارج الـ AppBar
-                Container(
-                  color: Colors.white,
-                  child: TabBar(
-                    controller: controller,
-                    labelColor: ColorManager.primaryColor,
-                    unselectedLabelColor: Colors.grey,
-                    indicatorColor: ColorManager.primaryColor,
-                    labelStyle: const TextStyle(fontWeight: FontWeight.bold),
-                    tabs: const [
-                      Tab(text: "Upcoming"),
-                      Tab(text: "Completed"),
-                      Tab(text: "Canceled"),
-                    ],
+        builder: (context, state) {
+          return state.maybeWhen(
+            loading:
+                () => Center(
+                  child: CircularProgressIndicator(
+                    color: ColorManager.primaryColor,
                   ),
                 ),
-                const Divider(height: 1),
-                Expanded(
-                  child: TabBarView(
-                    controller: controller,
-                    children: [
-                      state.maybeMap(
-                        success: (value) {
-                          return ListView(
-                            padding: const EdgeInsets.all(16),
-                            children: [
-                              ...value.appointments
-                                  .map(
-                                    (appointment) => _bookingCard(
-                                      date: appointment.dateTime,
-                                      name: appointment.doctor.fullName,
-                                      specialty: appointment.doctor.specialty,
-                                      clinic:
-                                          appointment.doctor.addressLine1 ?? '',
-                                      image:
-                                          appointment.doctor.image ??
-                                          "https://i.pravatar.cc/300?img=60",
-                                      actions: [
-                                        _smallBtn(
-                                          "Cancel",
-                                          Colors.grey.shade200,
-                                          ColorManager.primaryColor,
-                                        ),
-                                        _smallBtn(
-                                          "Reschedule",
-                                          ColorManager.primaryColor,
-                                          Colors.white,
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                  .toList(),
-                            ],
-                          );
-                        },
-                        orElse:
-                            () => const Center(
-                              child: Text("No Upcoming Bookings"),
+            success: (appointments) {
+              return Column(
+                children: [
+                  Container(
+                    color: Colors.white,
+                    child: TabBar(
+                      controller: controller,
+                      labelColor: ColorManager.primaryColor,
+                      unselectedLabelColor: Colors.grey,
+                      indicatorColor: ColorManager.primaryColor,
+                      labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+                      tabs: const [
+                        Tab(text: "Upcoming"),
+                        Tab(text: "Completed"),
+                        Tab(text: "Canceled"),
+                      ],
+                    ),
+                  ),
+                  const Divider(height: 1),
+                  Expanded(
+                    child: TabBarView(
+                      controller: controller,
+                      children: [
+                        ListView(
+                          padding: const EdgeInsets.all(16),
+                          children: [
+                            ...appointments.map(
+                              (appointment) => _bookingCard(
+                                date: appointment.dateTime,
+                                name: appointment.doctor.fullName,
+                                specialty: appointment.doctor.specialty,
+                                clinic: appointment.doctor.addressLine1 ?? '',
+                                image:
+                                    appointment.doctor.image ??
+                                    "https://i.pravatar.cc/300?img=60",
+                                actions: [
+                                  _smallBtn(
+                                    "Cancel",
+                                    Colors.grey.shade200,
+                                    ColorManager.primaryColor,
+                                  ),
+                                  _smallBtn(
+                                    "Reschedule",
+                                    ColorManager.primaryColor,
+                                    Colors.white,
+                                  ),
+                                ],
+                              ),
                             ),
-                      ),
-                      _buildCompleted(),
-                      _buildCanceled(),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-      ),
-    );
-  }
+                          ],
+                        ),
 
-  Widget _buildUpcoming() {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        _bookingCard(
-          date: "May 22, 2023 - 10.00 AM",
-          name: "Dr. James Robinson",
-          specialty: "Orthopedic Surgery",
-          clinic: "Elite Ortho Clinic, USA",
-          image: "https://i.pravatar.cc/300?img=60",
-          actions: [
-            _smallBtn(
-              "Cancel",
-              Colors.grey.shade200,
-              ColorManager.primaryColor,
-            ),
-            _smallBtn("Reschedule", ColorManager.primaryColor, Colors.white),
-          ],
-        ),
-        _bookingCard(
-          date: "June 14, 2023 - 15.00 PM",
-          name: "Dr. Daniel Lee",
-          specialty: "Gastroenterologist",
-          clinic: "Digestive Institute, USA",
-          image: "https://i.pravatar.cc/300?img=60",
-          actions: [
-            _smallBtn("Cancel", Colors.grey.shade200, Colors.black),
-            _smallBtn("Reschedule", Colors.black, Colors.white),
-          ],
-        ),
-      ],
+                        _buildCompleted(),
+                        _buildCanceled(),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+            orElse: () => SizedBox(),
+          );
+        },
+      ),
     );
   }
 

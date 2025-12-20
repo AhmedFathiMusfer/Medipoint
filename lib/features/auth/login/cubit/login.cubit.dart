@@ -18,7 +18,7 @@ class LoginCubit extends Cubit<LoginState> {
     log(user.toString());
     if (user != null) {
       form.emailController.text = user.email;
-      form.passwordController.text = user.password;
+      form.passwordController.text = user.password ?? "";
     }
   }
 

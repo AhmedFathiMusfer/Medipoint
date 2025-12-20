@@ -1,6 +1,7 @@
 import 'package:diagno_bot/core/baseView/base.view.dart';
 import 'package:diagno_bot/core/helpers/extensions.dart';
 import 'package:diagno_bot/core/routing/router.dart';
+import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/core/widgets/simpleButton.dart';
 import 'package:diagno_bot/features/appointment/bookAppointment/cubit/bookAppointment.cubit.dart';
 import 'package:diagno_bot/features/appointment/bookAppointment/cubit/bookAppointment.state.dart';
@@ -67,6 +68,9 @@ class BookAppointmentView extends StatelessWidget {
                         lastDay: DateTime.utc(2030),
                         focusedDay: value.selectedDate ?? DateTime.now(),
                         calendarFormat: CalendarFormat.month,
+                        headerStyle: const HeaderStyle(
+                          formatButtonVisible: false,
+                        ),
                         daysOfWeekVisible: true,
                         selectedDayPredicate:
                             (day) => isSameDay(day, value.selectedDate),
@@ -165,7 +169,9 @@ class BookAppointmentView extends StatelessWidget {
                       isLoading: value.isBookingInProgress,
                       text: 'Book',
                       onPressed: () async {
-                        if (value.selectedHour == null) {
+                        if (value.selectedHour == null ||
+                            value.selectedDate == null) {
+                          AppSnackBar.error("pleace select the date and time ");
                           return;
                         }
                         await bookAppointmentCubit.addBooking(

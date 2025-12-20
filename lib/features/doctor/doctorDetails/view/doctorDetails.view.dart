@@ -17,6 +17,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class DoctorDetailsView extends StatelessWidget {
   const DoctorDetailsView({super.key});
 
+  get context => null;
+
   @override
   Widget build(BuildContext context) {
     var doctorDetailsCubit = context.read<DoctorDetailsCubit>();
@@ -43,6 +45,9 @@ class DoctorDetailsView extends StatelessWidget {
                     _aboutSection(about: state.doctor.about),
                     30.verticalSpace,
                     _workingTime(state.doctor.workingHours),
+                    30.verticalSpace,
+
+                    _review(state.doctor.review, state.doctor.userId, context),
                     30.verticalSpace,
                     SimpleButton(
                       onPressed: () {
@@ -137,6 +142,36 @@ class DoctorDetailsView extends StatelessWidget {
             style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400),
           );
         }),
+      ],
+    );
+  }
+
+  Widget _review(Review? review, String doctorId, BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "Reviews",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.sp),
+            ),
+            TextButton(
+              onPressed: () {
+                context.pushNamed(
+                  Routers.doctorReviewsView,
+                  arguments: doctorId,
+                );
+              },
+              child: Text(
+                'show',
+                style: TextStyle(color: Colors.blue, fontSize: 12.sp),
+              ),
+            ),
+          ],
+        ),
+        10.verticalSpace,
       ],
     );
   }
