@@ -162,7 +162,7 @@ class HomeCubit extends Cubit<HomeState> {
         jsonList
             .map<DoctorModel>((doctor) => DoctorModel.fromJson(doctor))
             .toList();
-    log(doctors.toString());
+    //log(doctors.toString());
     return doctors;
   }
 

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:diagno_bot/core/database/drift_db.dart';
 import 'package:diagno_bot/core/helpers/networkHelper.dart';
 import 'package:diagno_bot/core/networking/errors/errorMesage.dart';
@@ -17,19 +19,24 @@ class DoctorReviewsCubit extends Cubit<DoctorReviewsState> {
   DoctorReviewsCubit(this.doctorId) : super(const DoctorReviewsState.initial());
   Future<void> loadAll() async {
     try {
-      emit(DoctorReviewsState.loading());
+      if (!isClosed) {
+        emit(DoctorReviewsState.loading());
+      }
       await loadLocalData();
       await loadOnLineData();
     } catch (e) {
       AppSnackBar.error(
-        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected) +
+            e.toString(),
       );
     }
   }
 
   loadLocalData() async {
     final reviews = await getReviews();
-    emit(DoctorReviewsState.success(reviews: reviews));
+    if (!isClosed) {
+      emit(DoctorReviewsState.success(reviews: reviews));
+    }
   }
 
   loadOnLineData() async {
@@ -74,8 +81,9 @@ class DoctorReviewsCubit extends Cubit<DoctorReviewsState> {
           body: {"doctor": doctorId, "rating": rating, "content": content},
         ),
         method: RemoteMethod.post,
-        onSuccess: (_, __) async {
-          await loadLocalData(); // refresh
+        onSuccess: (reponse, statusCode) async {
+          await insertreview(reponse.data);
+          await loadLocalData();
           AppSnackBar.success("Review added successfully");
         },
         onError: (_, statusCode) {
@@ -99,15 +107,34 @@ class DoctorReviewsCubit extends Cubit<DoctorReviewsState> {
     return reviews;
   }
 
+  insertreview(review) async {
+    log(review.toString() + "-----------------");
+    return await db
+        .into(db.reviews)
+        .insert(
+          Review.fromJson({
+            ...review,
+            'doctorId': review['doctor'],
+            'patientId': review['patient'],
+            'createdAt': review['created_at'],
+            'updatedAt': review['updated_at'],
+          }),
+          mode: InsertMode.insertOrReplace,
+        );
+  }
+
   insertReviews(reviews) async {
     await db.batch((batch) {
       batch.insertAllOnConflictUpdate(
         db.reviews,
         reviews.map<Review>((review) {
-          review['doctorId'] = review['doctor'];
-          review['patientId'] = review['patient'];
-
-          return Review.fromJson(review);
+          return Review.fromJson({
+            ...review,
+            'doctorId': review['doctor'],
+            'patientId': review['patient'],
+            'createdAt': review['created_at'],
+            'updatedAt': review['updated_at'],
+          });
         }),
       );
     });

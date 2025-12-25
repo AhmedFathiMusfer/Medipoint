@@ -1,10 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:diagno_bot/core/helpers/extensions.dart';
 import 'package:diagno_bot/core/model/doctor.model.dart';
-import 'package:diagno_bot/core/routing/router.dart';
-import 'package:diagno_bot/core/theming/color.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DoctorCard extends StatelessWidget {
@@ -37,7 +33,7 @@ class DoctorCard extends StatelessWidget {
               fit: BoxFit.cover,
               errorWidget: (contex, url, _) {
                 return Image.asset(
-                  "assets/image/final_on_obourding_image.png",
+                  "assets/image/default_doctor_image.jpg",
                   width: 70,
                   height: 70,
                   fit: BoxFit.cover,

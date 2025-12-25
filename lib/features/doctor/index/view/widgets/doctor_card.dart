@@ -58,7 +58,7 @@ class DoctorCard extends StatelessWidget {
                   fit: BoxFit.cover,
                   errorWidget: (contex, url, _) {
                     return Image.asset(
-                      "assets/image/final_on_obourding_image.png",
+                      "assets/image/default_doctor_image.jpg",
                       fit: BoxFit.cover,
                     );
                   },

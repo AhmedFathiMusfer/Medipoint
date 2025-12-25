@@ -15,9 +15,16 @@ class FolderCubit extends Cubit<FolderState> {
   FolderCubit() : super(FolderState.initial());
   AppDatabase db = AppDatabase();
   Future<void> loadAll() async {
-    emit(FolderState.loading());
-    await loadLocalData();
-    await loadOnlineData();
+    if (!isClosed) {
+      emit(FolderState.loading());
+    }
+
+    if (await getFolderLength() == 0) {
+      await loadOnlineData();
+    } else {
+      await loadLocalData();
+      await loadOnlineData();
+    }
   }
 
   Future<void> loadLocalData() async {
@@ -128,6 +135,10 @@ class FolderCubit extends Cubit<FolderState> {
     }
     return await (db.select(db.patientFolders)
       ..where((f) => f.name.contains(name))).get();
+  }
+
+  Future<int> getFolderLength() async {
+    return (await (db.select(db.patientFolders)).get()).length;
   }
 
   insertFolder(folder) async {

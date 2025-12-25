@@ -62,27 +62,32 @@ class _FillProfilePageState extends State<EditProfilePage> {
                   return Stack(
                     alignment: Alignment.center,
                     children: [
-                      CircleAvatar(
-                        radius: 60,
-                        backgroundColor: Colors.grey[200],
-                        backgroundImage:
-                            editProfileCubit.newImagePath == null
-                                ? (editProfileCubit.form.imagePath.isNotEmpty
-                                    ? CachedNetworkImageProvider(
-                                      editProfileCubit.form.imagePath,
-                                    )
-                                    : AssetImage(
-                                          'assets/avatar_placeholder.png',
-                                        )
-                                        as ImageProvider)
-                                : FileImage(
-                                  File(editProfileCubit.newImagePath!),
-                                ),
+                      SizedBox(
+                        height: 160,
+                        child: CircleAvatar(
+                          radius: 60,
+                          backgroundColor: Colors.grey[200],
+                          backgroundImage:
+                              editProfileCubit.newImagePath == null
+                                  ? (editProfileCubit.form.imagePath.isNotEmpty
+                                      ? CachedNetworkImageProvider(
+                                        editProfileCubit.form.imagePath,
+                                      )
+                                      : AssetImage(
+                                            'assets/avatar_placeholder.png',
+                                          )
+                                          as ImageProvider)
+                                  : FileImage(
+                                    File(editProfileCubit.newImagePath!),
+                                  ),
+                        ),
                       ),
                       Positioned(
-                        bottom: 5,
-                        right: MediaQuery.of(context).size.width / 2 - 110,
+                        bottom: 9,
+                        right: MediaQuery.of(context).size.width / 2 - 130,
                         child: Container(
+                          width: 30,
+                          height: 30,
                           padding: const EdgeInsets.all(0),
                           decoration: BoxDecoration(
                             color: const Color(0xff0D1B2A),
@@ -109,7 +114,7 @@ class _FillProfilePageState extends State<EditProfilePage> {
                             icon: const Icon(
                               Icons.edit,
                               color: Colors.white,
-                              size: 18,
+                              size: 15,
                             ),
                           ),
                         ),

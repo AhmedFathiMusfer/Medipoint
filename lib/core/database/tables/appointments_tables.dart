@@ -3,7 +3,7 @@ import 'package:diagno_bot/core/database/tables/patients_tables.dart';
 import 'package:diagno_bot/core/database/tables/working_hours_tables.dart';
 import 'package:drift/drift.dart';
 
-enum AppointmentStatus { PE, PA, D, M, C, DE }
+enum AppointmentStatus { P, PE, PA, D, M, C, DE }
 
 class AppointmentStatusConverter
     extends TypeConverter<AppointmentStatus, String> {
@@ -18,6 +18,8 @@ class AppointmentStatusConverter
         return AppointmentStatus.PA; // Paid
       case 'D':
         return AppointmentStatus.D; // Done
+      case 'P':
+        return AppointmentStatus.P; // Pending
       case 'M':
         return AppointmentStatus.M; // Missed
       case 'C':
@@ -40,6 +42,8 @@ class AppointmentStatusConverter
         return AppointmentStatus.PA; // Paid
       case 'D':
         return AppointmentStatus.D; // Done
+      case 'P':
+        return AppointmentStatus.P; // Pending
       case 'M':
         return AppointmentStatus.M; // Missed
       case 'C':

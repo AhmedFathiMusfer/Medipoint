@@ -8,6 +8,7 @@ import 'package:diagno_bot/features/doctor/doctorDetails/cubit/doctorDetails.cub
 import 'package:diagno_bot/features/doctor/doctorDetails/cubit/doctorDetails.state.dart';
 import 'package:diagno_bot/features/doctor/doctorDetails/view/widgets/doctor_card.dart';
 import 'package:diagno_bot/features/doctor/doctorDetails/view/widgets/single_stat.dart';
+import 'package:diagno_bot/features/doctor/doctorReviews/view/widgets/review_card.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -172,6 +173,10 @@ class DoctorDetailsView extends StatelessWidget {
           ],
         ),
         10.verticalSpace,
+        if (review != null)
+          ReviewCard(review: review)
+        else
+          Text("No reviews yet."),
       ],
     );
   }

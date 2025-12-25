@@ -68,9 +68,7 @@ class _AppointmentViewState extends State<AppointmentView>
                                 name: appointment.doctor.fullName,
                                 specialty: appointment.doctor.specialty,
                                 clinic: appointment.doctor.addressLine1 ?? '',
-                                image:
-                                    appointment.doctor.image ??
-                                    "https://i.pravatar.cc/300?img=60",
+                                image: appointment.doctor.image ?? "",
                                 actions: [
                                   _smallBtn(
                                     "Cancel",
@@ -112,7 +110,7 @@ class _AppointmentViewState extends State<AppointmentView>
           name: "Dr. Sarah Johnson",
           specialty: "Gynecologist",
           clinic: "Women's Health Clinic",
-          image: "https://i.pravatar.cc/300?img=60",
+          image: "",
           actions: [
             _smallBtn("Re-Book", Colors.grey.shade200, Colors.black),
             _smallBtn("Add Review", Colors.black, Colors.white),
@@ -123,7 +121,7 @@ class _AppointmentViewState extends State<AppointmentView>
           name: "Dr. Michael Chang",
           specialty: "Cardiologist",
           clinic: "HeartCare Center, USA",
-          image: "https://i.pravatar.cc/300?img=60",
+          image: "",
           actions: [
             _smallBtn(
               "Re-Book",
@@ -177,6 +175,14 @@ class _AppointmentViewState extends State<AppointmentView>
                   height: 70,
                   width: 70,
                   fit: BoxFit.cover,
+                  errorWidget: (contex, url, _) {
+                    return Image.asset(
+                      "assets/image/default_doctor_image.jpg",
+                      width: 70,
+                      height: 70,
+                      fit: BoxFit.cover,
+                    );
+                  },
                 ),
               ),
               const SizedBox(width: 12),

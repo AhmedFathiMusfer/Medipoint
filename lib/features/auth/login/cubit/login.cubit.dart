@@ -1,6 +1,8 @@
 import 'dart:developer';
 import 'package:diagno_bot/core/auth/authManager.dart';
 import 'package:diagno_bot/core/helpers/networkHelper.dart';
+import 'package:diagno_bot/core/networking/errors/errorMesage.dart';
+import 'package:diagno_bot/core/networking/errors/exceptions.enum.dart';
 import 'package:diagno_bot/core/networking/remote/apiConstants.dart';
 import 'package:diagno_bot/core/networking/remote/remoteProvider.dart';
 import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
@@ -39,9 +41,14 @@ class LoginCubit extends Cubit<LoginState> {
             if (statsCode == 400) {
               AppSnackBar.error('the data entry is inValid');
               emit(LoginState.initial(loading: false));
+            } else if (statsCode == 401) {
+              AppSnackBar.error('Incorrect email or password.');
+              emit(LoginState.initial(loading: false));
             } else {
               AppSnackBar.error(
-                'an error ocurred. please check your internt connection ',
+                ErrorMessages.instance.fromExceptionType(
+                  ExceptionTypes.unexpected,
+                ),
               );
               emit(LoginState.initial(loading: false));
             }
@@ -50,7 +57,9 @@ class LoginCubit extends Cubit<LoginState> {
       } else {
         emit(LoginState.initial(loading: false));
 
-        AppSnackBar.error(' please check your internt connection');
+        AppSnackBar.error(
+          ErrorMessages.instance.fromExceptionType(ExceptionTypes.connection),
+        );
       }
     }
   }

@@ -16,9 +16,6 @@ import 'package:image_picker/image_picker.dart';
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
 
-  final String avatarPath =
-      '/mnt/data/c2304567-a6b1-45ca-8c5f-841ef95135ae.png';
-
   @override
   Widget build(BuildContext context) {
     var profileCubit = context.read<ProfileCubit>();
@@ -49,9 +46,7 @@ class ProfileView extends StatelessWidget {
                           radius: avatarSize / 2,
                           backgroundColor: Colors.grey[200],
                           backgroundImage:
-                              File(avatarPath).existsSync()
-                                  ? FileImage(File(avatarPath))
-                                  : (AuthManager().currentUser?.image != null &&
+                              (AuthManager().currentUser?.image != null &&
                                       AuthManager()
                                           .currentUser!
                                           .image!
@@ -63,9 +58,11 @@ class ProfileView extends StatelessWidget {
                                       as ImageProvider,
                         ),
                         Positioned(
-                          bottom: 6,
-                          right: MediaQuery.of(context).size.width / 2 - 120,
+                          bottom: 9,
+                          right: MediaQuery.of(context).size.width / 2 - 130,
                           child: Container(
+                            width: 30,
+                            height: 30,
                             padding: const EdgeInsets.all(0),
                             decoration: BoxDecoration(
                               color: Colors.blueGrey[900],
@@ -99,7 +96,7 @@ class ProfileView extends StatelessWidget {
                               icon: const Icon(
                                 Icons.edit,
                                 color: Colors.white,
-                                size: 18,
+                                size: 15,
                               ),
                             ),
                           ),

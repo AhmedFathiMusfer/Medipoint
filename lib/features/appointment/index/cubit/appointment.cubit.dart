@@ -38,7 +38,8 @@ class AppointmentCubit extends Cubit<AppointmentState> {
       }
     } catch (e) {
       AppSnackBar.error(
-        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected) +
+            e.toString(),
       );
     }
   }
@@ -56,7 +57,8 @@ class AppointmentCubit extends Cubit<AppointmentState> {
       await loadLocalData();
     } catch (e) {
       AppSnackBar.error(
-        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected) +
+            e.toString(),
       );
     }
   }
@@ -78,8 +80,9 @@ class AppointmentCubit extends Cubit<AppointmentState> {
           } catch (ex) {
             AppSnackBar.error(
               ErrorMessages.instance.fromExceptionType(
-                ExceptionTypes.unexpected,
-              ),
+                    ExceptionTypes.unexpected,
+                  ) +
+                  ex.toString(),
             );
           }
         },
