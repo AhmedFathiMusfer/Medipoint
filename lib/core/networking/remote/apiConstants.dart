@@ -1,5 +1,5 @@
 class ApiConstants {
-  static const String baseUrl = "https://ymart.app/api/";
+  static const String baseUrl = "https://api.decodaai.com/api/";
 
   static const String loginEndpoint = "auth/token/";
   static const String registerEndpoint = "auth/register/";
