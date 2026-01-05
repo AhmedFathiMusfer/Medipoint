@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:diagno_bot/core/baseView/base.view.dart';
+import 'package:diagno_bot/core/database/tables/appointments_tables.dart';
+import 'package:diagno_bot/core/model/appointment.model.dart';
 import 'package:diagno_bot/core/theming/color.dart';
 import 'package:diagno_bot/features/appointment/index/cubit/appointment.cubit.dart';
 import 'package:diagno_bot/features/appointment/index/cubit/appointment.state.dart';
@@ -21,6 +23,12 @@ class _AppointmentViewState extends State<AppointmentView>
   void initState() {
     controller = TabController(length: 3, vsync: this);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -62,32 +70,48 @@ class _AppointmentViewState extends State<AppointmentView>
                         ListView(
                           padding: const EdgeInsets.all(16),
                           children: [
-                            ...appointments.map(
-                              (appointment) => _bookingCard(
-                                date: appointment.dateTime,
-                                name: appointment.doctor.fullName,
-                                specialty: appointment.doctor.specialty,
-                                clinic: appointment.doctor.addressLine1 ?? '',
-                                image: appointment.doctor.image ?? "",
-                                actions: [
-                                  _smallBtn(
-                                    "Cancel",
-                                    Colors.grey.shade200,
-                                    ColorManager.primaryColor,
+                            ...appointments
+                                .where(
+                                  (appointment) =>
+                                      appointment.status ==
+                                      AppointmentStatus.PE,
+                                )
+                                .map(
+                                  (appointment) => _bookingCard(
+                                    appointment: appointment,
+                                    actions: [
+                                      _smallBtn(
+                                        "Cancel",
+                                        Colors.grey.shade200,
+                                        ColorManager.primaryColor,
+                                      ),
+                                      _smallBtn(
+                                        "pay",
+                                        ColorManager.primaryColor,
+                                        Colors.white,
+                                      ),
+                                    ],
                                   ),
-                                  _smallBtn(
-                                    "Reschedule",
-                                    ColorManager.primaryColor,
-                                    Colors.white,
-                                  ),
-                                ],
-                              ),
-                            ),
+                                ),
                           ],
                         ),
 
-                        _buildCompleted(),
-                        _buildCanceled(),
+                        _buildCompleted(
+                          appointments
+                              .where(
+                                (appointment) =>
+                                    appointment.status == AppointmentStatus.D,
+                              )
+                              .toList(),
+                        ),
+                        _buildCanceled(
+                          appointments
+                              .where(
+                                (appointment) =>
+                                    appointment.status == AppointmentStatus.C,
+                              )
+                              .toList(),
+                        ),
                       ],
                     ),
                   ),
@@ -101,50 +125,38 @@ class _AppointmentViewState extends State<AppointmentView>
     );
   }
 
-  Widget _buildCompleted() {
+  Widget _buildCompleted(List<AppointmentModel> appointments) {
+    if (appointments.isEmpty) {
+      return const Center(child: Text("No Completed Bookings"));
+    }
+
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        _bookingCard(
-          date: "March 12, 2023 - 11.00 AM",
-          name: "Dr. Sarah Johnson",
-          specialty: "Gynecologist",
-          clinic: "Women's Health Clinic",
-          image: "",
-          actions: [
-            _smallBtn("Re-Book", Colors.grey.shade200, Colors.black),
-            _smallBtn("Add Review", Colors.black, Colors.white),
-          ],
-        ),
-        _bookingCard(
-          date: "March 2, 2023 - 12.00 AM",
-          name: "Dr. Michael Chang",
-          specialty: "Cardiologist",
-          clinic: "HeartCare Center, USA",
-          image: "",
-          actions: [
-            _smallBtn(
-              "Re-Book",
-              Colors.grey.shade200,
-              ColorManager.primaryColor,
-            ),
-            _smallBtn("Add Review", ColorManager.primaryColor, Colors.white),
-          ],
+        ...appointments.map(
+          (appointment) => _bookingCard(appointment: appointment, actions: []),
         ),
       ],
     );
   }
 
-  Widget _buildCanceled() {
-    return const Center(child: Text("No Canceled Bookings"));
+  Widget _buildCanceled(List<AppointmentModel> appointments) {
+    if (appointments.isEmpty) {
+      return const Center(child: Text("No Canceled Bookings"));
+    }
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        ...appointments.map(
+          (appointment) => _bookingCard(appointment: appointment, actions: []),
+        ),
+      ],
+    );
   }
 
   Widget _bookingCard({
-    required String date,
-    required String name,
-    required String specialty,
-    required String clinic,
-    required String image,
+    required AppointmentModel appointment,
+
     required List<Widget> actions,
   }) {
     return Container(
@@ -164,14 +176,17 @@ class _AppointmentViewState extends State<AppointmentView>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(date, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(
+            appointment.dateTime,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 12),
           Row(
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: CachedNetworkImage(
-                  imageUrl: image,
+                  imageUrl: appointment.doctor.image ?? '',
                   height: 70,
                   width: 70,
                   fit: BoxFit.cover,
@@ -191,13 +206,16 @@ class _AppointmentViewState extends State<AppointmentView>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      name,
+                      appointment.doctor.fullName,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text(specialty, style: const TextStyle(color: Colors.grey)),
+                    Text(
+                      appointment.doctor.specialty,
+                      style: const TextStyle(color: Colors.grey),
+                    ),
                     Row(
                       children: [
                         const Icon(
@@ -208,7 +226,7 @@ class _AppointmentViewState extends State<AppointmentView>
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
-                            clinic,
+                            appointment.doctor.addressLine1 ?? '',
                             style: const TextStyle(color: Colors.grey),
                           ),
                         ),
@@ -220,6 +238,7 @@ class _AppointmentViewState extends State<AppointmentView>
             ],
           ),
           const SizedBox(height: 16),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: actions,

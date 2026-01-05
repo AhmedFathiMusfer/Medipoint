@@ -1,6 +1,7 @@
 import 'package:diagno_bot/core/baseView/base.view.dart';
 import 'package:diagno_bot/core/helpers/extensions.dart';
 import 'package:diagno_bot/core/routing/router.dart';
+import 'package:diagno_bot/core/theming/color.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/core/widgets/simpleButton.dart';
 import 'package:diagno_bot/features/appointment/bookAppointment/cubit/bookAppointment.cubit.dart';
@@ -27,10 +28,11 @@ class BookAppointmentView extends StatelessWidget {
               orElse: () => {},
               success: (value) {
                 if (value.isSuccessBooking) {
-                  context.pushNamedAndRemoveUntil(
-                    Routers.appointmentView,
-                    predicate: (root) => false,
-                  );
+                  _showPaymentDialog(context, 1);
+                  // context.pushNamedAndRemoveUntil(
+                  //   Routers.appointmentView,
+                  //   predicate: (root) => false,
+                  // );
                 }
               },
             );
@@ -188,4 +190,52 @@ class BookAppointmentView extends StatelessWidget {
       ),
     );
   }
+}
+
+void _showPaymentDialog(BuildContext context, int bookingId) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) {
+      return AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text("Complete Payment"),
+        content: const Text(
+          "Your appointment is booked successfully.\n"
+          "Would you like to pay now?",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              context.pushNamedAndRemoveUntil(
+                Routers.appointmentView,
+                predicate: (route) => false,
+              );
+            },
+            child: const Text(
+              "Pay Later",
+              style: TextStyle(color: ColorManager.primaryColor),
+            ),
+          ),
+          ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor: WidgetStatePropertyAll(
+                ColorManager.primaryColor,
+              ),
+            ),
+            onPressed: () {
+              // Navigator.pop(context);
+              // context.pushNamed(
+              //   Routers.paymentView,
+              //   arguments: bookingId,
+              // );
+            },
+            child: const Text("Pay Now", style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      );
+    },
+  );
 }
