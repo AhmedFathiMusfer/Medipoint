@@ -3,6 +3,7 @@ import 'package:diagno_bot/core/baseView/base.view.dart';
 import 'package:diagno_bot/core/database/tables/appointments_tables.dart';
 import 'package:diagno_bot/core/model/appointment.model.dart';
 import 'package:diagno_bot/core/theming/color.dart';
+import 'package:diagno_bot/core/widgets/payment.dart';
 import 'package:diagno_bot/features/appointment/index/cubit/appointment.cubit.dart';
 import 'package:diagno_bot/features/appointment/index/cubit/appointment.state.dart';
 import 'package:flutter/material.dart';
@@ -84,11 +85,20 @@ class _AppointmentViewState extends State<AppointmentView>
                                         "Cancel",
                                         Colors.grey.shade200,
                                         ColorManager.primaryColor,
+                                        onTap: () {},
                                       ),
                                       _smallBtn(
                                         "pay",
+
                                         ColorManager.primaryColor,
                                         Colors.white,
+                                        onTap: () async {
+                                          await makePayment(
+                                            appointmentId: appointment.id,
+                                            onSuccess: () {},
+                                            onError: () {},
+                                          );
+                                        },
                                       ),
                                     ],
                                   ),
@@ -248,16 +258,26 @@ class _AppointmentViewState extends State<AppointmentView>
     );
   }
 
-  Widget _smallBtn(String text, Color bg, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(25),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(color: color, fontWeight: FontWeight.bold),
+  Widget _smallBtn(
+    String text,
+    Color bg,
+    Color color, {
+    required Function onTap,
+  }) {
+    return GestureDetector(
+      onTap: () async {
+        onTap();
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(25),
+        ),
+        child: Text(
+          text,
+          style: TextStyle(color: color, fontWeight: FontWeight.bold),
+        ),
       ),
     );
   }

@@ -2,6 +2,8 @@ class Routers {
   static const String onBoardingView = '/onBoardingView';
   static const String loginView = '/loginView';
   static const String registrationView = '/registrationView';
+  static const String forgetPasswordView = '/forgetPasswordView';
+  static const String verifyCodeView = '/verifyCodeView';
   static const String homeView = '/homeView';
   static const String specialtiesView = '/specialtiesView';
   static const String doctorsView = '/doctorsView';
@@ -9,6 +11,7 @@ class Routers {
   static const String doctorReviewsView = '/doctorReviewsView';
   static const String appointmentView = '/appointmentView ';
   static const String bookingView = '/bookAppointmentView ';
+  static const String paymentView = '/paymentView';
   static const String chatView = '/ChatView';
   static const String folderView = '/folder';
   static const String fileView = '/file';

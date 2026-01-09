@@ -10,7 +10,13 @@ import 'package:diagno_bot/features/appointment/index/cubit/appointment.cubit.da
 import 'package:diagno_bot/features/appointment/index/view/appointment.view.dart';
 import 'package:diagno_bot/features/auth/login/cubit/login.cubit.dart';
 import 'package:diagno_bot/features/auth/login/view/login.view.dart';
+import 'package:diagno_bot/features/auth/forgetPassword/cubit/forgetPassword.cubit.dart';
+import 'package:diagno_bot/features/auth/forgetPassword/view/forgetPassword.view.dart';
+import 'package:diagno_bot/features/auth/forgetPassword/cubit/verifyCode.cubit.dart';
+import 'package:diagno_bot/features/auth/forgetPassword/view/verifyCode.view.dart';
 import 'package:diagno_bot/features/auth/registration/cubit/registration.cubit.dart';
+import 'package:diagno_bot/features/payment/cubit/payment.cubit.dart';
+import 'package:diagno_bot/features/payment/view/payment.view.dart';
 import 'package:diagno_bot/features/auth/registration/view/registration.view%20.dart';
 import 'package:diagno_bot/features/appointment/bookAppointment/cubit/bookAppointment.cubit.dart';
 import 'package:diagno_bot/features/doctor/doctorDetails/cubit/doctorDetails.cubit.dart';
@@ -185,6 +191,23 @@ class AppRouter {
               (_) => BlocProvider(
                 create: (_) => LoginCubit()..inital(),
                 child: const LoginView(),
+              ),
+        );
+      case Routers.forgetPasswordView:
+        return MaterialPageRoute(
+          builder:
+              (_) => BlocProvider(
+                create: (_) => ForgetPasswordCubit(),
+                child: const ForgetPasswordView(),
+              ),
+        );
+      case Routers.verifyCodeView:
+        var email = settings.arguments as String? ?? '';
+        return MaterialPageRoute(
+          builder:
+              (_) => BlocProvider(
+                create: (_) => VerifyCodeCubit(email: email),
+                child: VerifyCodeView(email: email),
               ),
         );
       default:

@@ -7,10 +7,19 @@ import 'package:diagno_bot/firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Initialize Stripe
+  WidgetsFlutterBinding.ensureInitialized();
+
+  Stripe.publishableKey =
+      'pk_test_51QpdPwBgmAvGuQnxC2gZl1aESH3myJb17u1PBIftdQWw5AXCUp4BMYl0ZEs8Ii5JXqrYlA38FZlaj9daO1HvGxnE00PJyZNSqS';
+
   await di.init();
   await AuthManager().init();
   runApp(DocApp(appRouter: AppRouter()));

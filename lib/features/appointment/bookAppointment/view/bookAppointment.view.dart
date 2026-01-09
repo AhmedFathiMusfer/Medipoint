@@ -3,6 +3,7 @@ import 'package:diagno_bot/core/helpers/extensions.dart';
 import 'package:diagno_bot/core/routing/router.dart';
 import 'package:diagno_bot/core/theming/color.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
+import 'package:diagno_bot/core/widgets/payment.dart';
 import 'package:diagno_bot/core/widgets/simpleButton.dart';
 import 'package:diagno_bot/features/appointment/bookAppointment/cubit/bookAppointment.cubit.dart';
 import 'package:diagno_bot/features/appointment/bookAppointment/cubit/bookAppointment.state.dart';
@@ -28,11 +29,7 @@ class BookAppointmentView extends StatelessWidget {
               orElse: () => {},
               success: (value) {
                 if (value.isSuccessBooking) {
-                  _showPaymentDialog(context, 1);
-                  // context.pushNamedAndRemoveUntil(
-                  //   Routers.appointmentView,
-                  //   predicate: (root) => false,
-                  // );
+                  _showPaymentDialog(context, 12);
                 }
               },
             );
@@ -225,12 +222,23 @@ void _showPaymentDialog(BuildContext context, int bookingId) {
                 ColorManager.primaryColor,
               ),
             ),
-            onPressed: () {
-              // Navigator.pop(context);
-              // context.pushNamed(
-              //   Routers.paymentView,
-              //   arguments: bookingId,
-              // );
+            onPressed: () async {
+              Navigator.pop(context);
+              await makePayment(
+                appointmentId: 10,
+                onSuccess: () {
+                  context.pushNamedAndRemoveUntil(
+                    Routers.appointmentView,
+                    predicate: (root) => false,
+                  );
+                },
+                onError: () {
+                  context.pushNamedAndRemoveUntil(
+                    Routers.appointmentView,
+                    predicate: (root) => false,
+                  );
+                },
+              );
             },
             child: const Text("Pay Now", style: TextStyle(color: Colors.white)),
           ),
