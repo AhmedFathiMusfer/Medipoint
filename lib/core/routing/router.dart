@@ -17,4 +17,5 @@ class Routers {
   static const String fileView = '/file';
   static const String profileView = '/profileView';
   static const String editProfileView = '/EditProfileView';
+  static const String changePasswordView = '/changePasswordView';
 }

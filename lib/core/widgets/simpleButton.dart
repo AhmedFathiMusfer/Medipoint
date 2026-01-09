@@ -16,7 +16,9 @@ class SimpleButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        onPressed();
+        if (!isLoading) {
+          onPressed();
+        }
       },
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.symmetric(vertical: 6),

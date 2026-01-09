@@ -30,6 +30,8 @@ import 'package:diagno_bot/features/home/cubit/home.cubit.dart';
 import 'package:diagno_bot/features/home/view/home.view.dart';
 import 'package:diagno_bot/features/onBoarding/onBoarding.view.dart';
 import 'package:diagno_bot/features/profile/EditProfile/view/editProfile.view.dart';
+import 'package:diagno_bot/features/profile/changePassword/cubit/changePassword.cubit.dart';
+import 'package:diagno_bot/features/profile/changePassword/view/changePassword.view.dart';
 import 'package:diagno_bot/features/profile/editProfile/cubit/editProfile.cubit.dart';
 import 'package:diagno_bot/features/profile/index/cubit/profile.cubit.dart';
 import 'package:diagno_bot/features/profile/index/view/profile.view.dart';
@@ -91,6 +93,15 @@ class AppRouter {
               (context, animation, secondaryAnimation) => BlocProvider(
                 create: (_) => EditProfileCubit(newImagePath),
                 child: EditProfilePage(),
+              ),
+          transitionDuration: Duration.zero,
+        );
+      case Routers.changePasswordView:
+        return PageRouteBuilder(
+          pageBuilder:
+              (context, animation, secondaryAnimation) => BlocProvider(
+                create: (_) => ChangePasswordCubit(),
+                child: const ChangePasswordView(),
               ),
           transitionDuration: Duration.zero,
         );
