@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'verifyCode.state.dart';
+part of 'resetPassword.state.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -12,7 +12,7 @@ part of 'verifyCode.state.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$VerifyCodeState {
+mixin _$ResetPasswordState {
 
 
 
@@ -20,7 +20,7 @@ mixin _$VerifyCodeState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VerifyCodeState);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ResetPasswordState);
 }
 
 
@@ -29,20 +29,20 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'VerifyCodeState()';
+  return 'ResetPasswordState()';
 }
 
 
 }
 
 /// @nodoc
-class $VerifyCodeStateCopyWith<$Res>  {
-$VerifyCodeStateCopyWith(VerifyCodeState _, $Res Function(VerifyCodeState) __);
+class $ResetPasswordStateCopyWith<$Res>  {
+$ResetPasswordStateCopyWith(ResetPasswordState _, $Res Function(ResetPasswordState) __);
 }
 
 
-/// Adds pattern-matching-related methods to [VerifyCodeState].
-extension VerifyCodeStatePatterns on VerifyCodeState {
+/// Adds pattern-matching-related methods to [ResetPasswordState].
+extension ResetPasswordStatePatterns on ResetPasswordState {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -55,12 +55,13 @@ extension VerifyCodeStatePatterns on VerifyCodeState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Success value)?  success,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Success value)?  success,TResult Function( _Error value)?  error,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Success() when success != null:
-return success(_that);case _:
+return success(_that);case _Error() when error != null:
+return error(_that);case _:
   return orElse();
 
 }
@@ -78,12 +79,13 @@ return success(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Success value)  success,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Success value)  success,required TResult Function( _Error value)  error,}){
 final _that = this;
 switch (_that) {
 case _Initial():
 return initial(_that);case _Success():
-return success(_that);case _:
+return success(_that);case _Error():
+return error(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -100,12 +102,13 @@ return success(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Success value)?  success,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Success value)?  success,TResult? Function( _Error value)?  error,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Success() when success != null:
-return success(_that);case _:
+return success(_that);case _Error() when error != null:
+return error(_that);case _:
   return null;
 
 }
@@ -122,11 +125,12 @@ return success(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( bool loading)?  initial,TResult Function( String token,  String email)?  success,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( bool loading)?  initial,TResult Function()?  success,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that.loading);case _Success() when success != null:
-return success(_that.token,_that.email);case _:
+return success();case _Error() when error != null:
+return error(_that.message);case _:
   return orElse();
 
 }
@@ -144,11 +148,12 @@ return success(_that.token,_that.email);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( bool loading)  initial,required TResult Function( String token,  String email)  success,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( bool loading)  initial,required TResult Function()  success,required TResult Function( String message)  error,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial(_that.loading);case _Success():
-return success(_that.token,_that.email);case _:
+return success();case _Error():
+return error(_that.message);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -165,11 +170,12 @@ return success(_that.token,_that.email);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( bool loading)?  initial,TResult? Function( String token,  String email)?  success,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( bool loading)?  initial,TResult? Function()?  success,TResult? Function( String message)?  error,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that.loading);case _Success() when success != null:
-return success(_that.token,_that.email);case _:
+return success();case _Error() when error != null:
+return error(_that.message);case _:
   return null;
 
 }
@@ -180,13 +186,13 @@ return success(_that.token,_that.email);case _:
 /// @nodoc
 
 
-class _Initial implements VerifyCodeState {
+class _Initial implements ResetPasswordState {
   const _Initial({this.loading = false});
   
 
 @JsonKey() final  bool loading;
 
-/// Create a copy of VerifyCodeState
+/// Create a copy of ResetPasswordState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -205,14 +211,14 @@ int get hashCode => Object.hash(runtimeType,loading);
 
 @override
 String toString() {
-  return 'VerifyCodeState.initial(loading: $loading)';
+  return 'ResetPasswordState.initial(loading: $loading)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$InitialCopyWith<$Res> implements $VerifyCodeStateCopyWith<$Res> {
+abstract mixin class _$InitialCopyWith<$Res> implements $ResetPasswordStateCopyWith<$Res> {
   factory _$InitialCopyWith(_Initial value, $Res Function(_Initial) _then) = __$InitialCopyWithImpl;
 @useResult
 $Res call({
@@ -231,7 +237,7 @@ class __$InitialCopyWithImpl<$Res>
   final _Initial _self;
   final $Res Function(_Initial) _then;
 
-/// Create a copy of VerifyCodeState
+/// Create a copy of ResetPasswordState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? loading = null,}) {
   return _then(_Initial(
@@ -246,44 +252,75 @@ as bool,
 /// @nodoc
 
 
-class _Success implements VerifyCodeState {
-  const _Success({required this.token, required this.email});
+class _Success implements ResetPasswordState {
+  const _Success();
   
 
- final  String token;
- final  String email;
 
-/// Create a copy of VerifyCodeState
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$SuccessCopyWith<_Success> get copyWith => __$SuccessCopyWithImpl<_Success>(this, _$identity);
+
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Success&&(identical(other.token, token) || other.token == token)&&(identical(other.email, email) || other.email == email));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Success);
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,token,email);
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'VerifyCodeState.success(token: $token, email: $email)';
+  return 'ResetPasswordState.success()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _Error implements ResetPasswordState {
+  const _Error(this.message);
+  
+
+ final  String message;
+
+/// Create a copy of ResetPasswordState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ErrorCopyWith<_Error> get copyWith => __$ErrorCopyWithImpl<_Error>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Error&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'ResetPasswordState.error(message: $message)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$SuccessCopyWith<$Res> implements $VerifyCodeStateCopyWith<$Res> {
-  factory _$SuccessCopyWith(_Success value, $Res Function(_Success) _then) = __$SuccessCopyWithImpl;
+abstract mixin class _$ErrorCopyWith<$Res> implements $ResetPasswordStateCopyWith<$Res> {
+  factory _$ErrorCopyWith(_Error value, $Res Function(_Error) _then) = __$ErrorCopyWithImpl;
 @useResult
 $Res call({
- String token, String email
+ String message
 });
 
 
@@ -291,19 +328,18 @@ $Res call({
 
 }
 /// @nodoc
-class __$SuccessCopyWithImpl<$Res>
-    implements _$SuccessCopyWith<$Res> {
-  __$SuccessCopyWithImpl(this._self, this._then);
+class __$ErrorCopyWithImpl<$Res>
+    implements _$ErrorCopyWith<$Res> {
+  __$ErrorCopyWithImpl(this._self, this._then);
 
-  final _Success _self;
-  final $Res Function(_Success) _then;
+  final _Error _self;
+  final $Res Function(_Error) _then;
 
-/// Create a copy of VerifyCodeState
+/// Create a copy of ResetPasswordState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? token = null,Object? email = null,}) {
-  return _then(_Success(
-token: null == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
-as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(_Error(
+null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

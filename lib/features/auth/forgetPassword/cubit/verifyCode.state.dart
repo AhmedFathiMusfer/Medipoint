@@ -6,5 +6,8 @@ part 'verifyCode.state.freezed.dart';
 class VerifyCodeState with _$VerifyCodeState {
   const factory VerifyCodeState.initial({@Default(false) bool loading}) =
       _Initial;
-  const factory VerifyCodeState.success({required String token}) = _Success;
+  const factory VerifyCodeState.success({
+    required String token,
+    required String email,
+  }) = _Success;
 }

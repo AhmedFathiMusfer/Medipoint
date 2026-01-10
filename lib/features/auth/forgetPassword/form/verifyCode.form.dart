@@ -5,9 +5,7 @@ class VerifyCodeForm {
 
   TextEditingController codeController = TextEditingController();
 
-  get body => {
-        'code': codeController.text,
-      };
+  get body => {'otp': codeController.text};
 
   void clear() {
     codeController.clear();

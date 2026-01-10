@@ -4,7 +4,8 @@ class ApiConstants {
   static const String loginEndpoint = "auth/token/";
   static const String registerEndpoint = "auth/register/";
   static const String forgetPasswordEndpoint = "auth/password/reset/";
-  static const String verifyCodeEndpoint = "auth/password/reset/confirm/";
+  static const String verifyCodeEndpoint = "auth/password/reset/verify/";
+  static const String resetPasswordEndpoint = "auth/password/reset/confirm/";
   static const String changePasswordEndpoint = "auth/password/change/";
   static const String userProfileEndpoint = "user/profile";
   static const String initEndpoint = "doctors/init/";

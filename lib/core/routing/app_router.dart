@@ -14,6 +14,8 @@ import 'package:diagno_bot/features/auth/forgetPassword/cubit/forgetPassword.cub
 import 'package:diagno_bot/features/auth/forgetPassword/view/forgetPassword.view.dart';
 import 'package:diagno_bot/features/auth/forgetPassword/cubit/verifyCode.cubit.dart';
 import 'package:diagno_bot/features/auth/forgetPassword/view/verifyCode.view.dart';
+import 'package:diagno_bot/features/auth/forgetPassword/cubit/resetPassword.cubit.dart';
+import 'package:diagno_bot/features/auth/forgetPassword/view/resetPassword.view.dart';
 import 'package:diagno_bot/features/auth/registration/cubit/registration.cubit.dart';
 import 'package:diagno_bot/features/payment/cubit/payment.cubit.dart';
 import 'package:diagno_bot/features/payment/view/payment.view.dart';
@@ -219,6 +221,18 @@ class AppRouter {
               (_) => BlocProvider(
                 create: (_) => VerifyCodeCubit(email: email),
                 child: VerifyCodeView(email: email),
+              ),
+        );
+      case Routers.resetPasswordView:
+        var data = settings.arguments as Map<String, dynamic>? ?? {};
+        var token = data['token'] as String? ?? '';
+        var email = data['email'] as String? ?? '';
+
+        return MaterialPageRoute(
+          builder:
+              (_) => BlocProvider(
+                create: (_) => ResetPasswordCubit(token: token, email: email),
+                child: ResetPasswordView(token: token),
               ),
         );
       default:

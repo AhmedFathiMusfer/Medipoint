@@ -4,6 +4,7 @@ class Routers {
   static const String registrationView = '/registrationView';
   static const String forgetPasswordView = '/forgetPasswordView';
   static const String verifyCodeView = '/verifyCodeView';
+  static const String resetPasswordView = '/resetPasswordView';
   static const String homeView = '/homeView';
   static const String specialtiesView = '/specialtiesView';
   static const String doctorsView = '/doctorsView';

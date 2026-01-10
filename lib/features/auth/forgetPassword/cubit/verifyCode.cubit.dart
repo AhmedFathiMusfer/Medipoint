@@ -8,7 +8,8 @@ import 'package:diagno_bot/features/auth/forgetPassword/form/verifyCode.form.dar
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VerifyCodeCubit extends Cubit<VerifyCodeState> {
-  VerifyCodeCubit({required this.email}) : super(const VerifyCodeState.initial());
+  VerifyCodeCubit({required this.email})
+    : super(const VerifyCodeState.initial());
 
   final String email;
   VerifyCodeForm form = VerifyCodeForm();
@@ -21,16 +22,13 @@ class VerifyCodeCubit extends Cubit<VerifyCodeState> {
         await RemoteProvider().send(
           request: Request(
             url: ApiConstants.verifyCodeEndpoint,
-            body: {
-              ...form.body,
-              'email': email,
-            },
+            body: {...form.body, 'email': email},
           ),
           method: RemoteMethod.post,
           onSuccess: (res, statsCode) {
             String token = res.data['token'] ?? res.data['reset_token'] ?? '';
             AppSnackBar.success('Code verified successfully.');
-            emit(VerifyCodeState.success(token: token));
+            emit(VerifyCodeState.success(token: token, email: email));
           },
           onError: (_, statsCode) {
             if (statsCode == 400) {
@@ -40,9 +38,7 @@ class VerifyCodeCubit extends Cubit<VerifyCodeState> {
               AppSnackBar.error('Code not found or expired.');
               emit(const VerifyCodeState.initial(loading: false));
             } else {
-              AppSnackBar.error(
-                'An error occurred. Please try again later.',
-              );
+              AppSnackBar.error('An error occurred. Please try again later.');
               emit(const VerifyCodeState.initial(loading: false));
             }
           },
