@@ -1,3 +1,4 @@
+import 'package:diagno_bot/core/model/doctor.model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 part 'chat.state.freezed.dart';
 
@@ -6,12 +7,20 @@ class ChatMessage {
   final bool isUser;
   final bool isLoading;
   final bool isErorr;
+  final String? specialty;
+  final bool? isDetected;
+  final bool? isExisted;
+  final List<DoctorModel>? doctors;
 
   ChatMessage({
     required this.text,
     required this.isUser,
     this.isLoading = false,
     this.isErorr = false,
+    this.specialty,
+    this.isDetected,
+    this.isExisted,
+    this.doctors,
   });
 }
 
