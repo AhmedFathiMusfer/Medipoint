@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:diagno_bot/core/database/drift_db.dart';
+import 'package:diagno_bot/core/enum/pages.dart';
 import 'package:diagno_bot/core/model/user.model.dart';
 import 'package:diagno_bot/core/routing/app_router.dart';
 import 'package:diagno_bot/core/routing/router.dart';
+import 'package:diagno_bot/core/stror/appStore.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -57,6 +59,7 @@ class AuthManager {
     accessToken = null;
     refreshToken = null;
     currentUser = null;
+    Appstore.instanse.currentPage = PagesEnum.home;
     final prefs = await SharedPreferences.getInstance();
     await AppDatabase().clearAllTables();
     prefs.clear();

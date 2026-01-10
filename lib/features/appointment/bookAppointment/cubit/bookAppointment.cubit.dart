@@ -72,10 +72,10 @@ class BookAppointmentCubit extends Cubit<BookAppointmentState> {
       },
     );
     var result = await booKing(workingHourId);
-    if (result == true) {
+    if (result != null) {
       state.mapOrNull(
         success: (state) {
-          emit(state.copyWith(isSuccessBooking: true));
+          emit(state.copyWith(isSuccessBooking: true, appointmentId: result));
         },
       );
     }
@@ -149,9 +149,9 @@ class BookAppointmentCubit extends Cubit<BookAppointmentState> {
       },
     );
     if (rsponse.statusCode == 201) {
-      return true;
+      return rsponse.data['id'];
     } else {
-      return false;
+      return null;
     }
   }
   // ******************************************db************************************************************

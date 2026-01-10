@@ -12,7 +12,7 @@ class BookAppointmentState with _$BookAppointmentState {
     WorkingHour? selectedHour,
     @Default(false) bool isBookingInProgress,
     @Default(false) bool isSuccessBooking,
-    //int? appointmentId,
+    int? appointmentId,
     required List<DateTime> allowedWeekdays,
     required List<WorkingHour> availableTimes,
   }) = _Success;

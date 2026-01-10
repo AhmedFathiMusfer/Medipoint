@@ -34,6 +34,7 @@ class _AppointmentViewState extends State<AppointmentView>
 
   @override
   Widget build(BuildContext context) {
+    var appointmentCubit = context.read<AppointmentCubit>();
     return BaseView(
       title: 'My Booking',
       child: BlocBuilder<AppointmentCubit, AppointmentState>(
@@ -75,32 +76,48 @@ class _AppointmentViewState extends State<AppointmentView>
                                 .where(
                                   (appointment) =>
                                       appointment.status ==
-                                      AppointmentStatus.PE,
+                                          AppointmentStatus.PE ||
+                                      appointment.status ==
+                                          AppointmentStatus.PA,
                                 )
                                 .map(
                                   (appointment) => _bookingCard(
                                     appointment: appointment,
-                                    actions: [
-                                      _smallBtn(
-                                        "Cancel",
-                                        Colors.grey.shade200,
-                                        ColorManager.primaryColor,
-                                        onTap: () {},
-                                      ),
-                                      _smallBtn(
-                                        "pay",
+                                    actions:
+                                        appointment.status ==
+                                                AppointmentStatus.PA
+                                            ? []
+                                            : [
+                                              SmallBtn(
+                                                text: "Cancel",
+                                                bg: Colors.grey.shade200,
+                                                color:
+                                                    ColorManager.primaryColor,
+                                                onTap: () async {
+                                                  await appointmentCubit
+                                                      .cancelAppointment(
+                                                        appointment.id,
+                                                      );
+                                                },
+                                              ),
+                                              SmallBtn(
+                                                text: "pay",
 
-                                        ColorManager.primaryColor,
-                                        Colors.white,
-                                        onTap: () async {
-                                          await makePayment(
-                                            appointmentId: appointment.id,
-                                            onSuccess: () {},
-                                            onError: () {},
-                                          );
-                                        },
-                                      ),
-                                    ],
+                                                bg: ColorManager.primaryColor,
+                                                color: Colors.white,
+                                                onTap: () async {
+                                                  await makePayment(
+                                                    appointmentId:
+                                                        appointment.id,
+                                                    onSuccess: () async {
+                                                      await appointmentCubit
+                                                          .loadOnlineData();
+                                                    },
+                                                    onError: () {},
+                                                  );
+                                                },
+                                              ),
+                                            ],
                                   ),
                                 ),
                           ],
@@ -166,9 +183,48 @@ class _AppointmentViewState extends State<AppointmentView>
 
   Widget _bookingCard({
     required AppointmentModel appointment,
-
     required List<Widget> actions,
   }) {
+    // دالة صغيرة لترجع اللون بناءً على الحالة
+    Color statusColor(AppointmentStatus status) {
+      switch (status) {
+        case AppointmentStatus.PE:
+          return Colors.orange; // Pending
+        case AppointmentStatus.PA:
+          return Colors.green; // Paid
+        case AppointmentStatus.D:
+          return Colors.blue; // Done
+        case AppointmentStatus.M:
+          return Colors.red; // Missed
+        case AppointmentStatus.C:
+          return Colors.red; // Canceled
+        case AppointmentStatus.DE:
+          return Colors.black; // Deleted / Declined
+        default:
+          return Colors.grey;
+      }
+    }
+
+    // دالة صغيرة لترجع النص بناءً على الحالة
+    String statusText(AppointmentStatus status) {
+      switch (status) {
+        case AppointmentStatus.PE:
+          return 'Pending';
+        case AppointmentStatus.PA:
+          return 'Paid';
+        case AppointmentStatus.D:
+          return 'Done';
+        case AppointmentStatus.M:
+          return 'Missed';
+        case AppointmentStatus.C:
+          return 'Canceled';
+        case AppointmentStatus.DE:
+          return 'Deleted';
+        default:
+          return '';
+      }
+    }
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
@@ -186,9 +242,30 @@ class _AppointmentViewState extends State<AppointmentView>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            appointment.dateTime,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                appointment.dateTime,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: statusColor(appointment.status),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  statusText(appointment.status),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 12),
           Row(
@@ -200,7 +277,7 @@ class _AppointmentViewState extends State<AppointmentView>
                   height: 70,
                   width: 70,
                   fit: BoxFit.cover,
-                  errorWidget: (contex, url, _) {
+                  errorWidget: (context, url, _) {
                     return Image.asset(
                       "assets/image/default_doctor_image.jpg",
                       width: 70,
@@ -248,7 +325,6 @@ class _AppointmentViewState extends State<AppointmentView>
             ],
           ),
           const SizedBox(height: 16),
-
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: actions,
@@ -278,6 +354,77 @@ class _AppointmentViewState extends State<AppointmentView>
           text,
           style: TextStyle(color: color, fontWeight: FontWeight.bold),
         ),
+      ),
+    );
+  }
+}
+
+class SmallBtn extends StatefulWidget {
+  final String text;
+  final Color bg;
+  final Color color;
+  final Future<void> Function() onTap;
+  const SmallBtn({
+    super.key,
+    required this.text,
+    required this.bg,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  SmallBtnState createState() => SmallBtnState();
+}
+
+class SmallBtnState extends State<SmallBtn> {
+  bool _isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap:
+          _isLoading
+              ? null
+              : () async {
+                setState(() {
+                  _isLoading = true;
+                });
+                try {
+                  await widget.onTap();
+                } catch (e) {
+                  // هنا ممكن تعالج أي خطأ
+                } finally {
+                  if (mounted) {
+                    setState(() {
+                      _isLoading = false;
+                    });
+                  }
+                }
+              },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        decoration: BoxDecoration(
+          color: widget.bg,
+          borderRadius: BorderRadius.circular(25),
+        ),
+        alignment: Alignment.center,
+        child:
+            _isLoading
+                ? SizedBox(
+                  height: 16,
+                  width: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(widget.color),
+                  ),
+                )
+                : Text(
+                  widget.text,
+                  style: TextStyle(
+                    color: widget.color,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
       ),
     );
   }

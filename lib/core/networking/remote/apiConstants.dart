@@ -16,6 +16,8 @@ class ApiConstants {
   static const String appointmentsEndpoint = "appointments/";
   static String createPaymentIntentEndpoint(int appointmentid) =>
       '$appointmentsEndpoint$appointmentid/create-payment-intent/';
+  static String cancelAppointmentEndpoint(int appointmentid) =>
+      '$appointmentsEndpoint$appointmentid/cancel/';
 
   static const String confirmPaymentEndpoint = "payments/confirm/";
   static reviewEndpoint(String doctorId) => "doctors/$doctorId/reviews/";

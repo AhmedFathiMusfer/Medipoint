@@ -29,7 +29,7 @@ class BookAppointmentView extends StatelessWidget {
               orElse: () => {},
               success: (value) {
                 if (value.isSuccessBooking) {
-                  _showPaymentDialog(context, 12);
+                  _showPaymentDialog(context, value.appointmentId ?? 0);
                 }
               },
             );
@@ -104,14 +104,11 @@ class BookAppointmentView extends StatelessWidget {
                             color: Color(0xff0D1B2A),
                             shape: BoxShape.circle,
                           ),
-                          disabledTextStyle: TextStyle(
-                            color: Colors.black12,
-                          ), // أيام غير مسموحة
+                          disabledTextStyle: TextStyle(color: Colors.black12),
                         ),
                       ),
                     ),
                     25.verticalSpace,
-
                     Text(
                       "Select Hour",
                       style: TextStyle(
@@ -225,7 +222,7 @@ void _showPaymentDialog(BuildContext context, int bookingId) {
             onPressed: () async {
               Navigator.pop(context);
               await makePayment(
-                appointmentId: 10,
+                appointmentId: bookingId,
                 onSuccess: () {
                   context.pushNamedAndRemoveUntil(
                     Routers.appointmentView,

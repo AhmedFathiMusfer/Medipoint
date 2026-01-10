@@ -93,6 +93,36 @@ class AppointmentCubit extends Cubit<AppointmentState> {
     } else {}
   }
 
+  Future<void> cancelAppointment(int appointmentId) async {
+    bool isConnected = await NetworkHelper.isConnected();
+
+    if (isConnected) {
+      await RemoteProvider().send(
+        request: Request(
+          url: ApiConstants.cancelAppointmentEndpoint(appointmentId),
+        ),
+        method: RemoteMethod.post,
+        onSuccess: (res, statsCode) async {
+          try {
+            await loadOnlineData();
+          } catch (ex) {
+            AppSnackBar.error(
+              ErrorMessages.instance.fromExceptionType(
+                    ExceptionTypes.unexpected,
+                  ) +
+                  ex.toString(),
+            );
+          }
+        },
+        onError: (_, statsCode) {
+          AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statsCode));
+        },
+      );
+    } else {
+      ErrorMessages.instance.fromExceptionType(ExceptionTypes.connection);
+    }
+  }
+
   // ******************************************db************************************************************
   Future<List<AppointmentModel>> getAppointments() async {
     final result =
