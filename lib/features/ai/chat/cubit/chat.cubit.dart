@@ -35,7 +35,9 @@ class ChatCubit extends Cubit<ChatState> {
       _messages.add(
         ChatMessage(text: "Hello! How can I assist you today?", isUser: false),
       );
-      emit(ChatState.success(messages: List.from(_messages)));
+      if (!isClosed) {
+        emit(ChatState.success(messages: List.from(_messages)));
+      }
     }
     if (_sessionId == null) {
       await createSession();

@@ -1,4 +1,5 @@
 import 'package:diagno_bot/core/model/user.model.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class EditProfileForm {
@@ -19,14 +20,30 @@ class EditProfileForm {
   String imagePath = '';
 
   get body => {
-    "User": {
+    "user": {
+      'id': user.id,
       'email': emailController.text,
       'full_name': nameController.text,
       'Gender': gender,
-      'image': imagePath,
       'role': user.role,
     },
   };
+  Future<MultipartFile?> getImageIsChanged(String imagePath) async {
+    if (!imagePath.contains('http')) {
+      var name = imagePath.split('/').last;
+      return await MultipartFile.fromFile(imagePath, filename: name);
+    }
+    return null;
+  }
+
+  get data async {
+    var data = body;
+    var image = await getImageIsChanged(imagePath);
+    if (image != null) {
+      data['user']['image'] = image;
+    }
+    return FormData.fromMap({...data});
+  }
 
   void clear() {
     emailController.clear();

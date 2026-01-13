@@ -12,13 +12,12 @@ import 'package:diagno_bot/features/auth/login/cubit/login.cubit.dart';
 import 'package:diagno_bot/features/auth/login/view/login.view.dart';
 import 'package:diagno_bot/features/auth/forgetPassword/cubit/forgetPassword.cubit.dart';
 import 'package:diagno_bot/features/auth/forgetPassword/view/forgetPassword.view.dart';
-import 'package:diagno_bot/features/auth/forgetPassword/cubit/verifyCode.cubit.dart';
-import 'package:diagno_bot/features/auth/forgetPassword/view/verifyCode.view.dart';
-import 'package:diagno_bot/features/auth/forgetPassword/cubit/resetPassword.cubit.dart';
-import 'package:diagno_bot/features/auth/forgetPassword/view/resetPassword.view.dart';
+import 'package:diagno_bot/features/auth/verifyCode/cubit/verifyCode.cubit.dart';
+import 'package:diagno_bot/features/auth/verifyCode/view/verifyCode.view.dart';
+import 'package:diagno_bot/features/auth/resetPassword/cubit/resetPassword.cubit.dart';
+import 'package:diagno_bot/features/auth/resetPassword/view/resetPassword.view.dart';
 import 'package:diagno_bot/features/auth/registration/cubit/registration.cubit.dart';
-import 'package:diagno_bot/features/payment/cubit/payment.cubit.dart';
-import 'package:diagno_bot/features/payment/view/payment.view.dart';
+
 import 'package:diagno_bot/features/auth/registration/view/registration.view%20.dart';
 import 'package:diagno_bot/features/appointment/bookAppointment/cubit/bookAppointment.cubit.dart';
 import 'package:diagno_bot/features/doctor/doctorDetails/cubit/doctorDetails.cubit.dart';
@@ -180,14 +179,15 @@ class AppRouter {
         );
       case Routers.chatView:
         return PageRouteBuilder(
-          pageBuilder:
-              (context, animation, secondaryAnimation) => BlocProvider.value(
-                value:
-                    BlocProvider.of<ChatCubit>(
-                      context,
-                    ).checkIfSessionIsExitOrNo(),
-                child: const ChatView(),
-              ),
+          pageBuilder: (context, animation, secondaryAnimation) {
+            final chatCubit = BlocProvider.of<ChatCubit>(context);
+            chatCubit.checkIfSessionIsExitOrNo();
+            return BlocProvider.value(
+              value: chatCubit,
+              child: const ChatView(),
+            );
+          },
+
           transitionDuration: Duration.zero,
         );
       case Routers.registrationView:

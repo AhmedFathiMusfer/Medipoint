@@ -30,31 +30,31 @@ class CustomAppBar extends StatelessWidget {
         ),
       ),
       actions: [
-        IconButton(
-          onPressed: onNotificationTap,
-          icon: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Icon(
-                Icons.notifications_none,
-                color: ColorManager.primaryColor,
-                size: 28,
-              ),
-              Positioned(
-                right: -2,
-                top: -2,
-                child: Container(
-                  width: 10,
-                  height: 10,
-                  decoration: BoxDecoration(
-                    color: Colors.red,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+        // IconButton(
+        //   onPressed: onNotificationTap,
+        //   icon: Stack(
+        //     clipBehavior: Clip.none,
+        //     children: [
+        //       Icon(
+        //         Icons.notifications_none,
+        //         color: ColorManager.primaryColor,
+        //         size: 28,
+        //       ),
+        //       Positioned(
+        //         right: -2,
+        //         top: -2,
+        //         child: Container(
+        //           width: 10,
+        //           height: 10,
+        //           decoration: BoxDecoration(
+        //             color: Colors.red,
+        //             shape: BoxShape.circle,
+        //           ),
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
         10.horizontalSpace,
         GestureDetector(
           onTap: () {

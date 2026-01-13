@@ -136,6 +136,16 @@ class ProfileView extends StatelessWidget {
                         ),
 
                         _divider(),
+                        _buildOptionTile(
+                          context,
+                          Icons.lock_outline,
+                          'Change Password',
+                          onTap: () {
+                            context.pushNamed(Routers.changePasswordView);
+                          },
+                        ),
+
+                        _divider(),
                         _buildLogoutTile(context),
                       ],
                     ),
@@ -158,13 +168,13 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  Widget _buildOptionTile(BuildContext context, IconData icon, String title) {
+  Widget _buildOptionTile(BuildContext context, IconData icon, String title, {VoidCallback? onTap}) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
       leading: Icon(icon, color: Colors.grey[700]),
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
       trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-      onTap: () {
+      onTap: onTap ?? () {
         context.pushNamed(Routers.editProfileView);
       },
     );

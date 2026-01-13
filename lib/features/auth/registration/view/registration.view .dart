@@ -2,17 +2,12 @@ import 'package:diagno_bot/core/helpers/extensions.dart';
 import 'package:diagno_bot/core/routing/router.dart';
 import 'package:diagno_bot/core/theming/color.dart';
 import 'package:diagno_bot/core/widgets/TextField.dart';
-import 'package:diagno_bot/core/widgets/outlineButton.dart';
 import 'package:diagno_bot/core/widgets/simpleButton.dart';
-import 'package:diagno_bot/features/auth/login/cubit/login.cubit.dart';
-import 'package:diagno_bot/features/auth/login/cubit/login.state.dart';
 import 'package:diagno_bot/features/auth/registration/cubit/registration.cubit.dart';
 import 'package:diagno_bot/features/auth/registration/cubit/registration.state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class RegistrationView extends StatefulWidget {
@@ -32,10 +27,19 @@ class _RegistrationViewState extends State<RegistrationView> {
         listener: (context, state) {
           state.maybeMap(
             registerSuccess: (_) {
-              context.pushNamedAndRemoveUntil(
-                Routers.loginView,
-                predicate: (root) => false,
-              );
+              // Future.delayed(const Duration(seconds: 1), () {
+
+              // });
+              if (mounted) {
+                context.pushNamed(
+                  Routers.verifyCodeView,
+                  arguments: registerCubit.form.emailController.text,
+                );
+              }
+              // context.pushNamedAndRemoveUntil(
+              //   Routers.loginView,
+              //   predicate: (root) => false,
+              // );
             },
             orElse: () {},
           );

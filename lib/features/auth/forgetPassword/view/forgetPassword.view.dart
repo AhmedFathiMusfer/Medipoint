@@ -27,10 +27,7 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: ColorManager.primaryColor,
-          ),
+          icon: Icon(Icons.arrow_back, color: ColorManager.primaryColor),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -41,10 +38,7 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
               // Navigate to verify code page
               Future.delayed(const Duration(seconds: 1), () {
                 if (mounted) {
-                  context.pushNamed(
-                    Routers.verifyCodeView,
-                    arguments: email,
-                  );
+                  context.pushNamed(Routers.verifyCodeView, arguments: email);
                 }
               });
             },
@@ -105,7 +99,7 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
                         ),
                         30.verticalSpace,
                         SimpleButton(
-                          text: "Send Reset Link",
+                          text: "Send",
                           isLoading: state.maybeWhen(
                             initial: (loading) => loading,
                             orElse: () => false,

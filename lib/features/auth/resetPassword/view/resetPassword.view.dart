@@ -1,29 +1,28 @@
 import 'package:diagno_bot/core/helpers/extensions.dart';
 import 'package:diagno_bot/core/routing/router.dart';
 import 'package:diagno_bot/core/theming/color.dart';
-import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/core/widgets/TextField.dart';
 import 'package:diagno_bot/core/widgets/simpleButton.dart';
-import 'package:diagno_bot/features/auth/forgetPassword/cubit/verifyCode.cubit.dart';
-import 'package:diagno_bot/features/auth/forgetPassword/cubit/verifyCode.state.dart';
+import 'package:diagno_bot/features/auth/resetPassword/cubit/resetPassword.cubit.dart';
+import 'package:diagno_bot/features/auth/resetPassword/cubit/resetPassword.state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class VerifyCodeView extends StatefulWidget {
-  final String email;
+class ResetPasswordView extends StatefulWidget {
+  final String token;
 
-  const VerifyCodeView({super.key, required this.email});
+  const ResetPasswordView({super.key, required this.token});
 
   @override
-  State<VerifyCodeView> createState() => _VerifyCodeViewState();
+  State<ResetPasswordView> createState() => _ResetPasswordViewState();
 }
 
-class _VerifyCodeViewState extends State<VerifyCodeView> {
+class _ResetPasswordViewState extends State<ResetPasswordView> {
   @override
   Widget build(BuildContext context) {
-    var verifyCodeCubit = context.read<VerifyCodeCubit>();
+    var resetPasswordCubit = context.read<ResetPasswordCubit>();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -34,16 +33,17 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: BlocConsumer<VerifyCodeCubit, VerifyCodeState>(
+      body: BlocConsumer<ResetPasswordCubit, ResetPasswordState>(
         listener: (context, state) {
           state.maybeWhen(
-            success: (token, email) {
-              // Navigate to reset password page with token
+            success: () {
+              // Navigate back to login page
               Future.delayed(const Duration(seconds: 1), () {
                 if (mounted) {
-                  context.pushNamed(
-                    Routers.resetPasswordView,
-                    arguments: {'token': token, 'email': email},
+                  Navigator.of(context).popUntil(
+                    (route) =>
+                        route.isFirst ||
+                        route.settings.name == Routers.loginView,
                   );
                 }
               });
@@ -76,7 +76,7 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
                   ),
                   30.verticalSpace,
                   Text(
-                    "Verify Code",
+                    "Reset Password",
                     style: GoogleFonts.poppins(
                       fontSize: 24.sp,
                       fontWeight: FontWeight.w600,
@@ -85,7 +85,7 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
                   ),
                   10.verticalSpace,
                   Text(
-                    "Please enter the verification code sent to\n${widget.email}",
+                    "Please enter your new password",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
                       color: ColorManager.secondaryColor,
@@ -94,54 +94,40 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
                   ),
                   40.verticalSpace,
                   Form(
-                    key: verifyCodeCubit.form.key,
+                    key: resetPasswordCubit.form.key,
                     child: Column(
                       children: [
                         CustomTextField(
-                          controller: verifyCodeCubit.form.codeController,
-                          hint: "Enter Verification Code",
-                          icon: Icons.vpn_key_outlined,
-                          validator: true,
+                          controller:
+                              resetPasswordCubit.form.newPasswordController,
+                          hint: "New Password",
+                          icon: Icons.lock_outline,
+                          isPassword: true,
+                        ),
+                        30.verticalSpace,
+                        CustomTextField(
+                          controller:
+                              resetPasswordCubit.form.confirmPasswordController,
+                          hint: "Confirm New Password",
+                          icon: Icons.lock_outline,
+                          isPassword: true,
+                          isConfirmPassword: true,
+                          password:
+                              resetPasswordCubit.form.newPasswordController,
                         ),
                         30.verticalSpace,
                         SimpleButton(
-                          text: "Verify Code",
+                          text: "Reset Password",
                           isLoading: state.maybeWhen(
                             initial: (loading) => loading,
                             orElse: () => false,
                           ),
                           onPressed: () async {
-                            await verifyCodeCubit.submit();
+                            await resetPasswordCubit.resetPassword();
                           },
                         ),
                       ],
                     ),
-                  ),
-                  20.verticalSpace,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Didn't receive the code?",
-                        style: GoogleFonts.poppins(color: Colors.grey.shade600),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          // Resend code functionality can be added here
-                          AppSnackBar.warning(
-                            'Code resend feature will be implemented',
-                          );
-                        },
-                        child: Text(
-                          "Resend",
-                          style: TextStyle(
-                            color: ColorManager.blueColor,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                    ],
                   ),
                 ],
               ),

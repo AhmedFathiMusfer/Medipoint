@@ -3,8 +3,8 @@ import 'package:diagno_bot/core/networking/remote/apiConstants.dart';
 import 'package:diagno_bot/core/networking/remote/remoteProvider.dart';
 import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
-import 'package:diagno_bot/features/auth/forgetPassword/cubit/verifyCode.state.dart';
-import 'package:diagno_bot/features/auth/forgetPassword/form/verifyCode.form.dart';
+import 'package:diagno_bot/features/auth/verifyCode/cubit/verifyCode.state.dart';
+import 'package:diagno_bot/features/auth/verifyCode/form/verifyCode.form.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VerifyCodeCubit extends Cubit<VerifyCodeState> {

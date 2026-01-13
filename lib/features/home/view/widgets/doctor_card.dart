@@ -1,6 +1,7 @@
 // main.dart
 // Flutter app: HomePage UI matching provided design + Cubit (flutter_bloc) + mock API
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:diagno_bot/core/helpers/extensions.dart';
 import 'package:diagno_bot/core/routing/router.dart';
 import 'package:flutter/material.dart';
@@ -45,12 +46,12 @@ class DoctorCard extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(50.r),
-                  child: Image.network(
-                    imageUrl,
+                  child: CachedNetworkImage(
+                    imageUrl: imageUrl,
                     width: 60,
                     height: 60,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
+                    errorWidget: (context, error, stackTrace) {
                       return Image.asset(
                         width: 60,
                         height: 60,

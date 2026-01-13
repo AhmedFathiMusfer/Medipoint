@@ -289,8 +289,8 @@ class _WorkingHourWidgetState extends State<WorkingHourWidget>
     if (hours.isEmpty) return 0;
 
     const double rowHeight = 27;
-    // const double verticalPadding = 12;
+    const double verticalPadding = 10;
 
-    return (hours.length * rowHeight).h;
+    return ((hours.length * rowHeight) + verticalPadding).h;
   }
 }

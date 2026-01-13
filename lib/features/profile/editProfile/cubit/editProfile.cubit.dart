@@ -46,6 +46,7 @@ class EditProfileCubit extends Cubit<EditProfileState> {
           request: Request(url: ApiConstants.profileEndpoint, body: form.body),
           method: RemoteMethod.put,
           onSuccess: (res, statsCode) async {
+            await AuthManager().setUser(form.body);
             log(res.toString());
           },
           onError: (_, statsCode) {

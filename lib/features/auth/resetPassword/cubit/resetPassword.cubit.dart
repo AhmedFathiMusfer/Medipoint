@@ -3,8 +3,8 @@ import 'package:diagno_bot/core/networking/remote/apiConstants.dart';
 import 'package:diagno_bot/core/networking/remote/remoteProvider.dart';
 import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
-import 'package:diagno_bot/features/auth/forgetPassword/cubit/resetPassword.state.dart';
-import 'package:diagno_bot/features/auth/forgetPassword/form/resetPassword.form.dart';
+import 'package:diagno_bot/features/auth/resetPassword/cubit/resetPassword.state.dart';
+import 'package:diagno_bot/features/auth/resetPassword/form/resetPassword.form.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ResetPasswordCubit extends Cubit<ResetPasswordState> {

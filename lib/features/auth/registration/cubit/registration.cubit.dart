@@ -27,10 +27,7 @@ class RegisterCubit extends Cubit<RegisterState> {
           onSuccess: (res, statsCode) async {
             // log(res.toString());
 
-            await AuthManager().setUser({
-              'id': res.data['user_id'],
-              ...form.body as Map<String, dynamic>,
-            });
+            await AuthManager().setUser(res.data);
             emit(RegisterState.registerSuccess());
           },
           onError: (_, statsCode) {
