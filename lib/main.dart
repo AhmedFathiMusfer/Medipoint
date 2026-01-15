@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:diagno_bot/core/auth/authManager.dart';
 import 'package:diagno_bot/core/di/di.dart' as di;
 import 'package:diagno_bot/core/routing/app_router.dart';
@@ -6,9 +6,9 @@ import 'package:diagno_bot/doc_app.dart';
 import 'package:diagno_bot/firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:easy_localization/easy_localization.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,9 +20,19 @@ void main() async {
   Stripe.publishableKey =
       'pk_test_51QpdPwBgmAvGuQnxC2gZl1aESH3myJb17u1PBIftdQWw5AXCUp4BMYl0ZEs8Ii5JXqrYlA38FZlaj9daO1HvGxnE00PJyZNSqS';
 
+  // Initialize EasyLocalization
+  await EasyLocalization.ensureInitialized();
+
   await di.init();
   await AuthManager().init();
-  runApp(DocApp(appRouter: AppRouter()));
+  runApp(
+    EasyLocalization(
+      supportedLocales: const [Locale('en'), Locale('ar')],
+      path: 'assets/translations',
+      fallbackLocale: const Locale('en'),
+      child: DocApp(appRouter: AppRouter()),
+    ),
+  );
 }
 
 Future<void> testFirestore() async {

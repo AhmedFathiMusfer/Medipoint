@@ -6,6 +6,7 @@ import 'package:diagno_bot/core/widgets/TextField.dart';
 import 'package:diagno_bot/core/widgets/simpleButton.dart';
 import 'package:diagno_bot/features/auth/verifyCode/cubit/verifyCode.cubit.dart';
 import 'package:diagno_bot/features/auth/verifyCode/cubit/verifyCode.state.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,8 +14,12 @@ import 'package:google_fonts/google_fonts.dart';
 
 class VerifyCodeView extends StatefulWidget {
   final String email;
-
-  const VerifyCodeView({super.key, required this.email});
+  final bool isResetPassword;
+  const VerifyCodeView({
+    super.key,
+    required this.email,
+    required this.isResetPassword,
+  });
 
   @override
   State<VerifyCodeView> createState() => _VerifyCodeViewState();
@@ -67,7 +72,7 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
                   ),
                   10.verticalSpace,
                   Text(
-                    "HealthPal",
+                    "healthpal".tr(),
                     style: GoogleFonts.poppins(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w400,
@@ -76,7 +81,7 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
                   ),
                   30.verticalSpace,
                   Text(
-                    "Verify Code",
+                    "verify_code".tr(),
                     style: GoogleFonts.poppins(
                       fontSize: 24.sp,
                       fontWeight: FontWeight.w600,
@@ -85,7 +90,7 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
                   ),
                   10.verticalSpace,
                   Text(
-                    "Please enter the verification code sent to\n${widget.email}",
+                    "${"please_enter_code_sent".tr()}\n${widget.email}",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
                       color: ColorManager.secondaryColor,
@@ -99,13 +104,13 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
                       children: [
                         CustomTextField(
                           controller: verifyCodeCubit.form.codeController,
-                          hint: "Enter Verification Code",
+                          hint: "enter_verification_code".tr(),
                           icon: Icons.vpn_key_outlined,
                           validator: true,
                         ),
                         30.verticalSpace,
                         SimpleButton(
-                          text: "Verify Code",
+                          text: "verify_code".tr(),
                           isLoading: state.maybeWhen(
                             initial: (loading) => loading,
                             orElse: () => false,
@@ -122,7 +127,7 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Didn't receive the code?",
+                        "didnt_receive_code".tr(),
                         style: GoogleFonts.poppins(color: Colors.grey.shade600),
                       ),
                       TextButton(
@@ -133,7 +138,7 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
                           );
                         },
                         child: Text(
-                          "Resend",
+                          "resend".tr(),
                           style: TextStyle(
                             color: ColorManager.blueColor,
                             fontSize: 14.sp,

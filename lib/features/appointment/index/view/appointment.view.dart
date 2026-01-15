@@ -6,6 +6,7 @@ import 'package:diagno_bot/core/theming/color.dart';
 import 'package:diagno_bot/core/widgets/payment.dart';
 import 'package:diagno_bot/features/appointment/index/cubit/appointment.cubit.dart';
 import 'package:diagno_bot/features/appointment/index/cubit/appointment.state.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -36,7 +37,7 @@ class _AppointmentViewState extends State<AppointmentView>
   Widget build(BuildContext context) {
     var appointmentCubit = context.read<AppointmentCubit>();
     return BaseView(
-      title: 'My Booking',
+      title: 'my_booking'.tr(),
       child: BlocBuilder<AppointmentCubit, AppointmentState>(
         builder: (context, state) {
           return state.maybeWhen(
@@ -57,10 +58,10 @@ class _AppointmentViewState extends State<AppointmentView>
                       unselectedLabelColor: Colors.grey,
                       indicatorColor: ColorManager.primaryColor,
                       labelStyle: const TextStyle(fontWeight: FontWeight.bold),
-                      tabs: const [
-                        Tab(text: "Upcoming"),
-                        Tab(text: "Completed"),
-                        Tab(text: "Canceled"),
+                      tabs: [
+                        Tab(text: "upcoming".tr()),
+                        Tab(text: "completed".tr()),
+                        Tab(text: "canceled".tr()),
                       ],
                     ),
                   ),
@@ -89,7 +90,7 @@ class _AppointmentViewState extends State<AppointmentView>
                                             ? []
                                             : [
                                               SmallBtn(
-                                                text: "Cancel",
+                                                text: "cancel".tr(),
                                                 bg: Colors.grey.shade200,
                                                 color:
                                                     ColorManager.primaryColor,
@@ -101,7 +102,7 @@ class _AppointmentViewState extends State<AppointmentView>
                                                 },
                                               ),
                                               SmallBtn(
-                                                text: "pay",
+                                                text: "pay".tr(),
 
                                                 bg: ColorManager.primaryColor,
                                                 color: Colors.white,
@@ -154,7 +155,7 @@ class _AppointmentViewState extends State<AppointmentView>
 
   Widget _buildCompleted(List<AppointmentModel> appointments) {
     if (appointments.isEmpty) {
-      return const Center(child: Text("No Completed Bookings"));
+      return Center(child: Text("no_completed_bookings".tr()));
     }
 
     return ListView(
@@ -169,7 +170,7 @@ class _AppointmentViewState extends State<AppointmentView>
 
   Widget _buildCanceled(List<AppointmentModel> appointments) {
     if (appointments.isEmpty) {
-      return const Center(child: Text("No Canceled Bookings"));
+      return Center(child: Text("no_canceled_bookings".tr()));
     }
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -209,17 +210,17 @@ class _AppointmentViewState extends State<AppointmentView>
     String statusText(AppointmentStatus status) {
       switch (status) {
         case AppointmentStatus.PE:
-          return 'Pending';
+          return 'pending'.tr();
         case AppointmentStatus.PA:
-          return 'Paid';
+          return 'paid'.tr();
         case AppointmentStatus.D:
-          return 'Done';
+          return 'done'.tr();
         case AppointmentStatus.M:
-          return 'Missed';
+          return 'missed'.tr();
         case AppointmentStatus.C:
-          return 'Canceled';
+          return 'canceled'.tr();
         case AppointmentStatus.DE:
-          return 'Deleted';
+          return 'deleted'.tr();
         default:
           return '';
       }

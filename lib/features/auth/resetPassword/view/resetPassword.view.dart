@@ -5,6 +5,7 @@ import 'package:diagno_bot/core/widgets/TextField.dart';
 import 'package:diagno_bot/core/widgets/simpleButton.dart';
 import 'package:diagno_bot/features/auth/resetPassword/cubit/resetPassword.cubit.dart';
 import 'package:diagno_bot/features/auth/resetPassword/cubit/resetPassword.state.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -67,7 +68,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                   ),
                   10.verticalSpace,
                   Text(
-                    "HealthPal",
+                    "healthpal".tr(),
                     style: GoogleFonts.poppins(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w400,
@@ -76,7 +77,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                   ),
                   30.verticalSpace,
                   Text(
-                    "Reset Password",
+                    "reset_password".tr(),
                     style: GoogleFonts.poppins(
                       fontSize: 24.sp,
                       fontWeight: FontWeight.w600,
@@ -85,7 +86,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                   ),
                   10.verticalSpace,
                   Text(
-                    "Please enter your new password",
+                    "please_enter_new_password".tr(),
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
                       color: ColorManager.secondaryColor,
@@ -100,7 +101,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                         CustomTextField(
                           controller:
                               resetPasswordCubit.form.newPasswordController,
-                          hint: "New Password",
+                          hint: "new_password".tr(),
                           icon: Icons.lock_outline,
                           isPassword: true,
                         ),
@@ -108,7 +109,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                         CustomTextField(
                           controller:
                               resetPasswordCubit.form.confirmPasswordController,
-                          hint: "Confirm New Password",
+                          hint: "confirm_new_password".tr(),
                           icon: Icons.lock_outline,
                           isPassword: true,
                           isConfirmPassword: true,
@@ -117,7 +118,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                         ),
                         30.verticalSpace,
                         SimpleButton(
-                          text: "Reset Password",
+                          text: "reset_password".tr(),
                           isLoading: state.maybeWhen(
                             initial: (loading) => loading,
                             orElse: () => false,

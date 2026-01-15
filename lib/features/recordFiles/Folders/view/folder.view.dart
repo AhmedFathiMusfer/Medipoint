@@ -7,6 +7,7 @@ import 'package:diagno_bot/features/recordFiles/Folders/cubit/folder.cubit.dart'
 import 'package:diagno_bot/features/recordFiles/Folders/cubit/folder.state.dart';
 import 'package:diagno_bot/features/recordFiles/Folders/view/widegts/folder_card.dart';
 import 'package:diagno_bot/features/recordFiles/Folders/view/widegts/show_create_folder_dialog.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,7 +20,7 @@ class PatientFoldersView extends StatelessWidget {
   Widget build(BuildContext context) {
     var folderCubit = context.read<FolderCubit>();
     return BaseView(
-      title: "folders",
+      title: "folders".tr(),
       floatingActionButton: BlocBuilder<FolderCubit, FolderState>(
         builder: (context, state) {
           return state.maybeWhen(
@@ -40,7 +41,7 @@ class PatientFoldersView extends StatelessWidget {
                   Icons.create_new_folder_rounded,
                   color: Colors.white,
                 ),
-                label: const Text("New", style: TextStyle(color: Colors.white)),
+                label: Text("new".tr(), style: TextStyle(color: Colors.white)),
               );
             },
           );
@@ -73,7 +74,7 @@ class PatientFoldersView extends StatelessWidget {
                             vertical: 12.h,
                             horizontal: 12.w,
                           ),
-                          hintText: 'Search folder...',
+                          hintText: 'search_folder'.tr(),
                           hintStyle: const TextStyle(color: Colors.grey),
                           border: InputBorder.none,
                           prefixIcon: const Icon(
@@ -87,6 +88,7 @@ class PatientFoldersView extends StatelessWidget {
                       ),
                     ),
                   ),
+
                   if (folders.isEmpty) Nodata(),
                   Expanded(
                     child: AnimationLimiter(
@@ -119,3 +121,101 @@ class PatientFoldersView extends StatelessWidget {
     );
   }
 }
+
+// class InteractiveSearchField extends StatefulWidget {
+//   final Function(String) onChanged;
+
+//   const InteractiveSearchField({super.key, required this.onChanged});
+
+//   @override
+//   State<InteractiveSearchField> createState() => _InteractiveSearchFieldState();
+// }
+
+// class _InteractiveSearchFieldState extends State<InteractiveSearchField> {
+//   final TextEditingController _controller = TextEditingController();
+//   bool _isFocused = false;
+//   double _scale = 1.0;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return GestureDetector(
+//       onTapDown: (_) {
+//         setState(() {
+//           _scale = 0.97; // تأثير الضغط عند لمس الحقل
+//         });
+//       },
+//       onTapUp: (_) {
+//         setState(() {
+//           _scale = 1.0; // العودة للحجم الطبيعي بعد رفع الإصبع
+//         });
+//       },
+//       onTapCancel: () {
+//         setState(() {
+//           _scale = 1.0; // إذا تم إلغاء الضغط
+//         });
+//       },
+//       child: Transform.scale(
+//         scale: _scale,
+//         child: Focus(
+//           onFocusChange: (hasFocus) {
+//             setState(() {
+//               _isFocused = hasFocus;
+//             });
+//           },
+//           child: AnimatedContainer(
+//             duration: const Duration(milliseconds: 200),
+//             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+//             decoration: BoxDecoration(
+//               color: Colors.white,
+//               borderRadius: BorderRadius.circular(12),
+//               boxShadow:
+//                   _isFocused
+//                       ? [
+//                         BoxShadow(
+//                           color: Colors.blue.withOpacity(0.3),
+//                           blurRadius: 6,
+//                           offset: const Offset(0, 3),
+//                         ),
+//                       ]
+//                       : [
+//                         BoxShadow(
+//                           color: Colors.black12,
+//                           blurRadius: 3,
+//                           offset: const Offset(0, 1),
+//                         ),
+//                       ],
+//               border: Border.all(
+//                 color: _isFocused ? Colors.blue : Colors.grey.shade300,
+//                 width: 1,
+//               ),
+//             ),
+//             child: TextFormField(
+//               controller: _controller,
+//               decoration: InputDecoration(
+//                 hintText: 'Search folder...',
+//                 hintStyle: const TextStyle(color: Colors.grey),
+//                 border: InputBorder.none,
+//                 prefixIcon: const Icon(Icons.search, color: Colors.grey),
+//                 suffixIcon:
+//                     _controller.text.isNotEmpty
+//                         ? GestureDetector(
+//                           onTap: () {
+//                             _controller.clear();
+//                             widget.onChanged('');
+//                             setState(() {});
+//                           },
+//                           child: const Icon(Icons.clear, color: Colors.grey),
+//                         )
+//                         : null,
+//               ),
+//               onChanged: (value) async {
+//                 widget.onChanged(value);
+//                 setState(() {}); // لتحديث زر clear
+//               },
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }

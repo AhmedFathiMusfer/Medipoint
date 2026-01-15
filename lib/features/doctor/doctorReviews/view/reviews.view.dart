@@ -4,7 +4,7 @@ import 'package:diagno_bot/core/theming/color.dart';
 import 'package:diagno_bot/features/doctor/doctorReviews/cubit/doctorReviews.cubit.dart';
 import 'package:diagno_bot/features/doctor/doctorReviews/cubit/doctorReviews.state.dart';
 import 'package:diagno_bot/features/doctor/doctorReviews/view/widgets/review_card.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,7 +18,7 @@ class DoctorReviewsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Reviews"),
+        title: Text("reviews".tr()),
         backgroundColor: Colors.transparent,
         elevation: 0,
         shadowColor: Colors.white,
@@ -68,7 +68,7 @@ class DoctorReviewsView extends StatelessWidget {
 
             success: (reviews) {
               if (reviews.isEmpty) {
-                return const Center(child: Text("No reviews yet"));
+                return Center(child: Text("no_reviews_yet".tr()));
               }
 
               return ListView.separated(
@@ -139,8 +139,8 @@ class _AddReviewSheetState extends State<AddReviewSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Add Review",
+            Text(
+              "add_review".tr(),
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
@@ -162,14 +162,14 @@ class _AddReviewSheetState extends State<AddReviewSheet> {
               controller: controller,
               maxLines: 3,
 
-              decoration: const InputDecoration(
-                hintText: "Write your review...",
+              decoration: InputDecoration(
+                hintText: "write_your_review".tr(),
                 border: OutlineInputBorder(),
               ),
               validator:
                   (value) =>
                       value == null || value.isEmpty
-                          ? 'Please enter your review'
+                          ? 'please_enter_your_review'.tr()
                           : null,
             ),
             const SizedBox(height: 20),
@@ -193,8 +193,8 @@ class _AddReviewSheetState extends State<AddReviewSheet> {
                       color: ColorManager.primaryColor,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Text(
-                      "Submit",
+                    child: Text(
+                      "submit".tr(),
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,

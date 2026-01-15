@@ -7,6 +7,7 @@ import 'package:diagno_bot/core/widgets/bottomSheet/ImagePickerBottomSheet.dart'
 import 'package:diagno_bot/core/widgets/simpleButton.dart';
 import 'package:diagno_bot/features/profile/editProfile/cubit/editProfile.cubit.dart';
 import 'package:diagno_bot/features/profile/editProfile/cubit/editProfile.state.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,7 +25,13 @@ class _FillProfilePageState extends State<EditProfilePage> {
       '/mnt/data/73b1213f-dfe0-477c-b9fc-2d68d0aa9488.png';
 
   DateTime? selectedDate;
-  String gender = "Gender";
+  String gender = "";
+
+  @override
+  void initState() {
+    super.initState();
+    gender = "gender".tr();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +41,8 @@ class _FillProfilePageState extends State<EditProfilePage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: const Icon(Icons.arrow_back, color: ColorManager.primaryColor),
-        title: const Text(
-          "Fill Your Profile",
+        title: Text(
+          "fill_your_profile".tr(),
           style: TextStyle(
             color: ColorManager.primaryColor,
             fontWeight: FontWeight.w600,
@@ -126,12 +133,12 @@ class _FillProfilePageState extends State<EditProfilePage> {
 
               20.verticalSpace,
               CustomTextField(
-                hint: 'Name',
+                hint: 'name'.tr(),
                 controller: editProfileCubit.form.nameController,
               ),
               15.verticalSpace,
               CustomTextField(
-                hint: 'Email',
+                hint: 'email'.tr(),
                 isEmail: true,
                 controller: editProfileCubit.form.emailController,
               ),
@@ -151,7 +158,7 @@ class _FillProfilePageState extends State<EditProfilePage> {
                     borderRadius: BorderRadius.circular(12), // 🔥 مهم
                     icon: const Icon(Icons.keyboard_arrow_down),
                     items:
-                        const ["Gender", "Male", "Female"]
+                        ["gender".tr(), "male".tr(), "female".tr()]
                             .map(
                               (e) => DropdownMenuItem(
                                 value: e,
@@ -177,7 +184,7 @@ class _FillProfilePageState extends State<EditProfilePage> {
                 onPressed: () async {
                   await editProfileCubit.save();
                 },
-                text: 'Save',
+                text: 'save'.tr(),
               ),
             ],
           ),

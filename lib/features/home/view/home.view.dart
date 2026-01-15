@@ -16,6 +16,7 @@ import 'package:diagno_bot/features/home/view/widgets/doctor_card.dart';
 import 'package:diagno_bot/features/home/view/widgets/doctor_shimmer.dart';
 import 'package:diagno_bot/features/home/view/widgets/specialtie_shimmer.dart';
 import 'package:diagno_bot/features/home/view/widgets/specialty_item.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,7 +28,7 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     var homeCubit = context.read<HomeCubit>();
     return BaseView(
-      title: 'Home',
+      title: 'home'.tr(),
       child: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0.w),
@@ -88,7 +89,7 @@ class HomeView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Specialties',
+                    'specialties_title'.tr(),
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
@@ -99,7 +100,7 @@ class HomeView extends StatelessWidget {
                       context.pushNamed(Routers.specialtiesView);
                     },
                     child: Text(
-                      'See All',
+                      'see_all'.tr(),
                       style: TextStyle(color: Colors.blue, fontSize: 12.sp),
                     ),
                   ),
@@ -142,7 +143,7 @@ class HomeView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Doctors',
+                    'doctors_title'.tr(),
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
@@ -157,7 +158,7 @@ class HomeView extends StatelessWidget {
                       Appstore.instanse.currentPage = PagesEnum.doctor;
                     },
                     child: Text(
-                      'See All',
+                      'see_all'.tr(),
                       style: TextStyle(color: Colors.blue, fontSize: 12.sp),
                     ),
                   ),

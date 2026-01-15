@@ -5,6 +5,7 @@ import 'package:diagno_bot/core/widgets/TextField.dart';
 import 'package:diagno_bot/core/widgets/simpleButton.dart';
 import 'package:diagno_bot/features/auth/registration/cubit/registration.cubit.dart';
 import 'package:diagno_bot/features/auth/registration/cubit/registration.state.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -60,7 +61,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                   ),
                   10.verticalSpace,
                   Text(
-                    "HealthPal ",
+                    "healthpal".tr(),
                     style: GoogleFonts.poppins(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w400,
@@ -69,7 +70,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                   ),
                   20.verticalSpace,
                   Text(
-                    "Create Account",
+                    "create_account".tr(),
                     style: GoogleFonts.poppins(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w600,
@@ -78,7 +79,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                   ),
                   5.verticalSpace,
                   Text(
-                    "We are here to help you!",
+                    "we_are_here_to_help".tr(),
                     style: GoogleFonts.poppins(
                       color: ColorManager.secondaryColor,
                       fontSize: 14.sp,
@@ -91,20 +92,20 @@ class _RegistrationViewState extends State<RegistrationView> {
                       children: [
                         CustomTextField(
                           controller: registerCubit.form.nameController,
-                          hint: "Your Name",
+                          hint: "your_name".tr(),
                           icon: Icons.person_outline,
                         ),
                         15.verticalSpace,
                         CustomTextField(
                           controller: registerCubit.form.emailController,
-                          hint: "Your Email",
+                          hint: "your_email".tr(),
                           icon: Icons.email_outlined,
                           isEmail: true,
                         ),
                         15.verticalSpace,
                         CustomTextField(
                           controller: registerCubit.form.passwordController,
-                          hint: "Password",
+                          hint: "password".tr(),
                           icon: Icons.lock_outline,
                           isPassword: true,
                         ),
@@ -112,7 +113,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                         CustomTextField(
                           controller:
                               registerCubit.form.confirmPasswordController,
-                          hint: "Confirm Password",
+                          hint: "confirm_password".tr(),
                           icon: Icons.lock_outline,
                           isPassword: true,
                           isConfirmPassword: true,
@@ -120,7 +121,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                         ),
                         20.verticalSpace,
                         SimpleButton(
-                          text: "Create Account",
+                          text: "create_account".tr(),
                           isLoading: state.maybeWhen(
                             initial: (loding) => loding,
                             orElse: () => false,
@@ -170,7 +171,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Do you have an account?",
+                        "do_you_have_account".tr(),
                         style: GoogleFonts.poppins(color: Colors.grey.shade600),
                       ),
                       TextButton(
@@ -181,7 +182,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                           );
                         },
                         child: Text(
-                          "Sign In",
+                          "sign_in".tr(),
                           style: TextStyle(
                             color: ColorManager.blueColor,
                             fontSize: 14.sp,

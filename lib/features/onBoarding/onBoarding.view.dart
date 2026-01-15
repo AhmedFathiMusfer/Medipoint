@@ -1,6 +1,7 @@
 import 'package:diagno_bot/core/helpers/extensions.dart';
 import 'package:diagno_bot/core/routing/router.dart';
 import 'package:diagno_bot/core/widgets/simpleButton.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -75,8 +76,8 @@ class _OnboardingViewState extends State<OnboardingView> {
               child: SimpleButton(
                 text:
                     _currentPage == onboardingPages.length - 1
-                        ? 'Get Started'
-                        : 'Next',
+                        ? 'get_started'.tr()
+                        : 'next'.tr(),
                 onPressed: () {
                   if (_currentPage < onboardingPages.length - 1) {
                     _pageController.nextPage(
@@ -120,7 +121,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                 );
               },
               child: Text(
-                'Skip',
+                'skip'.tr(),
                 style: TextStyle(
                   color: Colors.grey[500],
                   fontSize: 14.sp,
@@ -135,24 +136,21 @@ class _OnboardingViewState extends State<OnboardingView> {
   }
 }
 
-final List<OnboardingPage> onboardingPages = [
+List<OnboardingPage> get onboardingPages => [
   OnboardingPage(
     image: 'assets/image/first_on_obourding_image.png',
-    title: 'Meet Doctors Online',
-    description:
-        'Connect with Specialized Doctors Online for Convenient and Comprehensive Medical Consultations.',
+    title: 'meet_doctors_online'.tr(),
+    description: 'onboarding_description_1'.tr(),
   ),
   OnboardingPage(
     image: 'assets/image/sconde_on_obourding_image.png',
-    title: 'Connect with Specialists',
-    description:
-        'Connect with Specialized Doctors Online for Convenient and Comprehensive Medical Consultations.',
+    title: 'connect_with_specialists'.tr(),
+    description: 'onboarding_description_2'.tr(),
   ),
   OnboardingPage(
     image: 'assets/image/final_on_obourding_image.png',
-    title: 'Thousands of Online Specialists',
-    description:
-        'Explore a Vast Array of Online Medical Specialists, Offering an Extensive Range of Expertise Tailored to Your Healthcare Needs.',
+    title: 'thousands_of_online_specialists'.tr(),
+    description: 'onboarding_description_3'.tr(),
   ),
 ];
 

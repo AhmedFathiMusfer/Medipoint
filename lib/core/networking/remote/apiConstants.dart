@@ -3,6 +3,8 @@ class ApiConstants {
 
   static const String loginEndpoint = "auth/token/";
   static const String registerEndpoint = "auth/register/";
+  static const String verifyCodeEmailEndpoint = "auth/verify-email/";
+
   static const String forgetPasswordEndpoint = "auth/password/reset/";
   static const String verifyCodeEndpoint = "auth/password/reset/verify/";
   static const String resetPasswordEndpoint = "auth/password/reset/confirm/";

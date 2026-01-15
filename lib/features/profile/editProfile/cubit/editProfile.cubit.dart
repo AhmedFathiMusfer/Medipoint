@@ -42,11 +42,16 @@ class EditProfileCubit extends Cubit<EditProfileState> {
     if (form.key.currentState!.validate()) {
       bool isConnected = await NetworkHelper.isConnected();
       if (isConnected) {
+        var data = await form.data;
         await RemoteProvider().send(
-          request: Request(url: ApiConstants.profileEndpoint, body: form.body),
+          request: Request(
+            url: ApiConstants.profileEndpoint,
+            body: data,
+            // header: {'Content-Type': 'multipart/form-data'},
+          ),
           method: RemoteMethod.put,
           onSuccess: (res, statsCode) async {
-            await AuthManager().setUser(form.body);
+            // await AuthManager().setUser(form.body);
             log(res.toString());
           },
           onError: (_, statsCode) {

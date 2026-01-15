@@ -1,6 +1,7 @@
 import 'package:diagno_bot/core/helpers/extensions.dart';
 import 'package:diagno_bot/core/theming/color.dart';
 import 'package:diagno_bot/core/widgets/TextField.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 void showCreateFolderDialog({
@@ -32,8 +33,8 @@ void showCreateFolderDialog({
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "Create New Folder",
+                    Text(
+                      "create_new_folder".tr(),
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
@@ -41,14 +42,14 @@ void showCreateFolderDialog({
                     ),
                     const SizedBox(height: 18),
 
-                    CustomTextField(controller: nameController, hint: 'Name'),
+                    CustomTextField(controller: nameController, hint: 'name'.tr()),
 
                     const SizedBox(height: 14),
 
                     // Description
                     CustomTextField(
                       controller: descController,
-                      hint: 'Description',
+                      hint: 'description'.tr(),
                     ),
 
                     const SizedBox(height: 22),
@@ -58,8 +59,8 @@ void showCreateFolderDialog({
                       children: [
                         TextButton(
                           onPressed: () => Navigator.pop(context),
-                          child: const Text(
-                            "Cancel",
+                          child: Text(
+                            "cancel".tr(),
                             style: TextStyle(color: Colors.black),
                           ),
                         ),
@@ -101,8 +102,8 @@ void showCreateFolderDialog({
                                     color: Colors.white,
                                     strokeWidth: 2.5,
                                   )
-                                  : const Text(
-                                    "Create",
+                                  : Text(
+                                    "create".tr(),
                                     style: TextStyle(color: Colors.white),
                                   ),
                         ),

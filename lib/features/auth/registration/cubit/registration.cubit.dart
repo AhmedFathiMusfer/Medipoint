@@ -25,8 +25,6 @@ class RegisterCubit extends Cubit<RegisterState> {
           request: Request(url: ApiConstants.registerEndpoint, body: form.body),
           method: RemoteMethod.post,
           onSuccess: (res, statsCode) async {
-            // log(res.toString());
-
             await AuthManager().setUser(res.data);
             emit(RegisterState.registerSuccess());
           },

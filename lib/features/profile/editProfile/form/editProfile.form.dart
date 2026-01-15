@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:diagno_bot/core/model/user.model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +26,7 @@ class EditProfileForm {
       'id': user.id,
       'email': emailController.text,
       'full_name': nameController.text,
-      'Gender': gender,
+      'gender': gender,
       'role': user.role,
     },
   };
@@ -36,13 +38,26 @@ class EditProfileForm {
     return null;
   }
 
+  // get data async {
+  // var data = body;
+
+  // var image = await getImageIsChanged(imagePath);
+  // if (image != null) {
+  //   data['user']['image'] = image;
+  // }
+  // return FormData.fromMap({...data});
+
+  // }
   get data async {
-    var data = body;
-    var image = await getImageIsChanged(imagePath);
-    if (image != null) {
-      data['user']['image'] = image;
-    }
-    return FormData.fromMap({...data});
+    final formData = FormData.fromMap({...body});
+
+    //formData.fromMap();
+
+    // formData.files.add(
+    //   MapEntry('image', await MultipartFile.fromFile(imagePath)),
+    // );
+
+    return formData;
   }
 
   void clear() {

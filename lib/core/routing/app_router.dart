@@ -215,12 +215,21 @@ class AppRouter {
               ),
         );
       case Routers.verifyCodeView:
-        var email = settings.arguments as String? ?? '';
+        var data = settings.arguments as Map<String, dynamic>? ?? {};
+        var isResetPassword = data['isResetPassword'] as bool? ?? false;
+        var email = data['email'] as String? ?? '';
         return MaterialPageRoute(
           builder:
               (_) => BlocProvider(
-                create: (_) => VerifyCodeCubit(email: email),
-                child: VerifyCodeView(email: email),
+                create:
+                    (_) => VerifyCodeCubit(
+                      email: email,
+                      isResetPassword: isResetPassword,
+                    ),
+                child: VerifyCodeView(
+                  email: email,
+                  isResetPassword: isResetPassword,
+                ),
               ),
         );
       case Routers.resetPasswordView:

@@ -20,7 +20,7 @@ class BookAppointmentView extends StatelessWidget {
   Widget build(BuildContext context) {
     var bookAppointmentCubit = context.read<BookAppointmentCubit>();
     return BaseView(
-      title: 'Book Appointment',
+      title: 'book_appointment'.tr(),
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: BlocConsumer<BookAppointmentCubit, BookAppointmentState>(
@@ -42,7 +42,7 @@ class BookAppointmentView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Select Date",
+                      "select_date".tr(),
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -110,7 +110,7 @@ class BookAppointmentView extends StatelessWidget {
                     ),
                     25.verticalSpace,
                     Text(
-                      "Select Hour",
+                      "select_hour".tr(),
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -163,11 +163,11 @@ class BookAppointmentView extends StatelessWidget {
                     30.verticalSpace,
                     SimpleButton(
                       isLoading: value.isBookingInProgress,
-                      text: 'Book',
+                      text: 'book'.tr(),
                       onPressed: () async {
                         if (value.selectedHour == null ||
                             value.selectedDate == null) {
-                          AppSnackBar.error("pleace select the date and time ");
+                          AppSnackBar.error("please_select_date_time".tr());
                           return;
                         }
                         await bookAppointmentCubit.addBooking(
@@ -194,10 +194,9 @@ void _showPaymentDialog(BuildContext context, int bookingId) {
       return AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text("Complete Payment"),
-        content: const Text(
-          "Your appointment is booked successfully.\n"
-          "Would you like to pay now?",
+        title: Text("complete_payment".tr()),
+        content: Text(
+          "appointment_booked_success".tr(),
         ),
         actions: [
           TextButton(
@@ -208,8 +207,8 @@ void _showPaymentDialog(BuildContext context, int bookingId) {
                 predicate: (route) => false,
               );
             },
-            child: const Text(
-              "Pay Later",
+            child: Text(
+              "pay_later".tr(),
               style: TextStyle(color: ColorManager.primaryColor),
             ),
           ),
@@ -237,7 +236,7 @@ void _showPaymentDialog(BuildContext context, int bookingId) {
                 },
               );
             },
-            child: const Text("Pay Now", style: TextStyle(color: Colors.white)),
+            child: Text("pay_now".tr(), style: TextStyle(color: Colors.white)),
           ),
         ],
       );

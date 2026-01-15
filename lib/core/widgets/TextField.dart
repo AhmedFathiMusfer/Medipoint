@@ -1,4 +1,5 @@
 import 'package:diagno_bot/core/theming/color.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -44,19 +45,19 @@ class CustomTextField extends StatelessWidget {
               validator
                   ? (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter this field is required';
+                      return 'field_required'.tr();
                     }
                     if (isEmail) {
                       final emailRegex = RegExp(
                         r"^[\w\.\-]+@([\w\-]+\.)+[a-zA-Z]{2,}$",
                       );
                       if (!emailRegex.hasMatch(value.trim()))
-                        return "please wright the correct email";
+                        return "email_invalid".tr();
                     }
                     if (isConfirmPassword) {
                       if (password != null) {
                         if (value != password!.text) {
-                          return 'Passwords do not match ';
+                          return 'passwords_not_match'.tr();
                         }
                       }
                     }

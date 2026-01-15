@@ -8,6 +8,7 @@ import 'package:diagno_bot/core/widgets/bottomSheet/ImagePickerBottomSheet.dart'
 import 'package:diagno_bot/core/widgets/bottomSheet/bottomSheet.dart';
 import 'package:diagno_bot/features/profile/index/cubit/profile.cubit.dart';
 import 'package:diagno_bot/features/profile/index/cubit/profile.state.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,7 +22,7 @@ class ProfileView extends StatelessWidget {
     var profileCubit = context.read<ProfileCubit>();
     final double avatarSize = 120;
     return BaseView(
-      title: 'Profile',
+      title: 'profile'.tr(),
       child: BlocListener<ProfileCubit, ProfileState>(
         listener: (context, state) {
           state.whenOrNull(
@@ -132,14 +133,14 @@ class ProfileView extends StatelessWidget {
                         _buildOptionTile(
                           context,
                           Icons.person_outline,
-                          'Edit Profile',
+                          'edit_profile'.tr(),
                         ),
 
                         _divider(),
                         _buildOptionTile(
                           context,
                           Icons.lock_outline,
-                          'Change Password',
+                          'change_password'.tr(),
                           onTap: () {
                             context.pushNamed(Routers.changePasswordView);
                           },
@@ -184,8 +185,8 @@ class ProfileView extends StatelessWidget {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
       leading: const Icon(Icons.logout_outlined, color: Colors.grey),
-      title: const Text(
-        'Log Out',
+      title: Text(
+        'log_out'.tr(),
         style: TextStyle(fontWeight: FontWeight.w500),
       ),
       onTap: () => _showLogoutSheet(context),
@@ -195,9 +196,9 @@ class ProfileView extends StatelessWidget {
   void _showLogoutSheet(BuildContext context) {
     return bottomSheet(
       context: context,
-      title: "logout",
-      buttonTitle: 'Yes, Logout',
-      message: "Are you sure you want to logout?",
+      title: "logout".tr(),
+      buttonTitle: 'yes_logout'.tr(),
+      message: "sure_logout".tr(),
       onSave: () {
         AuthManager().logout();
       },

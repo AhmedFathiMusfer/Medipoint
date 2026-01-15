@@ -8,10 +8,11 @@ import 'package:diagno_bot/features/auth/verifyCode/form/verifyCode.form.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VerifyCodeCubit extends Cubit<VerifyCodeState> {
-  VerifyCodeCubit({required this.email})
+  VerifyCodeCubit({required this.email, required this.isResetPassword})
     : super(const VerifyCodeState.initial());
 
   final String email;
+  final bool isResetPassword;
   VerifyCodeForm form = VerifyCodeForm();
 
   Future<void> submit() async {
@@ -21,7 +22,10 @@ class VerifyCodeCubit extends Cubit<VerifyCodeState> {
       if (isConnected) {
         await RemoteProvider().send(
           request: Request(
-            url: ApiConstants.verifyCodeEndpoint,
+            url:
+                isResetPassword
+                    ? ApiConstants.verifyCodeEndpoint
+                    : ApiConstants.verifyCodeEmailEndpoint,
             body: {...form.body, 'email': email},
           ),
           method: RemoteMethod.post,

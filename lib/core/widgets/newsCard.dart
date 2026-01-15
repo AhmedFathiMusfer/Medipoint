@@ -1,5 +1,6 @@
 import 'package:diagno_bot/core/theming/color.dart';
 import 'package:diagno_bot/features/appointment/bookAppointment/view/bookAppointment.view.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -50,9 +51,9 @@ class NewsCard extends StatelessWidget {
             top: 30,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text(
-                  "Looking for\nSpecialist Doctors?",
+                  "looking_for_specialist".tr(),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 22,
@@ -62,7 +63,7 @@ class NewsCard extends StatelessWidget {
                 ),
                 SizedBox(height: 12),
                 Text(
-                  "Schedule an appointment with\nour top doctors.",
+                  "schedule_appointment".tr(),
                   style: TextStyle(color: Colors.white70, fontSize: 15),
                 ),
               ],

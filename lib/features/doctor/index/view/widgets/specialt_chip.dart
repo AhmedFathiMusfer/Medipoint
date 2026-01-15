@@ -1,3 +1,4 @@
+import 'package:diagno_bot/core/theming/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -13,13 +14,13 @@ class SpecialtChip extends StatelessWidget {
       margin: EdgeInsets.only(right: 8.w),
       padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
       decoration: BoxDecoration(
-        color: selected ? Colors.black : Colors.grey.shade200,
+        color: selected ? ColorManager.primaryColor : Colors.grey.shade200,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
         text,
         style: TextStyle(
-          color: selected ? Colors.white : Colors.black,
+          color: selected ? Colors.white : ColorManager.primaryColor,
           fontWeight: FontWeight.w600,
           fontSize: 14,
         ),

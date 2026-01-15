@@ -6,6 +6,7 @@ import 'package:diagno_bot/core/theming/color.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/features/ai/chat/cubit/chat.cubit.dart';
 import 'package:diagno_bot/features/auth/login/cubit/login.cubit.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,9 +22,12 @@ class DocApp extends StatelessWidget {
       child: MultiBlocProvider(
         providers: [BlocProvider<ChatCubit>(create: (_) => ChatCubit())],
         child: MaterialApp(
+          localizationsDelegates: context.localizationDelegates,
+          supportedLocales: context.supportedLocales,
+          locale: context.locale,
           scaffoldMessengerKey: AppSnackBar.messengerKey,
           navigatorKey: AppRouter.navigatorKey,
-          title: 'Doc App',
+          title: 'app_name'.tr(),
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             primaryColor: ColorManager.primaryColor,

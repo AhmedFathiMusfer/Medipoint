@@ -26,7 +26,7 @@ class DoctorDetailsView extends StatelessWidget {
   Widget build(BuildContext context) {
     var doctorDetailsCubit = context.read<DoctorDetailsCubit>();
     return BaseView(
-      title: 'Doctor Details',
+      title: 'doctor_details'.tr(),
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: BlocBuilder<DoctorDetailsCubit, DoctorDetailsState>(
@@ -59,7 +59,7 @@ class DoctorDetailsView extends StatelessWidget {
                           arguments: state.doctor,
                         );
                       },
-                      text: 'Book Appointment',
+                      text: 'book_appointment'.tr(),
                     ),
                   ],
                 );
@@ -86,22 +86,22 @@ class DoctorDetailsView extends StatelessWidget {
         singleStat(
           icon: Icons.people,
           number: patients ?? "2,000+",
-          title: "patients",
+          title: "patients".tr(),
         ),
         singleStat(
           icon: Icons.star,
           number: experience ?? "10+",
-          title: "experience",
+          title: "experience".tr(),
         ),
         singleStat(
           icon: Icons.favorite,
           number: rating ?? "5",
-          title: "rating",
+          title: "rating".tr(),
         ),
         singleStat(
           icon: Icons.chat,
           number: reviews ?? "1,872",
-          title: "reviews",
+          title: "reviews".tr(),
         ),
       ],
     );
@@ -112,7 +112,7 @@ class DoctorDetailsView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "About me",
+          "about_me".tr(),
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.sp),
         ),
         10.verticalSpace,
@@ -133,7 +133,7 @@ class DoctorDetailsView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "Reviews",
+              "reviews".tr(),
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.sp),
             ),
             TextButton(
@@ -144,7 +144,7 @@ class DoctorDetailsView extends StatelessWidget {
                 );
               },
               child: Text(
-                'show',
+                'show'.tr(),
                 style: TextStyle(color: Colors.blue, fontSize: 12.sp),
               ),
             ),
@@ -154,7 +154,7 @@ class DoctorDetailsView extends StatelessWidget {
         if (review != null)
           ReviewCard(review: review)
         else
-          Text("No reviews yet."),
+          Text("no_reviews_yet".tr()),
       ],
     );
   }
@@ -196,7 +196,7 @@ class _WorkingHourWidgetState extends State<WorkingHourWidget>
 
       children: [
         Text(
-          "Working Time",
+          "working_time".tr(),
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.sp),
         ),
         10.verticalSpace,
@@ -210,7 +210,7 @@ class _WorkingHourWidgetState extends State<WorkingHourWidget>
             indicatorColor: ColorManager.primaryColor,
             labelStyle: const TextStyle(fontWeight: FontWeight.bold),
             controller: controller,
-            tabs: const [Tab(text: "this week"), Tab(text: "next week ")],
+            tabs: [Tab(text: "this_week".tr()), Tab(text: "next_week".tr())],
           ),
         ),
         AnimatedSize(
@@ -244,7 +244,7 @@ class _WorkingHourWidgetState extends State<WorkingHourWidget>
       children: [
         10.verticalSpace,
         if (workingHours.isEmpty)
-          Padding(padding: const EdgeInsets.all(8.0), child: Text('not found')),
+          Padding(padding: const EdgeInsets.all(8.0), child: Text('not_found'.tr())),
         ...workingHours.map((workingHour) {
           final startTime = DateTime.parse(workingHour.startTime);
           final endTime = DateTime.parse(workingHour.endTime);

@@ -4,6 +4,7 @@ import 'package:diagno_bot/core/widgets/noData.dart';
 import 'package:diagno_bot/features/recordFiles/files/cubit/file.cubit.dart';
 import 'package:diagno_bot/features/recordFiles/files/cubit/file.state.dart';
 import 'package:diagno_bot/features/recordFiles/files/view/widgets/file_picker.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,7 +28,7 @@ class PatientFilesView extends StatelessWidget {
   Widget build(BuildContext context) {
     var fileCubit = context.read<FileCubit>();
     return BaseView(
-      title: 'files',
+      title: 'files'.tr(),
       floatingActionButton: BlocBuilder<FileCubit, FileState>(
         builder: (context, state) {
           return state.maybeWhen(
@@ -47,7 +48,7 @@ class PatientFilesView extends StatelessWidget {
                   );
                 },
                 icon: const Icon(Icons.file_copy, color: Colors.white),
-                label: const Text("New", style: TextStyle(color: Colors.white)),
+                label: Text("new".tr(), style: TextStyle(color: Colors.white)),
               );
             },
           );
@@ -82,7 +83,7 @@ class PatientFilesView extends StatelessWidget {
                             vertical: 12.h,
                             horizontal: 12.w,
                           ),
-                          hintText: 'Search file...',
+                          hintText: 'search_file'.tr(),
                           hintStyle: const TextStyle(color: Colors.grey),
                           border: InputBorder.none,
                           prefixIcon: const Icon(
@@ -143,15 +144,15 @@ class PatientFilesView extends StatelessWidget {
 
                             subtitle:
                                 file.localPath == null
-                                    ? const Text(
-                                      "Not downloaded yet",
+                                    ? Text(
+                                      "not_downloaded_yet".tr(),
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: Colors.grey,
                                       ),
                                     )
-                                    : const Text(
-                                      "Downloaded",
+                                    : Text(
+                                      "downloaded".tr(),
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: Colors.green,

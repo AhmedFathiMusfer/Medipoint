@@ -17,7 +17,10 @@ class ChatMessageItem extends StatelessWidget {
     }
 
     return Align(
-      alignment: message.isUser ? Alignment.centerRight : Alignment.centerLeft,
+      alignment:
+          message.isUser
+              ? AlignmentDirectional.centerEnd
+              : AlignmentDirectional.centerStart,
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(12),

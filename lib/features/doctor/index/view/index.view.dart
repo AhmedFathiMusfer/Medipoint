@@ -6,6 +6,7 @@ import 'package:diagno_bot/features/doctor/index/cubit/doctors.cubit.dart';
 import 'package:diagno_bot/features/doctor/index/cubit/doctors.state.dart';
 import 'package:diagno_bot/features/doctor/index/view/widgets/doctor_card.dart';
 import 'package:diagno_bot/features/doctor/index/view/widgets/specialt_chip.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,7 +17,7 @@ class DoctorsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BaseView(
-      title: 'All Doctors',
+      title: 'all_doctors'.tr(),
       child: BlocBuilder<DoctorsCubit, DoctorsState>(
         builder: (context, state) {
           var doctorsCubit = context.read<DoctorsCubit>();
@@ -42,7 +43,7 @@ class DoctorsView extends StatelessWidget {
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(Icons.search),
-                            hintText: "Search doctor...",
+                            hintText: "search_doctor".tr(),
                           ),
                           onChanged: (value) async {
                             await doctorsCubit.fillterDoctorBySpecialtyOrName(
@@ -64,7 +65,7 @@ class DoctorsView extends StatelessWidget {
                                     .fillterDoctorBySpecialtyOrName(null, null);
                               },
                               child: SpecialtChip(
-                                text: "All",
+                                text: "all".tr(),
                                 selected: state.specialtySelected == 'All',
                               ),
                             ),
@@ -89,7 +90,7 @@ class DoctorsView extends StatelessWidget {
                       ),
                       20.verticalSpace,
                       Text(
-                        "${state.doctors.length} founds",
+                        "${state.doctors.length} ${"founds".tr()}",
                         style: TextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w600,
