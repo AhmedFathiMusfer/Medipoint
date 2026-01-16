@@ -34,7 +34,10 @@ class _RegistrationViewState extends State<RegistrationView> {
               if (mounted) {
                 context.pushNamed(
                   Routers.verifyCodeView,
-                  arguments: registerCubit.form.emailController.text,
+                  arguments: {
+                    "email": registerCubit.form.emailController.text,
+                    "isResetPassword": false,
+                  },
                 );
               }
               // context.pushNamedAndRemoveUntil(

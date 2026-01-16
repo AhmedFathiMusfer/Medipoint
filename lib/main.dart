@@ -1,4 +1,3 @@
-
 import 'package:diagno_bot/core/auth/authManager.dart';
 import 'package:diagno_bot/core/di/di.dart' as di;
 import 'package:diagno_bot/core/routing/app_router.dart';
@@ -8,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:easy_localization/easy_localization.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +27,8 @@ void main() async {
     EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('ar')],
       path: 'assets/translations',
-      fallbackLocale: const Locale('en'),
+      fallbackLocale: const Locale('ar'),
+      startLocale: const Locale('ar'),
       child: DocApp(appRouter: AppRouter()),
     ),
   );

@@ -39,7 +39,10 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
               // Navigate to verify code page
               Future.delayed(const Duration(seconds: 1), () {
                 if (mounted) {
-                  context.pushNamed(Routers.verifyCodeView, arguments: email);
+                  context.pushNamed(
+                    Routers.verifyCodeView,
+                    arguments: {"email": email, "isResetPassword": true},
+                  );
                 }
               });
             },

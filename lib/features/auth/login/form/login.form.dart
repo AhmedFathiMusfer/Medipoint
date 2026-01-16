@@ -12,7 +12,7 @@ class LoginForm {
     'password': Apphelper.convertDigitsLang(passwordController.text),
   };
 
-  void cear() {
+  void clear() {
     emailController.clear();
     passwordController.clear();
   }

@@ -43,15 +43,21 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
         listener: (context, state) {
           state.maybeWhen(
             success: (token, email) {
-              // Navigate to reset password page with token
-              Future.delayed(const Duration(seconds: 1), () {
+              if (widget.isResetPassword) {
                 if (mounted) {
                   context.pushNamed(
                     Routers.resetPasswordView,
                     arguments: {'token': token, 'email': email},
                   );
                 }
-              });
+              } else {
+                if (mounted) {
+                  context.pushNamedAndRemoveUntil(
+                    Routers.loginView,
+                    predicate: (root) => false,
+                  );
+                }
+              }
             },
             orElse: () {},
           );

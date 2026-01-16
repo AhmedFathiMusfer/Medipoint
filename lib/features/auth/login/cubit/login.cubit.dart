@@ -26,7 +26,12 @@ class LoginCubit extends Cubit<LoginState> {
 
   supmit() async {
     if (form.key.currentState!.validate()) {
-      emit(LoginState.initial(loading: true));
+      state.mapOrNull(
+        initial: (state) {
+          emit(state.copyWith(loading: true));
+        },
+      );
+
       bool isConnected = await NetworkHelper.isConnected();
       if (isConnected) {
         await RemoteProvider().send(
@@ -40,23 +45,38 @@ class LoginCubit extends Cubit<LoginState> {
           onError: (_, statsCode) {
             if (statsCode == 400) {
               AppSnackBar.error('the data entry is inValid');
-              emit(LoginState.initial(loading: false));
+              state.mapOrNull(
+                initial: (state) {
+                  emit(state.copyWith(loading: false));
+                },
+              );
             } else if (statsCode == 401) {
               AppSnackBar.error('Incorrect email or password.');
-              emit(LoginState.initial(loading: false));
+              state.mapOrNull(
+                initial: (state) {
+                  emit(state.copyWith(loading: false));
+                },
+              );
             } else {
               AppSnackBar.error(
                 ErrorMessages.instance.fromExceptionType(
                   ExceptionTypes.unexpected,
                 ),
               );
-              emit(LoginState.initial(loading: false));
+              state.mapOrNull(
+                initial: (state) {
+                  emit(state.copyWith(loading: false));
+                },
+              );
             }
           },
         );
       } else {
-        emit(LoginState.initial(loading: false));
-
+        state.mapOrNull(
+          initial: (state) {
+            emit(state.copyWith(loading: false));
+          },
+        );
         AppSnackBar.error(
           ErrorMessages.instance.fromExceptionType(ExceptionTypes.connection),
         );

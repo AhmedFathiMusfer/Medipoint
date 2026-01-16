@@ -63,7 +63,7 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   20.verticalSpace,
                   Text(
-                    "create_account".tr(),
+                    "login".tr(),
                     style: GoogleFonts.poppins(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w600,

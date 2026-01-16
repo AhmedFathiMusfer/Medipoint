@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:diagno_bot/core/auth/authManager.dart';
 import 'package:diagno_bot/core/helpers/networkHelper.dart';
 import 'package:diagno_bot/core/networking/remote/apiConstants.dart';
@@ -25,6 +23,7 @@ class RegisterCubit extends Cubit<RegisterState> {
           request: Request(url: ApiConstants.registerEndpoint, body: form.body),
           method: RemoteMethod.post,
           onSuccess: (res, statsCode) async {
+            res.data['password'] = form.body['password'];
             await AuthManager().setUser(res.data);
             emit(RegisterState.registerSuccess());
           },

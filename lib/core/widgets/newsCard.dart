@@ -46,8 +46,9 @@ class NewsCard extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
-            left: 20,
+          Positioned.directional(
+            textDirection: Directionality.of(context),
+            start: 20,
             top: 30,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
