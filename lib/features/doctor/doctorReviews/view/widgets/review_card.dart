@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class ReviewCard extends StatelessWidget {
   final Review review;
 
-  const ReviewCard({required this.review});
+  const ReviewCard({super.key, required this.review});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,6 @@ class ReviewCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// ⭐ Rating
           Row(
             children: List.generate(
               5,
@@ -30,7 +29,6 @@ class ReviewCard extends StatelessWidget {
               ),
             ),
           ),
-
           8.verticalSpace,
           if (review.content != null)
             Text(review.content!, style: TextStyle(fontSize: 14.sp)),

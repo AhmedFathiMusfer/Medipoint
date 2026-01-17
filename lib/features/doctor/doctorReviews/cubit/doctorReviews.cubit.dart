@@ -109,7 +109,6 @@ class DoctorReviewsCubit extends Cubit<DoctorReviewsState> {
   }
 
   insertreview(review) async {
-    log(review.toString() + "-----------------");
     return await db
         .into(db.reviews)
         .insert(

@@ -30,6 +30,7 @@ class ApiConstants {
   static filesEndpoint(int folderId) => "folders/$folderId/files/";
   static fileDeleteEndpoint(int fileId) => "files/$fileId/";
   static fileUpdateEndpoint(int fileId) => "files/$fileId/";
+  static String reviewComments(int reviewid) => '';
 
   static const String itemsEndpoint = "items";
 }

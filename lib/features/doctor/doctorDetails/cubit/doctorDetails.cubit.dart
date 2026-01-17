@@ -11,6 +11,7 @@ import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/features/doctor/doctorDetails/cubit/doctorDetails.state.dart';
 import 'package:drift/drift.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DoctorDetailsCubit extends Cubit<DoctorDetailsState> {
@@ -81,6 +82,30 @@ class DoctorDetailsCubit extends Cubit<DoctorDetailsState> {
         AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statsCode));
       },
     );
+  }
+
+  Future<void> addReview({required int rating, String? content}) async {
+    try {
+      await RemoteProvider().send(
+        request: Request(
+          url: ApiConstants.reviewEndpoint(doctorId),
+          body: {"doctor": doctorId, "rating": rating, "content": content},
+        ),
+        method: RemoteMethod.post,
+        onSuccess: (reponse, statusCode) async {
+          await insertreview(reponse.data);
+          await loadLocalData();
+          AppSnackBar.success("success_review_added".tr());
+        },
+        onError: (_, statusCode) {
+          AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statusCode));
+        },
+      );
+    } catch (_) {
+      AppSnackBar.error(
+        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+      );
+    }
   }
 
   // ******************************************db************************************************************
@@ -206,5 +231,20 @@ class DoctorDetailsCubit extends Cubit<DoctorDetailsState> {
           (t) => t.doctorId.equals(doctorId) & t.patientId.equals(userId),
         )).getSingleOrNull();
     return review != null;
+  }
+
+  insertreview(review) async {
+    return await db
+        .into(db.reviews)
+        .insert(
+          Review.fromJson({
+            ...review,
+            'doctorId': review['doctor'],
+            'patientId': review['patient'],
+            'createdAt': review['created_at'],
+            'updatedAt': review['updated_at'],
+          }),
+          mode: InsertMode.insertOrReplace,
+        );
   }
 }
