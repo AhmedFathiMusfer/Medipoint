@@ -140,7 +140,7 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
                         onPressed: () {
                           // Resend code functionality can be added here
                           AppSnackBar.warning(
-                            'Code resend feature will be implemented',
+                            'error_code_resend_feature'.tr(),
                           );
                         },
                         child: Text(

@@ -8,10 +8,12 @@ import 'package:diagno_bot/core/networking/remote/remoteProvider.dart';
 import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/features/recordFiles/files/cubit/file.state.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 class FileCubit extends Cubit<FileState> {
   final int folderId;
@@ -34,7 +36,7 @@ class FileCubit extends Cubit<FileState> {
       final files = await getFiles();
 
       if (!isClosed) {
-        emit(FileState.success(files: files));
+        emit(FileState.success(files: files.reversed.toList()));
       }
     } catch (e) {
       AppSnackBar.error(
@@ -103,7 +105,7 @@ class FileCubit extends Cubit<FileState> {
             if (res.data != null) {
               await insertFile(res.data, filePath);
             }
-            AppSnackBar.success("the file is created");
+            AppSnackBar.success("success_file_created".tr());
             await loadLocalData();
           } catch (ex) {
             AppSnackBar.error(
@@ -133,6 +135,68 @@ class FileCubit extends Cubit<FileState> {
     } else {
       AppSnackBar.error(
         ErrorMessages.instance.fromExceptionType(ExceptionTypes.connection),
+      );
+    }
+  }
+
+  Future<void> deleteFile(PatientFile file) async {
+    try {
+      final isConnected = await NetworkHelper.isConnected();
+      if (!isConnected) {
+        AppSnackBar.error(
+          ErrorMessages.instance.fromExceptionType(ExceptionTypes.connection),
+        );
+        return;
+      }
+
+      await RemoteProvider().send(
+        request: Request(url: ApiConstants.fileDeleteEndpoint(file.id)),
+        method: RemoteMethod.delete,
+        onSuccess: (_, __) async {
+          try {
+            await (db.delete(db.patientFiles)
+              ..where((t) => t.id.equals(file.id))).go();
+
+            AppSnackBar.success("file_deleted".tr());
+            await loadLocalData();
+          } catch (e) {
+            log(e.toString());
+          }
+        },
+        onError: (_, statusCode) {
+          AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statusCode));
+        },
+      );
+    } catch (e) {
+      AppSnackBar.error(
+        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+      );
+    }
+  }
+
+  Future<void> renameFile(PatientFile file, String newName) async {
+    try {
+      await RemoteProvider().send(
+        request: Request(
+          url: ApiConstants.fileUpdateEndpoint(file.id),
+          body: {'name': newName, 'folder': folderId},
+        ),
+        method: RemoteMethod.put,
+        onSuccess: (_, __) async {
+          await (db.update(db.patientFiles)..where(
+            (t) => t.id.equals(file.id),
+          )).write(PatientFilesCompanion(name: Value(newName)));
+
+          AppSnackBar.success("file_renamed".tr());
+          await loadLocalData();
+        },
+        onError: (_, statusCode) {
+          AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statusCode));
+        },
+      );
+    } catch (e) {
+      AppSnackBar.error(
+        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
       );
     }
   }
@@ -197,6 +261,15 @@ class FileCubit extends Cubit<FileState> {
         ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
       );
     }
+  }
+
+  Future<void> shareFile(PatientFile file) async {
+    if (file.localPath == null) {
+      AppSnackBar.error("file_not_downloaded".tr());
+      return;
+    }
+
+    await Share.shareXFiles([XFile(file.localPath!)], text: file.name);
   }
 
   Future<void> fetchFiles(int folderId) async {

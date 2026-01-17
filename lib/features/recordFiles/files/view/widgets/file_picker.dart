@@ -1,7 +1,7 @@
 import 'package:diagno_bot/core/theming/color.dart';
 import 'package:diagno_bot/features/recordFiles/files/cubit/file.cubit.dart';
 import 'package:diagno_bot/features/recordFiles/files/cubit/file.state.dart'
-    show FileState;
+    show FileState, FileStatePatterns;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

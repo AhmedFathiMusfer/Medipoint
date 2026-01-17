@@ -1,12 +1,16 @@
 import 'dart:io';
-import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:diagno_bot/core/helpers/extensions.dart';
+import 'package:diagno_bot/core/networking/remote/apiConstants.dart';
+import 'package:diagno_bot/core/routing/router.dart';
 import 'package:diagno_bot/core/theming/color.dart';
 import 'package:diagno_bot/core/widgets/TextField.dart';
 import 'package:diagno_bot/core/widgets/bottomSheet/ImagePickerBottomSheet.dart';
 import 'package:diagno_bot/core/widgets/simpleButton.dart';
 import 'package:diagno_bot/features/profile/editProfile/cubit/editProfile.cubit.dart';
 import 'package:diagno_bot/features/profile/editProfile/cubit/editProfile.state.dart';
+import 'package:diagno_bot/features/profile/index/cubit/profile.cubit.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,6 +40,7 @@ class _FillProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
     var editProfileCubit = context.read<EditProfileCubit>();
+    //  var profileCubit = BlocProvider.of<ProfileCubit>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -59,11 +64,25 @@ class _FillProfilePageState extends State<EditProfilePage> {
           child: Column(
             children: [
               const SizedBox(height: 20),
+              BlocListener<EditProfileCubit, EditProfileState>(
+                listener: (context, state) {
+                  state.maybeMap(
+                    success: (value) {
+                      // profileCubit.initial();
+                      context.pop();
+                    },
+                    orElse: () {},
+                  );
+                },
+                child: const SizedBox.shrink(),
+              ),
+
               BlocSelector<EditProfileCubit, EditProfileState, String?>(
                 selector:
                     (state) => state.maybeMap(
-                      success: (s) => s.changeProfileImage,
-                      orElse: () => null,
+                      changeProfileImage: (s) => s.imagePath,
+
+                      orElse: () {},
                     ),
                 builder: (context, filePath) {
                   return Stack(
@@ -75,18 +94,16 @@ class _FillProfilePageState extends State<EditProfilePage> {
                           radius: 60,
                           backgroundColor: Colors.grey[200],
                           backgroundImage:
-                              editProfileCubit.newImagePath == null
-                                  ? (editProfileCubit.form.imagePath.isNotEmpty
+                              filePath != null
+                                  ? FileImage(File(filePath))
+                                  : (editProfileCubit.form.imagePath.isNotEmpty
                                       ? CachedNetworkImageProvider(
-                                        editProfileCubit.form.imagePath,
+                                        '${ApiConstants.rootUrl}${editProfileCubit.form.imagePath}',
                                       )
                                       : AssetImage(
-                                            'assets/avatar_placeholder.png',
+                                            'assets/image/avatar_placeholder.jpg',
                                           )
-                                          as ImageProvider)
-                                  : FileImage(
-                                    File(editProfileCubit.newImagePath!),
-                                  ),
+                                          as ImageProvider),
                         ),
                       ),
                       Positioned(
@@ -180,11 +197,21 @@ class _FillProfilePageState extends State<EditProfilePage> {
               ),
 
               20.verticalSpace,
-              SimpleButton(
-                onPressed: () async {
-                  await editProfileCubit.save();
+              BlocSelector<EditProfileCubit, EditProfileState, bool>(
+                selector:
+                    (state) => state.maybeMap(
+                      loading: (s) => s.loading,
+                      orElse: () => false,
+                    ),
+                builder: (context, isloading) {
+                  return SimpleButton(
+                    isLoading: isloading,
+                    onPressed: () async {
+                      await editProfileCubit.save();
+                    },
+                    text: 'save'.tr(),
+                  );
                 },
-                text: 'save'.tr(),
               ),
             ],
           ),

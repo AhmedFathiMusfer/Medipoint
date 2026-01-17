@@ -1,90 +1,121 @@
 import 'package:diagno_bot/core/database/drift_db.dart';
+import 'package:diagno_bot/core/theming/color.dart';
+import 'package:diagno_bot/core/widgets/show_confirm_dialog.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class FolderCard extends StatefulWidget {
+// }
+class FolderCard extends StatelessWidget {
   final PatientFolder folder;
   final Function(int id) onTap;
+  final Function(int id) onDelete;
+  final Function(PatientFolder folder) onRename;
 
-  const FolderCard({super.key, required this.folder, required this.onTap});
-
-  @override
-  State<FolderCard> createState() => _FolderCardState();
-}
-
-class _FolderCardState extends State<FolderCard>
-    with SingleTickerProviderStateMixin {
-  double _scale = 1.0;
-  void _onTapDown(TapDownDetails details) {
-    setState(() {
-      _scale = 0.95;
-    });
-  }
-
-  void _onTapUp(TapUpDetails details) {
-    setState(() {
-      _scale = 1.0;
-    });
-  }
-
-  void _onTapCancel() {
-    setState(() {
-      _scale = 1.0;
-    });
-  }
+  const FolderCard({
+    super.key,
+    required this.folder,
+    required this.onTap,
+    required this.onDelete,
+    required this.onRename,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: _onTapDown,
-      onTapUp: _onTapUp,
-      onTapCancel: _onTapCancel,
-      child: Transform.scale(
-        scale: _scale,
-        child: Container(
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 6.h, horizontal: 4.w),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: const [
+          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+        ],
+      ),
+      child: ListTile(
+        contentPadding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
+
+        leading: Container(
+          padding: EdgeInsets.all(10.r),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(14),
-            boxShadow: [
-              BoxShadow(color: Colors.black12, spreadRadius: 1, blurRadius: 6),
-            ],
+            color: Colors.blue.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
           ),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(10),
-            onTap: () => widget.onTap(widget.folder.id),
-            child: Padding(
-              padding: const EdgeInsets.only(
-                top: 12,
-                right: 10,
-                left: 10,
-                bottom: 12,
+          child: Icon(Icons.folder_rounded, color: Colors.blue, size: 26),
+        ),
+        title: Text(
+          folder.name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (folder.description != null && folder.description!.isNotEmpty)
+              Padding(
+                padding: EdgeInsets.only(top: 4.h),
+                child: Text(
+                  folder.description!,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
               ),
-              child: Column(
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+          ],
+        ),
+        trailing: PopupMenuButton<String>(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          onSelected: (value) async {
+            if (value == 'rename') {
+              await onRename(folder);
+            } else if (value == 'delete') {
+              showConfirmDialog(
+                context: context,
+                title: "confirm_delete".tr(),
+                message: "Are you sure you want to delete this folder?".tr(),
+                confirmText: "delete".tr(),
+                confirmColor: Colors.red,
+                onConfirm: () async {
+                  await onDelete(folder.id);
+                },
+              );
+            }
+          },
+          itemBuilder:
+              (_) => [
+                PopupMenuItem(
+                  value: 'rename',
+                  child: Row(
                     children: [
-                      Icon(
-                        Icons.folder_open_rounded,
-                        size: 30,
-                        color: Colors.blue.shade600,
-                      ),
-                      10.horizontalSpace,
+                      Icon(Icons.edit, color: ColorManager.primaryColor),
+                      8.horizontalSpace,
+                      Text('rename'.tr()),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  value: 'delete',
+                  child: Row(
+                    children: [
+                      Icon(Icons.delete, color: Colors.red),
+                      8.horizontalSpace,
                       Text(
-                        widget.folder.name,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                        ),
+                        'delete'.tr(),
+                        style: const TextStyle(color: Colors.red),
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-          ),
+                ),
+              ],
         ),
+
+        onTap: () => onTap(folder.id),
       ),
     );
   }

@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 
 class EditProfileForm {
   final UserModel user;
-  final String? newImagePath;
-  EditProfileForm({required this.user, this.newImagePath}) {
+
+  EditProfileForm({required this.user}) {
     passwordController = TextEditingController(text: user.password);
     emailController = TextEditingController(text: user.email);
     nameController = TextEditingController(text: user.fullName);
-    imagePath = newImagePath ?? user.image ?? '';
+    imagePath = user.image ?? '';
     gender = user.gender ?? '';
   }
   final key = GlobalKey<FormState>();
@@ -22,43 +22,42 @@ class EditProfileForm {
   String imagePath = '';
 
   get body => {
-    "user": {
-      'id': user.id,
-      'email': emailController.text,
-      'full_name': nameController.text,
-      'gender': gender,
-      'role': user.role,
-    },
+    'id': user.id,
+    'email': emailController.text,
+    'full_name': nameController.text,
+    'gender': gender,
+    'role': user.role,
   };
   Future<MultipartFile?> getImageIsChanged(String imagePath) async {
-    if (!imagePath.contains('http')) {
+    if (!imagePath.contains('/media/users')) {
       var name = imagePath.split('/').last;
       return await MultipartFile.fromFile(imagePath, filename: name);
     }
     return null;
   }
 
-  // get data async {
-  // var data = body;
-
-  // var image = await getImageIsChanged(imagePath);
-  // if (image != null) {
-  //   data['user']['image'] = image;
-  // }
-  // return FormData.fromMap({...data});
-
-  // }
   get data async {
     final formData = FormData.fromMap({...body});
 
-    //formData.fromMap();
-
-    // formData.files.add(
-    //   MapEntry('image', await MultipartFile.fromFile(imagePath)),
-    // );
-
+    var image = await getImageIsChanged(imagePath);
+    if (image != null) {
+      formData.files.add(
+        MapEntry('image', await MultipartFile.fromFile(imagePath)),
+      );
+    }
     return formData;
   }
+  // get data async {
+  //   final formData = FormData.fromMap({...body});
+
+  //   //formData.fromMap();
+
+  //   // formData.files.add(
+  //   //   MapEntry('image', await MultipartFile.fromFile(imagePath)),
+  //   // );
+
+  //   return formData;
+  // }
 
   void clear() {
     emailController.clear();

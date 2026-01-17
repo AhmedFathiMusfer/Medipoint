@@ -9,6 +9,7 @@ import 'package:diagno_bot/core/networking/remote/remoteProvider.dart';
 import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/features/doctor/doctorReviews/cubit/doctorReviews.state.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -84,7 +85,7 @@ class DoctorReviewsCubit extends Cubit<DoctorReviewsState> {
         onSuccess: (reponse, statusCode) async {
           await insertreview(reponse.data);
           await loadLocalData();
-          AppSnackBar.success("Review added successfully");
+          AppSnackBar.success("success_review_added".tr());
         },
         onError: (_, statusCode) {
           AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statusCode));

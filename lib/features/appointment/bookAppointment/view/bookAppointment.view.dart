@@ -195,9 +195,7 @@ void _showPaymentDialog(BuildContext context, int bookingId) {
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Text("complete_payment".tr()),
-        content: Text(
-          "appointment_booked_success".tr(),
-        ),
+        content: Text("appointment_booked_success".tr()),
         actions: [
           TextButton(
             onPressed: () {

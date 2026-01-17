@@ -1,4 +1,5 @@
 import 'package:diagno_bot/core/networking/errors/exceptions.enum.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ErrorMessages {
   // singleton
@@ -9,30 +10,30 @@ class ErrorMessages {
   String fromStatusCode(int statusCode) {
     switch (statusCode) {
       case 401:
-        return "Unauthorized. Please login again.";
+        return "error_unauthorized".tr();
       case 403:
       case 404:
       case 400:
-        return "An unknown error occurred.";
+        return "error_unknown".tr();
       case 408:
-        return "Please check your internet.";
+        return "error_check_internet".tr();
       case 500:
       case 502:
       case 503:
-        return "Internal server error. Please try again later.";
+        return "error_server_error".tr();
       default:
-        return "Something went wrong.";
+        return "error_something_wrong".tr();
     }
   }
 
   String fromExceptionType(ExceptionTypes type) {
     switch (type) {
       case ExceptionTypes.timeout:
-        return "Connection timed out. Please check your internet.";
+        return "error_connection_timeout".tr();
       case ExceptionTypes.connection:
-        return "No internet connection. Please check your network.";
+        return "error_no_internet".tr();
       default:
-        return "An unknown error occurred.";
+        return "error_unknown".tr();
     }
   }
 }

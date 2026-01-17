@@ -1,8 +1,10 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:diagno_bot/core/auth/authManager.dart';
 import 'package:diagno_bot/core/baseView/base.view.dart';
 import 'package:diagno_bot/core/helpers/extensions.dart';
+import 'package:diagno_bot/core/networking/remote/apiConstants.dart';
 import 'package:diagno_bot/core/routing/router.dart';
 import 'package:diagno_bot/core/widgets/bottomSheet/ImagePickerBottomSheet.dart';
 import 'package:diagno_bot/core/widgets/bottomSheet/bottomSheet.dart';
@@ -14,8 +16,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ProfileView extends StatelessWidget {
+class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
+
+  @override
+  State<ProfileView> createState() => _ProfileViewState();
+}
+
+class _ProfileViewState extends State<ProfileView> with RouteAware {
+  @override
+  void didPopNext() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +38,8 @@ class ProfileView extends StatelessWidget {
       child: BlocListener<ProfileCubit, ProfileState>(
         listener: (context, state) {
           state.whenOrNull(
-            EditTheAvatar: (imagePath) {
-              context.pushNamed(Routers.editProfileView, arguments: imagePath);
+            EditTheAvatar: (imagePath) async {
+              context.pushNamed(Routers.editProfileView);
             },
           );
         },
@@ -47,60 +59,15 @@ class ProfileView extends StatelessWidget {
                           radius: avatarSize / 2,
                           backgroundColor: Colors.grey[200],
                           backgroundImage:
-                              (AuthManager().currentUser?.image != null &&
-                                      AuthManager()
-                                          .currentUser!
-                                          .image!
-                                          .isNotEmpty)
+                              (profileCubit.user?.image != null &&
+                                      profileCubit.user!.image!.isNotEmpty)
                                   ? CachedNetworkImageProvider(
-                                    AuthManager().currentUser!.image!,
+                                    '${ApiConstants.rootUrl}${profileCubit.user!.image!}',
                                   )
-                                  : AssetImage('assets/avatar_placeholder.png')
+                                  : AssetImage(
+                                        'assets/image/avatar_placeholder.jpg',
+                                      )
                                       as ImageProvider,
-                        ),
-                        Positioned(
-                          bottom: 9,
-                          right: MediaQuery.of(context).size.width / 2 - 130,
-                          child: Container(
-                            width: 30,
-                            height: 30,
-                            padding: const EdgeInsets.all(0),
-                            decoration: BoxDecoration(
-                              color: Colors.blueGrey[900],
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: IconButton(
-                              onPressed: () async {
-                                imagePickerBottomSheet(
-                                  context: context,
-                                  onSelectCamera: () async {
-                                    Navigator.of(context).pop();
-                                    await profileCubit.pickImage(
-                                      ImageSource.camera,
-                                    );
-                                  },
-                                  onSelectGallery: () async {
-                                    Navigator.of(context).pop();
-                                    await profileCubit.pickImage(
-                                      ImageSource.gallery,
-                                    );
-                                  },
-                                );
-                              },
-                              icon: const Icon(
-                                Icons.edit,
-                                color: Colors.white,
-                                size: 15,
-                              ),
-                            ),
-                          ),
                         ),
                       ],
                     ),
@@ -108,7 +75,7 @@ class ProfileView extends StatelessWidget {
 
                   const SizedBox(height: 12),
                   Text(
-                    AuthManager().currentUser?.fullName ?? '',
+                    profileCubit.user?.fullName ?? '',
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 16,
@@ -117,7 +84,7 @@ class ProfileView extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    AuthManager().currentUser?.email ?? '',
+                    profileCubit.user.email ?? '',
                     style: TextStyle(color: Colors.grey[600]),
                   ),
                   const SizedBox(height: 22),
@@ -169,15 +136,22 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  Widget _buildOptionTile(BuildContext context, IconData icon, String title, {VoidCallback? onTap}) {
+  Widget _buildOptionTile(
+    BuildContext context,
+    IconData icon,
+    String title, {
+    VoidCallback? onTap,
+  }) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
       leading: Icon(icon, color: Colors.grey[700]),
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
       trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-      onTap: onTap ?? () {
-        context.pushNamed(Routers.editProfileView);
-      },
+      onTap:
+          onTap ??
+          () {
+            context.pushNamed(Routers.editProfileView);
+          },
     );
   }
 

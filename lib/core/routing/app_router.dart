@@ -88,11 +88,10 @@ class AppRouter {
           transitionDuration: Duration.zero,
         );
       case Routers.editProfileView:
-        var newImagePath = settings.arguments as String?;
         return PageRouteBuilder(
           pageBuilder:
               (context, animation, secondaryAnimation) => BlocProvider(
-                create: (_) => EditProfileCubit(newImagePath),
+                create: (_) => EditProfileCubit(),
                 child: EditProfilePage(),
               ),
           transitionDuration: Duration.zero,

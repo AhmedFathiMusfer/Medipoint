@@ -29,10 +29,19 @@ class PatientFoldersView extends StatelessWidget {
               return FloatingActionButton.extended(
                 backgroundColor: ColorManager.primaryColor,
                 onPressed: () {
-                  showCreateFolderDialog(
+                  // showCreateFolderDialog(
+                  //   context: context,
+                  //   onCreate: (name, description) async {
+                  //     await folderCubit.createNewFolder(name, description);
+                  //     return true;
+                  //   },
+                  // );
+                  showFolderDialog(
                     context: context,
-                    onCreate: (name, description) async {
-                      await folderCubit.createNewFolder(name, description);
+                    title: 'create_new_folder'.tr(),
+                    confirmText: 'create'.tr(),
+                    onSubmit: (name, desc) async {
+                      await folderCubit.createNewFolder(name, desc);
                       return true;
                     },
                   );
@@ -107,6 +116,26 @@ class PatientFoldersView extends StatelessWidget {
                                 arguments: id,
                               );
                             },
+                            onDelete: (id) async {
+                              await folderCubit.deleteFolder(id);
+                            },
+                            onRename: (folder) {
+                              showFolderDialog(
+                                context: context,
+                                title: 'edit_folder'.tr(),
+                                initialName: folder.name,
+                                initialDesc: folder.description,
+                                confirmText: 'save'.tr(),
+                                onSubmit: (name, desc) async {
+                                  await folderCubit.renameFolder(
+                                    id: folder.id,
+                                    name: name,
+                                    description: desc,
+                                  );
+                                  return true;
+                                },
+                              );
+                            },
                           );
                         },
                       ),
@@ -121,101 +150,3 @@ class PatientFoldersView extends StatelessWidget {
     );
   }
 }
-
-// class InteractiveSearchField extends StatefulWidget {
-//   final Function(String) onChanged;
-
-//   const InteractiveSearchField({super.key, required this.onChanged});
-
-//   @override
-//   State<InteractiveSearchField> createState() => _InteractiveSearchFieldState();
-// }
-
-// class _InteractiveSearchFieldState extends State<InteractiveSearchField> {
-//   final TextEditingController _controller = TextEditingController();
-//   bool _isFocused = false;
-//   double _scale = 1.0;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return GestureDetector(
-//       onTapDown: (_) {
-//         setState(() {
-//           _scale = 0.97; // تأثير الضغط عند لمس الحقل
-//         });
-//       },
-//       onTapUp: (_) {
-//         setState(() {
-//           _scale = 1.0; // العودة للحجم الطبيعي بعد رفع الإصبع
-//         });
-//       },
-//       onTapCancel: () {
-//         setState(() {
-//           _scale = 1.0; // إذا تم إلغاء الضغط
-//         });
-//       },
-//       child: Transform.scale(
-//         scale: _scale,
-//         child: Focus(
-//           onFocusChange: (hasFocus) {
-//             setState(() {
-//               _isFocused = hasFocus;
-//             });
-//           },
-//           child: AnimatedContainer(
-//             duration: const Duration(milliseconds: 200),
-//             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
-//             decoration: BoxDecoration(
-//               color: Colors.white,
-//               borderRadius: BorderRadius.circular(12),
-//               boxShadow:
-//                   _isFocused
-//                       ? [
-//                         BoxShadow(
-//                           color: Colors.blue.withOpacity(0.3),
-//                           blurRadius: 6,
-//                           offset: const Offset(0, 3),
-//                         ),
-//                       ]
-//                       : [
-//                         BoxShadow(
-//                           color: Colors.black12,
-//                           blurRadius: 3,
-//                           offset: const Offset(0, 1),
-//                         ),
-//                       ],
-//               border: Border.all(
-//                 color: _isFocused ? Colors.blue : Colors.grey.shade300,
-//                 width: 1,
-//               ),
-//             ),
-//             child: TextFormField(
-//               controller: _controller,
-//               decoration: InputDecoration(
-//                 hintText: 'Search folder...',
-//                 hintStyle: const TextStyle(color: Colors.grey),
-//                 border: InputBorder.none,
-//                 prefixIcon: const Icon(Icons.search, color: Colors.grey),
-//                 suffixIcon:
-//                     _controller.text.isNotEmpty
-//                         ? GestureDetector(
-//                           onTap: () {
-//                             _controller.clear();
-//                             widget.onChanged('');
-//                             setState(() {});
-//                           },
-//                           child: const Icon(Icons.clear, color: Colors.grey),
-//                         )
-//                         : null,
-//               ),
-//               onChanged: (value) async {
-//                 widget.onChanged(value);
-//                 setState(() {}); // لتحديث زر clear
-//               },
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }

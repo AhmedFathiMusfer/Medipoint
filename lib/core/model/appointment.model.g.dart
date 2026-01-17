@@ -10,7 +10,7 @@ AppointmentModel _$AppointmentModelFromJson(Map<String, dynamic> json) =>
     AppointmentModel(
       id: (json['id'] as num).toInt(),
       dateTime: json['datetime'] as String,
-      status: json['status'],
+      status: $enumDecode(_$AppointmentStatusEnumMap, json['status']),
       doctor: DoctorModel.fromJson(json['doctor'] as Map<String, dynamic>),
     );
 

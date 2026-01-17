@@ -5,6 +5,7 @@ import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/features/auth/verifyCode/cubit/verifyCode.state.dart';
 import 'package:diagno_bot/features/auth/verifyCode/form/verifyCode.form.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VerifyCodeCubit extends Cubit<VerifyCodeState> {
@@ -31,25 +32,25 @@ class VerifyCodeCubit extends Cubit<VerifyCodeState> {
           method: RemoteMethod.post,
           onSuccess: (res, statsCode) {
             String token = res.data['token'] ?? res.data['reset_token'] ?? '';
-            AppSnackBar.success('Code verified successfully.');
+            AppSnackBar.success('success_code_verified'.tr());
             emit(VerifyCodeState.success(token: token, email: email));
           },
           onError: (_, statsCode) {
             if (statsCode == 400) {
-              AppSnackBar.error('Invalid code. Please try again.');
+              AppSnackBar.error('error_invalid_code'.tr());
               emit(const VerifyCodeState.initial(loading: false));
             } else if (statsCode == 404) {
-              AppSnackBar.error('Code not found or expired.');
+              AppSnackBar.error('error_code_not_found'.tr());
               emit(const VerifyCodeState.initial(loading: false));
             } else {
-              AppSnackBar.error('An error occurred. Please try again later.');
+              AppSnackBar.error('error_occurred_try_later'.tr());
               emit(const VerifyCodeState.initial(loading: false));
             }
           },
         );
       } else {
         emit(const VerifyCodeState.initial(loading: false));
-        AppSnackBar.error('Please check your internet connection.');
+        AppSnackBar.error('error_check_internet_connection'.tr());
       }
     }
   }

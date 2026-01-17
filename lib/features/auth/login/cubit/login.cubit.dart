@@ -9,6 +9,7 @@ import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/features/auth/login/cubit/login.state.dart';
 import 'package:diagno_bot/features/auth/login/form/login.form.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginCubit extends Cubit<LoginState> {
@@ -44,14 +45,14 @@ class LoginCubit extends Cubit<LoginState> {
           },
           onError: (_, statsCode) {
             if (statsCode == 400) {
-              AppSnackBar.error('the data entry is inValid');
+              AppSnackBar.error('error_invalid_data_entry'.tr());
               state.mapOrNull(
                 initial: (state) {
                   emit(state.copyWith(loading: false));
                 },
               );
             } else if (statsCode == 401) {
-              AppSnackBar.error('Incorrect email or password.');
+              AppSnackBar.error('error_incorrect_email_password'.tr());
               state.mapOrNull(
                 initial: (state) {
                   emit(state.copyWith(loading: false));

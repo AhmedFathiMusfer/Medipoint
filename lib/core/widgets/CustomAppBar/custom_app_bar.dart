@@ -1,3 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:diagno_bot/core/auth/authManager.dart';
+import 'package:diagno_bot/core/networking/remote/apiConstants.dart';
 import 'package:diagno_bot/core/theming/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -60,11 +63,18 @@ class CustomAppBar extends StatelessWidget {
           onTap: () {
             onProfileTap();
           },
-          child: CircleAvatar(
-            radius: 18,
-            backgroundColor: ColorManager.primaryColor,
-            child: Icon(Icons.person, color: Colors.white, size: 24),
-          ),
+          child:
+              AuthManager().currentUser?.image != null
+                  ? CircleAvatar(
+                    backgroundImage: CachedNetworkImageProvider(
+                      '${ApiConstants.rootUrl}${AuthManager().currentUser!.image!}',
+                    ),
+                  )
+                  : CircleAvatar(
+                    radius: 18,
+                    backgroundColor: ColorManager.primaryColor,
+                    child: Icon(Icons.person, color: Colors.white, size: 24),
+                  ),
         ),
         10.horizontalSpace,
       ],

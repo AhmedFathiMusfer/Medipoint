@@ -55,12 +55,13 @@ extension EditProfileStatePatterns on EditProfileState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( _Success value)?  success,TResult Function( _Error value)?  error,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( _ChangeProfileImage value)?  changeProfileImage,TResult Function( _Success value)?  success,TResult Function( _Error value)?  error,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
-return loading(_that);case _Success() when success != null:
+return loading(_that);case _ChangeProfileImage() when changeProfileImage != null:
+return changeProfileImage(_that);case _Success() when success != null:
 return success(_that);case _Error() when error != null:
 return error(_that);case _:
   return orElse();
@@ -80,12 +81,13 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( _Success value)  success,required TResult Function( _Error value)  error,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( _ChangeProfileImage value)  changeProfileImage,required TResult Function( _Success value)  success,required TResult Function( _Error value)  error,}){
 final _that = this;
 switch (_that) {
 case _Initial():
 return initial(_that);case _Loading():
-return loading(_that);case _Success():
+return loading(_that);case _ChangeProfileImage():
+return changeProfileImage(_that);case _Success():
 return success(_that);case _Error():
 return error(_that);case _:
   throw StateError('Unexpected subclass');
@@ -104,12 +106,13 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( _Success value)?  success,TResult? Function( _Error value)?  error,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( _ChangeProfileImage value)?  changeProfileImage,TResult? Function( _Success value)?  success,TResult? Function( _Error value)?  error,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
-return loading(_that);case _Success() when success != null:
+return loading(_that);case _ChangeProfileImage() when changeProfileImage != null:
+return changeProfileImage(_that);case _Success() when success != null:
 return success(_that);case _Error() when error != null:
 return error(_that);case _:
   return null;
@@ -128,12 +131,13 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String? changeProfileImage)?  success,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( bool loading)?  loading,TResult Function( String? imagePath)?  changeProfileImage,TResult Function()?  success,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
-return loading();case _Success() when success != null:
-return success(_that.changeProfileImage);case _Error() when error != null:
+return loading(_that.loading);case _ChangeProfileImage() when changeProfileImage != null:
+return changeProfileImage(_that.imagePath);case _Success() when success != null:
+return success();case _Error() when error != null:
 return error(_that.message);case _:
   return orElse();
 
@@ -152,12 +156,13 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String? changeProfileImage)  success,required TResult Function( String message)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( bool loading)  loading,required TResult Function( String? imagePath)  changeProfileImage,required TResult Function()  success,required TResult Function( String message)  error,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
-return loading();case _Success():
-return success(_that.changeProfileImage);case _Error():
+return loading(_that.loading);case _ChangeProfileImage():
+return changeProfileImage(_that.imagePath);case _Success():
+return success();case _Error():
 return error(_that.message);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +180,13 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String? changeProfileImage)?  success,TResult? Function( String message)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( bool loading)?  loading,TResult? Function( String? imagePath)?  changeProfileImage,TResult? Function()?  success,TResult? Function( String message)?  error,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
-return loading();case _Success() when success != null:
-return success(_that.changeProfileImage);case _Error() when error != null:
+return loading(_that.loading);case _ChangeProfileImage() when changeProfileImage != null:
+return changeProfileImage(_that.imagePath);case _Success() when success != null:
+return success();case _Error() when error != null:
 return error(_that.message);case _:
   return null;
 
@@ -225,7 +231,139 @@ String toString() {
 
 
 class _Loading implements EditProfileState {
-  const _Loading();
+  const _Loading({this.loading = false});
+  
+
+@JsonKey() final  bool loading;
+
+/// Create a copy of EditProfileState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$LoadingCopyWith<_Loading> get copyWith => __$LoadingCopyWithImpl<_Loading>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading&&(identical(other.loading, loading) || other.loading == loading));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,loading);
+
+@override
+String toString() {
+  return 'EditProfileState.loading(loading: $loading)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$LoadingCopyWith<$Res> implements $EditProfileStateCopyWith<$Res> {
+  factory _$LoadingCopyWith(_Loading value, $Res Function(_Loading) _then) = __$LoadingCopyWithImpl;
+@useResult
+$Res call({
+ bool loading
+});
+
+
+
+
+}
+/// @nodoc
+class __$LoadingCopyWithImpl<$Res>
+    implements _$LoadingCopyWith<$Res> {
+  __$LoadingCopyWithImpl(this._self, this._then);
+
+  final _Loading _self;
+  final $Res Function(_Loading) _then;
+
+/// Create a copy of EditProfileState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? loading = null,}) {
+  return _then(_Loading(
+loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _ChangeProfileImage implements EditProfileState {
+  const _ChangeProfileImage({this.imagePath = null});
+  
+
+@JsonKey() final  String? imagePath;
+
+/// Create a copy of EditProfileState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ChangeProfileImageCopyWith<_ChangeProfileImage> get copyWith => __$ChangeProfileImageCopyWithImpl<_ChangeProfileImage>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChangeProfileImage&&(identical(other.imagePath, imagePath) || other.imagePath == imagePath));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,imagePath);
+
+@override
+String toString() {
+  return 'EditProfileState.changeProfileImage(imagePath: $imagePath)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ChangeProfileImageCopyWith<$Res> implements $EditProfileStateCopyWith<$Res> {
+  factory _$ChangeProfileImageCopyWith(_ChangeProfileImage value, $Res Function(_ChangeProfileImage) _then) = __$ChangeProfileImageCopyWithImpl;
+@useResult
+$Res call({
+ String? imagePath
+});
+
+
+
+
+}
+/// @nodoc
+class __$ChangeProfileImageCopyWithImpl<$Res>
+    implements _$ChangeProfileImageCopyWith<$Res> {
+  __$ChangeProfileImageCopyWithImpl(this._self, this._then);
+
+  final _ChangeProfileImage _self;
+  final $Res Function(_ChangeProfileImage) _then;
+
+/// Create a copy of EditProfileState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? imagePath = freezed,}) {
+  return _then(_ChangeProfileImage(
+imagePath: freezed == imagePath ? _self.imagePath : imagePath // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _Success implements EditProfileState {
+  const _Success();
   
 
 
@@ -235,7 +373,7 @@ class _Loading implements EditProfileState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Success);
 }
 
 
@@ -244,7 +382,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditProfileState.loading()';
+  return 'EditProfileState.success()';
 }
 
 
@@ -252,72 +390,6 @@ String toString() {
 
 
 
-
-/// @nodoc
-
-
-class _Success implements EditProfileState {
-  const _Success({this.changeProfileImage = null});
-  
-
-@JsonKey() final  String? changeProfileImage;
-
-/// Create a copy of EditProfileState
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$SuccessCopyWith<_Success> get copyWith => __$SuccessCopyWithImpl<_Success>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Success&&(identical(other.changeProfileImage, changeProfileImage) || other.changeProfileImage == changeProfileImage));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,changeProfileImage);
-
-@override
-String toString() {
-  return 'EditProfileState.success(changeProfileImage: $changeProfileImage)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$SuccessCopyWith<$Res> implements $EditProfileStateCopyWith<$Res> {
-  factory _$SuccessCopyWith(_Success value, $Res Function(_Success) _then) = __$SuccessCopyWithImpl;
-@useResult
-$Res call({
- String? changeProfileImage
-});
-
-
-
-
-}
-/// @nodoc
-class __$SuccessCopyWithImpl<$Res>
-    implements _$SuccessCopyWith<$Res> {
-  __$SuccessCopyWithImpl(this._self, this._then);
-
-  final _Success _self;
-  final $Res Function(_Success) _then;
-
-/// Create a copy of EditProfileState
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? changeProfileImage = freezed,}) {
-  return _then(_Success(
-changeProfileImage: freezed == changeProfileImage ? _self.changeProfileImage : changeProfileImage // ignore: cast_nullable_to_non_nullable
-as String?,
-  ));
-}
-
-
-}
 
 /// @nodoc
 

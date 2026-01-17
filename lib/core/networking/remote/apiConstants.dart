@@ -1,4 +1,6 @@
 class ApiConstants {
+  static const String rootUrl = "https://api.decodaai.com";
+
   static const String baseUrl = "https://api.decodaai.com/api/";
 
   static const String loginEndpoint = "auth/token/";
@@ -13,7 +15,7 @@ class ApiConstants {
   static const String initEndpoint = "doctors/init/";
   static const String doctorEndpoint = "doctors/";
   static const String specialtyEndpoint = "specialties/";
-  static const String profileEndpoint = "auth/me/";
+  static const String profileEndpoint = "auth/me/patient/";
   static const String chatEndpoint = "chat/";
   static const String appointmentsEndpoint = "appointments/";
   static String createPaymentIntentEndpoint(int appointmentid) =>
@@ -26,5 +28,8 @@ class ApiConstants {
   static const String foldersEndpoint = "patients/me/folders/";
   static const String refreshTokenEndpoint = "${baseUrl}auth/token/refresh/";
   static filesEndpoint(int folderId) => "folders/$folderId/files/";
+  static fileDeleteEndpoint(int fileId) => "files/$fileId/";
+  static fileUpdateEndpoint(int fileId) => "files/$fileId/";
+
   static const String itemsEndpoint = "items";
 }
