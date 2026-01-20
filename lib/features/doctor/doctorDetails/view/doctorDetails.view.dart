@@ -134,14 +134,26 @@ class DoctorDetailsView extends StatelessWidget {
         ),
         10.verticalSpace,
         if (review != null)
-          ReviewCard(review: review)
+          ReviewCard(
+            review: review,
+            onDelete: (id) async {
+              await doctorDetailsCubit.deleteLocalReview(id);
+            },
+            onEdit: (id, content, rating) async {
+              await doctorDetailsCubit.updateReview(
+                reviewId: id,
+                content: content,
+                rating: rating,
+              );
+            },
+          )
         else
           Center(
             child: TextButton(
               onPressed: () async {
                 showAddReviewSheet(
                   context: context,
-                  onCreate: (rating, content) async {
+                  onSave: (rating, content) async {
                     await doctorDetailsCubit.addReview(
                       rating: rating,
                       content: content,

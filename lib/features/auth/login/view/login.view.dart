@@ -27,9 +27,9 @@ class _LoginViewState extends State<LoginView> {
       backgroundColor: Colors.white,
       body: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
-          state.maybeWhen(
+          state.maybeMap(
             loginSuccess:
-                () => {
+                (_) => {
                   context.pushNamedAndRemoveUntil(
                     Routers.homeView,
                     predicate: (root) => false,
@@ -100,7 +100,7 @@ class _LoginViewState extends State<LoginView> {
                         SimpleButton(
                           text: "login".tr(),
                           isLoading: state.maybeWhen(
-                            initial: (loding) => loding,
+                            loding: (loding) => loding,
                             orElse: () => false,
                           ),
                           onPressed: () async {

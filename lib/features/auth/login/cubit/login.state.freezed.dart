@@ -55,11 +55,12 @@ extension LoginStatePatterns on LoginState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _LoginSuccess value)?  loginSuccess,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loding value)?  loding,TResult Function( _LoginSuccess value)?  loginSuccess,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
-return initial(_that);case _LoginSuccess() when loginSuccess != null:
+return initial(_that);case _Loding() when loding != null:
+return loding(_that);case _LoginSuccess() when loginSuccess != null:
 return loginSuccess(_that);case _:
   return orElse();
 
@@ -78,11 +79,12 @@ return loginSuccess(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _LoginSuccess value)  loginSuccess,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loding value)  loding,required TResult Function( _LoginSuccess value)  loginSuccess,}){
 final _that = this;
 switch (_that) {
 case _Initial():
-return initial(_that);case _LoginSuccess():
+return initial(_that);case _Loding():
+return loding(_that);case _LoginSuccess():
 return loginSuccess(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -100,11 +102,12 @@ return loginSuccess(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _LoginSuccess value)?  loginSuccess,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loding value)?  loding,TResult? Function( _LoginSuccess value)?  loginSuccess,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
-return initial(_that);case _LoginSuccess() when loginSuccess != null:
+return initial(_that);case _Loding() when loding != null:
+return loding(_that);case _LoginSuccess() when loginSuccess != null:
 return loginSuccess(_that);case _:
   return null;
 
@@ -122,10 +125,11 @@ return loginSuccess(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( bool loading)?  initial,TResult Function()?  loginSuccess,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( bool loading)?  loding,TResult Function()?  loginSuccess,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
-return initial(_that.loading);case _LoginSuccess() when loginSuccess != null:
+return initial();case _Loding() when loding != null:
+return loding(_that.loading);case _LoginSuccess() when loginSuccess != null:
 return loginSuccess();case _:
   return orElse();
 
@@ -144,10 +148,11 @@ return loginSuccess();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( bool loading)  initial,required TResult Function()  loginSuccess,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( bool loading)  loding,required TResult Function()  loginSuccess,}) {final _that = this;
 switch (_that) {
 case _Initial():
-return initial(_that.loading);case _LoginSuccess():
+return initial();case _Loding():
+return loding(_that.loading);case _LoginSuccess():
 return loginSuccess();case _:
   throw StateError('Unexpected subclass');
 
@@ -165,10 +170,11 @@ return loginSuccess();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( bool loading)?  initial,TResult? Function()?  loginSuccess,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( bool loading)?  loding,TResult? Function()?  loginSuccess,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
-return initial(_that.loading);case _LoginSuccess() when loginSuccess != null:
+return initial();case _Loding() when loding != null:
+return loding(_that.loading);case _LoginSuccess() when loginSuccess != null:
 return loginSuccess();case _:
   return null;
 
@@ -181,7 +187,39 @@ return loginSuccess();case _:
 
 
 class _Initial implements LoginState {
-  const _Initial({this.loading = false});
+  const _Initial();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'LoginState.initial()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _Loding implements LoginState {
+  const _Loding({this.loading = false});
   
 
 @JsonKey() final  bool loading;
@@ -190,13 +228,13 @@ class _Initial implements LoginState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$InitialCopyWith<_Initial> get copyWith => __$InitialCopyWithImpl<_Initial>(this, _$identity);
+_$LodingCopyWith<_Loding> get copyWith => __$LodingCopyWithImpl<_Loding>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial&&(identical(other.loading, loading) || other.loading == loading));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loding&&(identical(other.loading, loading) || other.loading == loading));
 }
 
 
@@ -205,15 +243,15 @@ int get hashCode => Object.hash(runtimeType,loading);
 
 @override
 String toString() {
-  return 'LoginState.initial(loading: $loading)';
+  return 'LoginState.loding(loading: $loading)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$InitialCopyWith<$Res> implements $LoginStateCopyWith<$Res> {
-  factory _$InitialCopyWith(_Initial value, $Res Function(_Initial) _then) = __$InitialCopyWithImpl;
+abstract mixin class _$LodingCopyWith<$Res> implements $LoginStateCopyWith<$Res> {
+  factory _$LodingCopyWith(_Loding value, $Res Function(_Loding) _then) = __$LodingCopyWithImpl;
 @useResult
 $Res call({
  bool loading
@@ -224,17 +262,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$InitialCopyWithImpl<$Res>
-    implements _$InitialCopyWith<$Res> {
-  __$InitialCopyWithImpl(this._self, this._then);
+class __$LodingCopyWithImpl<$Res>
+    implements _$LodingCopyWith<$Res> {
+  __$LodingCopyWithImpl(this._self, this._then);
 
-  final _Initial _self;
-  final $Res Function(_Initial) _then;
+  final _Loding _self;
+  final $Res Function(_Loding) _then;
 
 /// Create a copy of LoginState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? loading = null,}) {
-  return _then(_Initial(
+  return _then(_Loding(
 loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
 as bool,
   ));

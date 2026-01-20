@@ -2753,8 +2753,12 @@ class $CommentsTable extends Comments with TableInfo<$CommentsTable, Comment> {
     'id',
     aliasedName,
     false,
+    hasAutoIncrement: true,
     type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
   );
   static const VerificationMeta _reviewIdMeta = const VerificationMeta(
     'reviewId',
@@ -2849,8 +2853,6 @@ class $CommentsTable extends Comments with TableInfo<$CommentsTable, Comment> {
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
     }
     if (data.containsKey('review_id')) {
       context.handle(
@@ -2896,7 +2898,7 @@ class $CommentsTable extends Comments with TableInfo<$CommentsTable, Comment> {
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => const {};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   Comment map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -3089,7 +3091,6 @@ class CommentsCompanion extends UpdateCompanion<Comment> {
   final Value<String> content;
   final Value<String> createdAt;
   final Value<String> updatedAt;
-  final Value<int> rowid;
   const CommentsCompanion({
     this.id = const Value.absent(),
     this.reviewId = const Value.absent(),
@@ -3098,19 +3099,16 @@ class CommentsCompanion extends UpdateCompanion<Comment> {
     this.content = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
-    this.rowid = const Value.absent(),
   });
   CommentsCompanion.insert({
-    required int id,
+    this.id = const Value.absent(),
     required int reviewId,
     required CommentType type,
     required String userId,
     required String content,
     required String createdAt,
     required String updatedAt,
-    this.rowid = const Value.absent(),
-  }) : id = Value(id),
-       reviewId = Value(reviewId),
+  }) : reviewId = Value(reviewId),
        type = Value(type),
        userId = Value(userId),
        content = Value(content),
@@ -3124,7 +3122,6 @@ class CommentsCompanion extends UpdateCompanion<Comment> {
     Expression<String>? content,
     Expression<String>? createdAt,
     Expression<String>? updatedAt,
-    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -3134,7 +3131,6 @@ class CommentsCompanion extends UpdateCompanion<Comment> {
       if (content != null) 'content': content,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
-      if (rowid != null) 'rowid': rowid,
     });
   }
 
@@ -3146,7 +3142,6 @@ class CommentsCompanion extends UpdateCompanion<Comment> {
     Value<String>? content,
     Value<String>? createdAt,
     Value<String>? updatedAt,
-    Value<int>? rowid,
   }) {
     return CommentsCompanion(
       id: id ?? this.id,
@@ -3156,7 +3151,6 @@ class CommentsCompanion extends UpdateCompanion<Comment> {
       content: content ?? this.content,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      rowid: rowid ?? this.rowid,
     );
   }
 
@@ -3186,9 +3180,6 @@ class CommentsCompanion extends UpdateCompanion<Comment> {
     if (updatedAt.present) {
       map['updated_at'] = Variable<String>(updatedAt.value);
     }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
     return map;
   }
 
@@ -3201,8 +3192,7 @@ class CommentsCompanion extends UpdateCompanion<Comment> {
           ..write('userId: $userId, ')
           ..write('content: $content, ')
           ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt, ')
-          ..write('rowid: $rowid')
+          ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
@@ -6793,14 +6783,13 @@ typedef $$ReviewsTableProcessedTableManager =
     >;
 typedef $$CommentsTableCreateCompanionBuilder =
     CommentsCompanion Function({
-      required int id,
+      Value<int> id,
       required int reviewId,
       required CommentType type,
       required String userId,
       required String content,
       required String createdAt,
       required String updatedAt,
-      Value<int> rowid,
     });
 typedef $$CommentsTableUpdateCompanionBuilder =
     CommentsCompanion Function({
@@ -6811,7 +6800,6 @@ typedef $$CommentsTableUpdateCompanionBuilder =
       Value<String> content,
       Value<String> createdAt,
       Value<String> updatedAt,
-      Value<int> rowid,
     });
 
 final class $$CommentsTableReferences
@@ -7123,7 +7111,6 @@ class $$CommentsTableTableManager
                 Value<String> content = const Value.absent(),
                 Value<String> createdAt = const Value.absent(),
                 Value<String> updatedAt = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
               }) => CommentsCompanion(
                 id: id,
                 reviewId: reviewId,
@@ -7132,18 +7119,16 @@ class $$CommentsTableTableManager
                 content: content,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
-                rowid: rowid,
               ),
           createCompanionCallback:
               ({
-                required int id,
+                Value<int> id = const Value.absent(),
                 required int reviewId,
                 required CommentType type,
                 required String userId,
                 required String content,
                 required String createdAt,
                 required String updatedAt,
-                Value<int> rowid = const Value.absent(),
               }) => CommentsCompanion.insert(
                 id: id,
                 reviewId: reviewId,
@@ -7152,7 +7137,6 @@ class $$CommentsTableTableManager
                 content: content,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
-                rowid: rowid,
               ),
           withReferenceMapper:
               (p0) =>

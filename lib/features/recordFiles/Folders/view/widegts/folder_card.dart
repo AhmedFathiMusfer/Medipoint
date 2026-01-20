@@ -78,7 +78,7 @@ class FolderCard extends StatelessWidget {
               showConfirmDialog(
                 context: context,
                 title: "confirm_delete".tr(),
-                message: "Are you sure you want to delete this folder?".tr(),
+                message: "are_you_sure_delete_folder".tr(),
                 confirmText: "delete".tr(),
                 confirmColor: Colors.red,
                 onConfirm: () async {

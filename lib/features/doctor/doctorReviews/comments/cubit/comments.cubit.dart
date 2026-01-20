@@ -76,6 +76,53 @@ class CommentsCubit extends Cubit<CommentsState> {
     );
   }
 
+  /// ✏️ update comment
+  Future<void> updateComment({
+    required int commentId,
+    required String content,
+  }) async {
+    await RemoteProvider().send(
+      request: Request(
+        url: ApiConstants.reviewComment(commentId),
+        body: {"content": content},
+      ),
+      method: RemoteMethod.put,
+      onSuccess: (res, _) async {
+        await db
+            .update(db.comments)
+            .replace(
+              Comment.fromJson({
+                ...res.data,
+                'reviewId': res.data['review'],
+                'userId': res.data['user'],
+                'createdAt': res.data['created_at'],
+                'updatedAt': res.data['updated_at'],
+              }),
+            );
+        await loadLocal();
+      },
+      onError: (_, statusCode) {
+        AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statusCode));
+      },
+    );
+  }
+
+  /// 🗑️ delete comment
+  Future<void> deleteComment(int commentId) async {
+    await RemoteProvider().send(
+      request: Request(url: ApiConstants.reviewComment(commentId)),
+      method: RemoteMethod.delete,
+      onSuccess: (_, __) async {
+        await (db.delete(db.comments)
+          ..where((t) => t.id.equals(commentId))).go();
+        await loadLocal();
+      },
+      onError: (_, statusCode) {
+        AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statusCode));
+      },
+    );
+  }
+
   Future<void> insertComments(List comments) async {
     await db.batch((batch) {
       batch.insertAllOnConflictUpdate(
@@ -85,6 +132,7 @@ class CommentsCubit extends Cubit<CommentsState> {
             ...c,
             'reviewId': c['review'],
             'userId': c['user'],
+            'type': CommentTypeConverter().fromSql(c['type']),
             'createdAt': c['created_at'],
             'updatedAt': c['updated_at'],
           });

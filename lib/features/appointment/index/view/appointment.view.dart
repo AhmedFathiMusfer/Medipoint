@@ -70,58 +70,16 @@ class _AppointmentViewState extends State<AppointmentView>
                     child: TabBarView(
                       controller: controller,
                       children: [
-                        ListView(
-                          padding: const EdgeInsets.all(16),
-                          children: [
-                            ...appointments
-                                .where(
-                                  (appointment) =>
-                                      appointment.status ==
-                                          AppointmentStatus.PE ||
-                                      appointment.status ==
-                                          AppointmentStatus.PA,
-                                )
-                                .map(
-                                  (appointment) => _bookingCard(
-                                    appointment: appointment,
-                                    actions:
-                                        appointment.status ==
-                                                AppointmentStatus.PA
-                                            ? []
-                                            : [
-                                              SmallBtn(
-                                                text: "cancel".tr(),
-                                                bg: Colors.grey.shade200,
-                                                color:
-                                                    ColorManager.primaryColor,
-                                                onTap: () async {
-                                                  await appointmentCubit
-                                                      .cancelAppointment(
-                                                        appointment.id,
-                                                      );
-                                                },
-                                              ),
-                                              SmallBtn(
-                                                text: "pay".tr(),
-
-                                                bg: ColorManager.primaryColor,
-                                                color: Colors.white,
-                                                onTap: () async {
-                                                  await makePayment(
-                                                    appointmentId:
-                                                        appointment.id,
-                                                    onSuccess: () async {
-                                                      await appointmentCubit
-                                                          .loadOnlineData();
-                                                    },
-                                                    onError: () {},
-                                                  );
-                                                },
-                                              ),
-                                            ],
-                                  ),
-                                ),
-                          ],
+                        _buildUpcoming(
+                          appointments
+                              .where(
+                                (appointment) =>
+                                    appointment.status ==
+                                        AppointmentStatus.PE ||
+                                    appointment.status == AppointmentStatus.PA,
+                              )
+                              .toList(),
+                          appointmentCubit,
                         ),
 
                         _buildCompleted(
@@ -150,6 +108,52 @@ class _AppointmentViewState extends State<AppointmentView>
           );
         },
       ),
+    );
+  }
+
+  Widget _buildUpcoming(appointments, AppointmentCubit appointmentCubit) {
+    if (appointments.isEmpty) {
+      return Center(child: Text("no_upcoming_bookings".tr()));
+    }
+
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        ...appointments.map(
+          (appointment) => _bookingCard(
+            appointment: appointment,
+            actions:
+                appointment.status == AppointmentStatus.PA
+                    ? []
+                    : [
+                      SmallBtn(
+                        text: "cancel".tr(),
+                        bg: Colors.grey.shade200,
+                        color: ColorManager.primaryColor,
+                        onTap: () async {
+                          await appointmentCubit.cancelAppointment(
+                            appointment.id,
+                          );
+                        },
+                      ),
+                      SmallBtn(
+                        text: "pay".tr(),
+                        bg: ColorManager.primaryColor,
+                        color: Colors.white,
+                        onTap: () async {
+                          await makePayment(
+                            appointmentId: appointment.id,
+                            onSuccess: () async {
+                              await appointmentCubit.loadOnlineData();
+                            },
+                            onError: () {},
+                          );
+                        },
+                      ),
+                    ],
+          ),
+        ),
+      ],
     );
   }
 

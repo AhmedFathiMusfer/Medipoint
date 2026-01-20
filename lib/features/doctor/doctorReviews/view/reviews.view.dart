@@ -38,7 +38,7 @@ class DoctorReviewsView extends StatelessWidget {
                     icon: const Icon(Icons.rate_review_outlined),
                     onPressed: () async {
                       showAddReviewSheet(
-                        onCreate: (rating, content) async {
+                        onSave: (rating, content) async {
                           await doctorReviewsCubit.addReview(
                             rating: rating,
                             content: content,
@@ -83,7 +83,19 @@ class DoctorReviewsView extends StatelessWidget {
                 itemCount: reviews.length,
                 separatorBuilder: (_, __) => 16.verticalSpace,
                 itemBuilder: (_, index) {
-                  return ReviewCard(review: reviews[index]);
+                  return ReviewCard(
+                    review: reviews[index],
+                    onDelete: (id) async {
+                      await doctorReviewsCubit.deleteLocalReview(id);
+                    },
+                    onEdit: (id, content, rating) async {
+                      await doctorReviewsCubit.updateReview(
+                        reviewId: id,
+                        content: content,
+                        rating: rating,
+                      );
+                    },
+                  );
                 },
               );
             },

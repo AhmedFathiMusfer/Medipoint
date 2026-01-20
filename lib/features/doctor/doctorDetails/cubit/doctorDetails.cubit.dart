@@ -108,6 +108,54 @@ class DoctorDetailsCubit extends Cubit<DoctorDetailsState> {
     }
   }
 
+  Future<void> updateReview({
+    required int reviewId,
+    required int rating,
+    String? content,
+  }) async {
+    try {
+      await RemoteProvider().send(
+        request: Request(
+          url: ApiConstants.reviewItemEndpoint(reviewId),
+          body: {"rating": rating, "content": content},
+        ),
+        method: RemoteMethod.put,
+        onSuccess: (reponse, statusCode) async {
+          await insertreview(reponse.data);
+          await loadLocalData();
+          AppSnackBar.success("review_updated_successfully".tr());
+        },
+        onError: (_, statusCode) {
+          AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statusCode));
+        },
+      );
+    } catch (_) {
+      AppSnackBar.error(
+        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+      );
+    }
+  }
+
+  Future<void> deleteReview(int reviewId) async {
+    try {
+      await RemoteProvider().send(
+        request: Request(url: ApiConstants.reviewItemEndpoint(reviewId)),
+        method: RemoteMethod.delete,
+        onSuccess: (reponse, statusCode) async {
+          await deleteLocalReview(reviewId);
+          await loadLocalData();
+          AppSnackBar.success("review_deleted_successfully".tr());
+        },
+        onError: (_, statusCode) {
+          AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statusCode));
+        },
+      );
+    } catch (_) {
+      AppSnackBar.error(
+        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+      );
+    }
+  }
   // ******************************************db************************************************************
 
   Future<double> getDoctorAverageRating(String doctorId) async {
@@ -246,5 +294,9 @@ class DoctorDetailsCubit extends Cubit<DoctorDetailsState> {
           }),
           mode: InsertMode.insertOrReplace,
         );
+  }
+
+  deleteLocalReview(int id) async {
+    return await (db.delete(db.reviews)..where((t) => t.id.equals(id))).go();
   }
 }

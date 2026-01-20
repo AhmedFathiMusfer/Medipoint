@@ -24,7 +24,7 @@ class CommentTypeConverter extends TypeConverter<CommentType, String> {
 }
 
 class Comments extends Table {
-  IntColumn get id => integer()();
+  IntColumn get id => integer().autoIncrement()();
   IntColumn get reviewId => integer().references(Reviews, #id)();
   TextColumn get type => text().map(const CommentTypeConverter())();
   TextColumn get userId => text().references(Users, #id)();

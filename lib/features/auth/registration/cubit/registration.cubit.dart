@@ -32,14 +32,13 @@ class RegisterCubit extends Cubit<RegisterState> {
               AppSnackBar.error('error_email_already_exists'.tr());
               emit(RegisterState.initial(loading: false));
             } else {
-              AppSnackBar.error(
-                'error_check_internet_connection'.tr(),
-              );
+              AppSnackBar.error('error_check_internet_connection'.tr());
               emit(RegisterState.initial(loading: false));
             }
           },
         );
       } else {
+        emit(RegisterState.initial(loading: false));
         AppSnackBar.error('error_check_internet_connection'.tr());
       }
     }

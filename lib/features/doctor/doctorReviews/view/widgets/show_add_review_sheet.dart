@@ -1,21 +1,20 @@
+import 'package:diagno_bot/core/database/drift_db.dart';
 import 'package:diagno_bot/features/doctor/doctorReviews/view/widgets/add_review_sheet.dart';
 import 'package:flutter/material.dart';
 
 void showAddReviewSheet({
   required BuildContext context,
-  required Future<void> Function(int rating, String content) onCreate,
+  required Future<void> Function(int rating, String content) onSave,
+  Review? existingReview,
 }) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-    ),
+    backgroundColor: Colors.transparent,
     builder: (_) {
       return AddReviewSheet(
-        onCreate: (rating, content) async {
-          await onCreate(rating, content);
-        },
+        onSave: onSave,
+        existingReview: existingReview,
       );
     },
   );

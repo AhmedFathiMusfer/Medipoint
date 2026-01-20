@@ -13,25 +13,13 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  LoginCubit() : super(LoginState.initial());
-
-  LoginForm form = LoginForm();
-  inital() {
-    var user = AuthManager().currentUser;
-    log(user.toString());
-    if (user != null) {
-      form.emailController.text = user.email;
-      form.passwordController.text = user.password ?? "";
-    }
-  }
+  LoginCubit() : super(const LoginState.initial());
+  final LoginForm form = LoginForm();
+  // inital() {}
 
   supmit() async {
     if (form.key.currentState!.validate()) {
-      state.mapOrNull(
-        initial: (state) {
-          emit(state.copyWith(loading: true));
-        },
-      );
+      emit(LoginState.loding(loading: true));
 
       bool isConnected = await NetworkHelper.isConnected();
       if (isConnected) {
@@ -47,14 +35,14 @@ class LoginCubit extends Cubit<LoginState> {
             if (statsCode == 400) {
               AppSnackBar.error('error_invalid_data_entry'.tr());
               state.mapOrNull(
-                initial: (state) {
+                loding: (state) {
                   emit(state.copyWith(loading: false));
                 },
               );
             } else if (statsCode == 401) {
               AppSnackBar.error('error_incorrect_email_password'.tr());
               state.mapOrNull(
-                initial: (state) {
+                loding: (state) {
                   emit(state.copyWith(loading: false));
                 },
               );
@@ -65,7 +53,7 @@ class LoginCubit extends Cubit<LoginState> {
                 ),
               );
               state.mapOrNull(
-                initial: (state) {
+                loding: (state) {
                   emit(state.copyWith(loading: false));
                 },
               );
@@ -74,7 +62,7 @@ class LoginCubit extends Cubit<LoginState> {
         );
       } else {
         state.mapOrNull(
-          initial: (state) {
+          loding: (state) {
             emit(state.copyWith(loading: false));
           },
         );
