@@ -1,5 +1,7 @@
 import 'package:diagno_bot/core/auth/authManager.dart';
 import 'package:diagno_bot/core/helpers/networkHelper.dart';
+import 'package:diagno_bot/core/networking/errors/errorMesage.dart';
+import 'package:diagno_bot/core/networking/errors/exceptions.enum.dart';
 import 'package:diagno_bot/core/networking/remote/apiConstants.dart';
 import 'package:diagno_bot/core/networking/remote/remoteProvider.dart';
 import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
@@ -32,7 +34,11 @@ class RegisterCubit extends Cubit<RegisterState> {
               AppSnackBar.error('error_email_already_exists'.tr());
               emit(RegisterState.initial(loading: false));
             } else {
-              AppSnackBar.error('error_check_internet_connection'.tr());
+              AppSnackBar.error(
+                ErrorMessages.instance.fromExceptionType(
+                  ExceptionTypes.unexpected,
+                ),
+              );
               emit(RegisterState.initial(loading: false));
             }
           },

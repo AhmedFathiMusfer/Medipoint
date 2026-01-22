@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:diagno_bot/core/widgets/simpleButton.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +13,7 @@ void imagePickerBottomSheet({
     builder: (context) {
       return SafeArea(
         child: Container(
-          height: 170,
-
+          height: 200.h,
           padding: const EdgeInsets.all(16).copyWith(bottom: 2),
           decoration: BoxDecoration(
             color: Colors.white,

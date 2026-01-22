@@ -109,8 +109,8 @@ class DoctorsView extends StatelessWidget {
                             name: doctor.fullName,
                             speciality: doctor.specialty,
                             location: doctor.addressLine1 ?? '',
-                            rating: 5.0,
-                            reviews: 10,
+                            rating: doctor.rating ?? 0.0,
+                            reviews: doctor.reviews ?? 0,
                             image: doctor.image ?? '',
                           );
                         },

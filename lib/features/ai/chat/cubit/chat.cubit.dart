@@ -1,5 +1,6 @@
 import 'package:diagno_bot/core/networking/remote/apiConstants.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'chat.state.dart';
@@ -32,9 +33,7 @@ class ChatCubit extends Cubit<ChatState> {
 
   checkIfSessionIsExitOrNo() async {
     if (_messages.isEmpty) {
-      _messages.add(
-        ChatMessage(text: "Hello! How can I assist you today?", isUser: false),
-      );
+      _messages.add(ChatMessage(text: "greeting_ai".tr(), isUser: false));
       if (!isClosed) {
         emit(ChatState.success(messages: List.from(_messages)));
       }
@@ -55,7 +54,9 @@ class ChatCubit extends Cubit<ChatState> {
             isUser: false,
           ),
         );
-        emit(ChatState.success(messages: List.from(_messages)));
+        if (!isClosed) {
+          emit(ChatState.success(messages: List.from(_messages)));
+        }
         return;
       }
 
@@ -77,6 +78,7 @@ class ChatCubit extends Cubit<ChatState> {
   }
 
   Future sendTextMessage(String text) async {
+    if (_messages.last.isLoading == true) return;
     chatMessageController.clear();
     if (text.trim().isEmpty) return;
     final userMessage = ChatMessage(text: text, isUser: true);
@@ -87,7 +89,9 @@ class ChatCubit extends Cubit<ChatState> {
       isLoading: true,
     );
     _messages.add(loadingMessage);
-    emit(ChatState.success(messages: List.from(_messages)));
+    if (!isClosed) {
+      emit(ChatState.success(messages: List.from(_messages)));
+    }
     await scrollToBottom();
     await checkIfSessionIsExitOrNo();
     await _sendMessageToApi(text);
@@ -98,7 +102,9 @@ class ChatCubit extends Cubit<ChatState> {
       bool connected = await NetworkHelper.isConnected();
       if (!connected) {
         _messages.removeWhere((m) => m.isLoading == true);
-        emit(ChatState.success(messages: List.from(_messages)));
+        if (!isClosed) {
+          emit(ChatState.success(messages: List.from(_messages)));
+        }
 
         AppSnackBar.error(
           ErrorMessages.instance.fromExceptionType(ExceptionTypes.connection),
@@ -167,7 +173,9 @@ class ChatCubit extends Cubit<ChatState> {
         doctors: doctors,
       );
       _messages.add(botMessage);
-      emit(ChatState.success(messages: List.from(_messages)));
+      if (!isClosed) {
+        emit(ChatState.success(messages: List.from(_messages)));
+      }
       await scrollToBottom();
     } catch (e) {
       _messages.removeWhere((m) => m.isLoading == true);
@@ -180,7 +188,9 @@ class ChatCubit extends Cubit<ChatState> {
           isUser: false,
         ),
       );
-      emit(ChatState.success(messages: List.from(_messages)));
+      if (!isClosed) {
+        emit(ChatState.success(messages: List.from(_messages)));
+      }
     }
   }
 
@@ -194,7 +204,9 @@ class ChatCubit extends Cubit<ChatState> {
       );
       _sessionId = null;
       _messages.clear();
-      emit(const ChatState.success(messages: []));
+      if (!isClosed) {
+        emit(const ChatState.success(messages: []));
+      }
     } catch (e) {
       AppSnackBar.error("Failed to end session");
     }
@@ -202,7 +214,9 @@ class ChatCubit extends Cubit<ChatState> {
 
   void clearChat() {
     _messages.clear();
-    emit(const ChatState.success(messages: []));
+    if (!isClosed) {
+      emit(const ChatState.success(messages: []));
+    }
   }
 }
 // ChatMessage(

@@ -69,6 +69,16 @@ class _BottomNavBarState extends State<BottomNavBar>
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _buildItem(
+            icon: Icons.smart_toy_outlined,
+            page: PagesEnum.chat,
+            route: Routers.chatView,
+          ),
+          _buildItem(
+            icon: Icons.calendar_month_rounded,
+            page: PagesEnum.appointment,
+            route: Routers.appointmentView,
+          ),
+          _buildItem(
             icon: Icons.home_rounded,
             page: PagesEnum.home,
             route: Routers.homeView,
@@ -78,16 +88,7 @@ class _BottomNavBarState extends State<BottomNavBar>
             page: PagesEnum.doctor,
             route: Routers.doctorsView,
           ),
-          _buildItem(
-            icon: Icons.calendar_month_rounded,
-            page: PagesEnum.appointment,
-            route: Routers.appointmentView,
-          ),
-          _buildItem(
-            icon: Icons.chat_bubble_rounded,
-            page: PagesEnum.chat,
-            route: Routers.chatView,
-          ),
+
           _buildItem(
             icon: Icons.folder,
             page: PagesEnum.folder,

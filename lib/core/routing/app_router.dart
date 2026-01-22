@@ -199,6 +199,7 @@ class AppRouter {
         );
       case Routers.loginView:
         return MaterialPageRoute(
+          settings: RouteSettings(name: Routers.loginView),
           builder:
               (_) => BlocProvider(
                 create: (_) => LoginCubit(),

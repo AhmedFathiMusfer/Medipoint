@@ -1,4 +1,5 @@
 import 'package:diagno_bot/features/ai/chat/cubit/chat.cubit.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,7 +22,7 @@ class ChatInput extends StatelessWidget {
             child: TextField(
               controller: chatCubit.chatMessageController,
               decoration: InputDecoration(
-                hintText: "Ask anything",
+                hintText: "Ask anything".tr(),
                 filled: true,
                 fillColor: Colors.grey.shade100,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12),

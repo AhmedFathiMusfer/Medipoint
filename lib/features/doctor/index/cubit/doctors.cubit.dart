@@ -1,6 +1,4 @@
 import 'dart:developer';
-
-import 'package:diagno_bot/core/auth/authManager.dart';
 import 'package:diagno_bot/core/database/drift_db.dart';
 import 'package:diagno_bot/core/helpers/networkHelper.dart';
 import 'package:diagno_bot/core/model/doctor.model.dart';
@@ -141,6 +139,31 @@ class DoctorsCubit extends Cubit<DoctorsState> {
     });
   }
 
+  Future<double> getDoctorAverageRating(String doctorId) async {
+    final avgExpr = db.reviews.rating.avg();
+
+    final row =
+        await (db.selectOnly(db.reviews)
+              ..addColumns([avgExpr])
+              ..where(db.reviews.doctorId.equals(doctorId)))
+            .getSingleOrNull();
+
+    double avg = row?.read(avgExpr) ?? 0;
+    return avg.clamp(0, 5);
+  }
+
+  Future<int> getDoctorReviewsCount(String doctorId) async {
+    final countExpr = db.reviews.id.count();
+
+    final row =
+        await (db.selectOnly(db.reviews)
+              ..addColumns([countExpr])
+              ..where(db.reviews.doctorId.equals(doctorId)))
+            .getSingleOrNull();
+
+    return row?.read(countExpr) ?? 0;
+  }
+
   Future<List<DoctorModel>> getDoctors({
     String? specialty,
     String? name,
@@ -155,20 +178,25 @@ class DoctorsCubit extends Cubit<DoctorsState> {
       temp = temp..where(db.users.fullName.contains(name));
     }
     final result = await temp.get();
+
     final jsonList =
-        result.map((row) {
+        result.map((row) async {
           var doctor = row.readTable(db.doctors).toJson();
           final user = row.readTable(db.users).toJson();
+          final reviews = await getDoctorReviewsCount(user['id']);
+          final rating = await getDoctorAverageRating(user['id']);
           doctor['status'] = DoctorModelStatusConverter().toJson(
             doctor['status'],
           );
-          return {...user, ...doctor};
+          return {...user, ...doctor, 'reviews': reviews, 'rating': rating};
         }).toList();
-    var doctors =
-        jsonList
-            .map<DoctorModel>((doctor) => DoctorModel.fromJson(doctor))
-            .toList();
-    log(doctors.toString());
+    var doctors = await Future.wait(jsonList).then(
+      (jsonList) =>
+          jsonList
+              .map<DoctorModel>((doctor) => DoctorModel.fromJson(doctor))
+              .toList(),
+    );
+    //   log(doctors.toString());
     return doctors;
   }
 

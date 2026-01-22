@@ -19,11 +19,12 @@ class _OnboardingViewState extends State<OnboardingView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(0),
         child: Column(
           children: [
-            Expanded(
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.75,
               child: PageView.builder(
                 controller: _pageController,
                 itemCount: onboardingPages.length,

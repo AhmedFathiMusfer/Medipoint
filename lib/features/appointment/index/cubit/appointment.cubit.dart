@@ -13,7 +13,7 @@ import 'package:diagno_bot/core/networking/remote/remoteProvider.dart';
 import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/features/appointment/index/cubit/appointment.state.dart';
-import 'package:diagno_bot/notifaction.dart';
+import 'package:diagno_bot/core/notifaction/notifaction.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

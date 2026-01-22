@@ -14,8 +14,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginCubit extends Cubit<LoginState> {
   LoginCubit() : super(const LoginState.initial());
-  final LoginForm form = LoginForm();
-  // inital() {}
+  LoginForm form = LoginForm();
 
   supmit() async {
     if (form.key.currentState!.validate()) {
@@ -34,38 +33,22 @@ class LoginCubit extends Cubit<LoginState> {
           onError: (_, statsCode) {
             if (statsCode == 400) {
               AppSnackBar.error('error_invalid_data_entry'.tr());
-              state.mapOrNull(
-                loding: (state) {
-                  emit(state.copyWith(loading: false));
-                },
-              );
+              emit(LoginState.loding(loading: false));
             } else if (statsCode == 401) {
               AppSnackBar.error('error_incorrect_email_password'.tr());
-              state.mapOrNull(
-                loding: (state) {
-                  emit(state.copyWith(loading: false));
-                },
-              );
+              emit(LoginState.loding(loading: false));
             } else {
               AppSnackBar.error(
                 ErrorMessages.instance.fromExceptionType(
                   ExceptionTypes.unexpected,
                 ),
               );
-              state.mapOrNull(
-                loding: (state) {
-                  emit(state.copyWith(loading: false));
-                },
-              );
+              emit(LoginState.loding(loading: false));
             }
           },
         );
       } else {
-        state.mapOrNull(
-          loding: (state) {
-            emit(state.copyWith(loading: false));
-          },
-        );
+        emit(LoginState.loding(loading: false));
         AppSnackBar.error(
           ErrorMessages.instance.fromExceptionType(ExceptionTypes.connection),
         );

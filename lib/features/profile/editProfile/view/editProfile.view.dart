@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:diagno_bot/core/helpers/extensions.dart';
 import 'package:diagno_bot/core/networking/remote/apiConstants.dart';
@@ -10,7 +9,6 @@ import 'package:diagno_bot/core/widgets/bottomSheet/ImagePickerBottomSheet.dart'
 import 'package:diagno_bot/core/widgets/simpleButton.dart';
 import 'package:diagno_bot/features/profile/editProfile/cubit/editProfile.cubit.dart';
 import 'package:diagno_bot/features/profile/editProfile/cubit/editProfile.state.dart';
-import 'package:diagno_bot/features/profile/index/cubit/profile.cubit.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,7 +32,6 @@ class _FillProfilePageState extends State<EditProfilePage> {
   @override
   void initState() {
     super.initState();
-    gender = "gender".tr();
   }
 
   @override
@@ -68,8 +65,7 @@ class _FillProfilePageState extends State<EditProfilePage> {
                 listener: (context, state) {
                   state.maybeMap(
                     success: (value) {
-                      // profileCubit.initial();
-                      context.pop();
+                      context.pushNamed(Routers.profileView);
                     },
                     orElse: () {},
                   );
@@ -168,14 +164,14 @@ class _FillProfilePageState extends State<EditProfilePage> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    value: gender,
+                  child: DropdownButton<Map>(
+                    value: editProfileCubit.form.gender,
                     isExpanded: true,
                     dropdownColor: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(12), // 🔥 مهم
+                    borderRadius: BorderRadius.circular(12),
                     icon: const Icon(Icons.keyboard_arrow_down),
                     items:
-                        ["gender".tr(), "male".tr(), "female".tr()]
+                        editProfileCubit.form.genders
                             .map(
                               (e) => DropdownMenuItem(
                                 value: e,
@@ -184,14 +180,16 @@ class _FillProfilePageState extends State<EditProfilePage> {
                                     vertical: 8,
                                   ),
                                   child: Text(
-                                    e,
+                                    e['name'].toString(),
                                     style: const TextStyle(fontSize: 13),
                                   ),
                                 ),
                               ),
                             )
                             .toList(),
-                    onChanged: (v) => setState(() => gender = v!),
+                    onChanged:
+                        (v) =>
+                            setState(() => editProfileCubit.form.gender = v!),
                   ),
                 ),
               ),

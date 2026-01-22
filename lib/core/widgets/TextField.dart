@@ -51,14 +51,23 @@ class CustomTextField extends StatelessWidget {
                       final emailRegex = RegExp(
                         r"^[\w\.\-]+@([\w\-]+\.)+[a-zA-Z]{2,}$",
                       );
-                      if (!emailRegex.hasMatch(value.trim()))
+                      if (!emailRegex.hasMatch(value.trim())) {
                         return "email_invalid".tr();
+                      }
                     }
                     if (isConfirmPassword) {
                       if (password != null) {
                         if (value != password!.text) {
                           return 'passwords_not_match'.tr();
                         }
+                      }
+                    }
+                    if (isPassword) {
+                      final passwordRegex = RegExp(
+                        r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$',
+                      );
+                      if (!passwordRegex.hasMatch(value)) {
+                        return 'password_invalid'.tr();
                       }
                     }
 

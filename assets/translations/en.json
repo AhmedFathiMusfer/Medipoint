@@ -97,12 +97,15 @@
   "next": "Next",
   "get_started": "Get Started",
   "skip": "Skip",
-  "meet_doctors_online": "Meet Doctors Online",
-  "connect_with_specialists": "Connect with Specialists",
-  "thousands_of_online_specialists": "Thousands of Online Specialists",
-  "onboarding_description_1": "Connect with Specialized Doctors Online for Convenient and Comprehensive Medical Consultations.",
-  "onboarding_description_2": "Connect with Specialized Doctors Online for Convenient and Comprehensive Medical Consultations.",
-  "onboarding_description_3": "Explore a Vast Array of Online Medical Specialists, Offering an Extensive Range of Expertise Tailored to Your Healthcare Needs.",
+  "meet_doctors_online": "Book Appointments with Doctors",
+  "connect_with_specialists": "Connect with Trusted Specialists",
+  "thousands_of_online_specialists": "Hundreds of Verified Doctors in One Place",
+
+  "onboarding_description_1": "Book appointments with verified doctors on the platform and get reliable medical consultations with ease.",
+
+  "onboarding_description_2": "Get an AI-powered preliminary diagnosis to help you understand your condition and get matched with the best doctors for your needs.",
+
+  "onboarding_description_3": "Upload and securely store your medical reports, test results, and prescriptions to access them anytime from your health profile.",
   "field_required": "Please enter this field is required",
   "email_invalid": "please wright the correct email",
   "passwords_not_match": "Passwords do not match ",
@@ -212,5 +215,9 @@
   "delete_review_title": "Delete Review",
   "delete_review_confirm": "Are you sure you want to delete this review? This action cannot be undone.",
   "you_label": "You",
-  "patient_label": "Patient"
+  "patient_label": "Patient",
+  "password_invalid": "Password must contain uppercase, lowercase, number and symbol",
+  "greeting_ai": "Hello! How can I assist you today?",
+  "Ask anything": "Ask anything",
+  "fees": "Fees"
 }

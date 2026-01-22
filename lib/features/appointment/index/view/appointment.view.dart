@@ -251,7 +251,10 @@ class _AppointmentViewState extends State<AppointmentView>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                appointment.dateTime,
+                DateFormat(
+                  'dd MMM yyyy, hh:mm a',
+                  context.locale.toString(),
+                ).format(DateTime.parse(appointment.dateTime)),
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
 
@@ -319,6 +322,21 @@ class _AppointmentViewState extends State<AppointmentView>
                         Expanded(
                           child: Text(
                             appointment.doctor.addressLine1 ?? '',
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          '${'fees'.tr()}: ',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            appointment.fees ?? '0',
                             style: const TextStyle(color: Colors.grey),
                           ),
                         ),

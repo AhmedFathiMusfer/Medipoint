@@ -45,7 +45,11 @@ class DioFactory {
           handler.next(options);
         },
         onResponse: (res, handler) async {
-          if (res.statusCode == 401) {
+          res.requestOptions.uri.toString();
+          if (res.statusCode == 401 &&
+              !(res.requestOptions.uri.toString().contains(
+                ApiConstants.loginEndpoint,
+              ))) {
             final refreshToken = AuthManager().refreshToken;
             if (refreshToken == null) {
               await AuthManager().logout();
