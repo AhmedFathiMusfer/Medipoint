@@ -8,8 +8,8 @@ import 'package:diagno_bot/core/networking/remote/remoteProvider.dart';
 import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/features/appointment/bookAppointment/cubit/bookAppointment.state.dart';
+import 'package:diagno_bot/core/notifaction/notifaction.dart';
 import 'package:drift/drift.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BookAppointmentCubit extends Cubit<BookAppointmentState> {
@@ -137,6 +137,11 @@ class BookAppointmentCubit extends Cubit<BookAppointmentState> {
         try {
           if (res.data != null) {
             await insertAppointment(res.data);
+            await NotificationService.scheduleAppointmentNotification(
+              id: res.data['id'],
+              appointmentTime: DateTime.parse(res.data['datetime']),
+              minutesBefore: 10,
+            );
           }
         } catch (ex) {
           AppSnackBar.error(
