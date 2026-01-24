@@ -19,7 +19,6 @@ class BotMessageWidget extends StatelessWidget {
           BotBubble(text: message.text),
 
         if (message.isDetected == true && message.specialty != null)
-          // DiagnosisTagWidget(specialty: message.specialty!),
           if (message.isExisted == false) const NoDoctorsWidget(),
 
         if (message.isExisted == true &&

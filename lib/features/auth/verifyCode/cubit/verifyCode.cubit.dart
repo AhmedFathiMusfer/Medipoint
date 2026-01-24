@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:diagno_bot/core/helpers/networkHelper.dart';
 import 'package:diagno_bot/core/networking/remote/apiConstants.dart';
 import 'package:diagno_bot/core/networking/remote/remoteProvider.dart';
@@ -21,6 +23,7 @@ class VerifyCodeCubit extends Cubit<VerifyCodeState> {
       emit(const VerifyCodeState.initial(loading: true));
       bool isConnected = await NetworkHelper.isConnected();
       if (isConnected) {
+        log("jj");
         await RemoteProvider().send(
           request: Request(
             url:
@@ -35,7 +38,7 @@ class VerifyCodeCubit extends Cubit<VerifyCodeState> {
             AppSnackBar.success('success_code_verified'.tr());
             emit(VerifyCodeState.success(token: token, email: email));
           },
-          onError: (_, statsCode) {
+          onError: (res, statsCode) {
             if (statsCode == 400) {
               AppSnackBar.error('error_invalid_code'.tr());
               emit(const VerifyCodeState.initial(loading: false));
@@ -43,6 +46,7 @@ class VerifyCodeCubit extends Cubit<VerifyCodeState> {
               AppSnackBar.error('error_code_not_found'.tr());
               emit(const VerifyCodeState.initial(loading: false));
             } else {
+              log(res.data.toString());
               AppSnackBar.error('error_occurred_try_later'.tr());
               emit(const VerifyCodeState.initial(loading: false));
             }

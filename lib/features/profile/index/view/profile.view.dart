@@ -108,6 +108,21 @@ class _ProfileViewState extends State<ProfileView> with RouteAware {
                             context.pushNamed(Routers.changePasswordView);
                           },
                         ),
+                        _divider(),
+                        _buildOptionTile(
+                          context,
+                          Icons.language,
+                          context.locale.languageCode == 'ar'
+                              ? 'English'
+                              : 'العربية',
+                          onTap: () async {
+                            if (context.locale.languageCode == 'ar') {
+                              await context.setLocale(const Locale('en'));
+                            } else {
+                              await context.setLocale(const Locale('ar'));
+                            }
+                          },
+                        ),
 
                         _divider(),
                         _buildLogoutTile(context),

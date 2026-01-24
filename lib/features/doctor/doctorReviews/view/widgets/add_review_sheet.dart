@@ -17,6 +17,7 @@ class AddReviewSheet extends StatefulWidget {
 class _AddReviewSheetState extends State<AddReviewSheet> {
   late int rating;
   late final TextEditingController controller;
+  bool isLoading = false;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -176,7 +177,11 @@ class _AddReviewSheetState extends State<AddReviewSheet> {
               height: 54.h,
               child: ElevatedButton(
                 onPressed: () async {
+                  if (isLoading) return;
                   if (!_formKey.currentState!.validate()) return;
+                  setState(() {
+                    isLoading = true;
+                  });
                   await widget.onSave(rating, controller.text.trim());
                   if (mounted) Navigator.pop(context);
                 },
@@ -188,13 +193,25 @@ class _AddReviewSheetState extends State<AddReviewSheet> {
                   ),
                   elevation: 0,
                 ),
-                child: Text(
-                  isEditing ? "save_changes".tr() : "submit_review".tr(),
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                child:
+                    isLoading
+                        ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            color: Colors.white,
+                          ),
+                        )
+                        : Text(
+                          isEditing
+                              ? "save_changes".tr()
+                              : "submit_review".tr(),
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
               ),
             ),
             SizedBox(height: 10.h),

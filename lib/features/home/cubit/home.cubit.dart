@@ -1,5 +1,6 @@
+import 'dart:developer';
+
 import 'package:diagno_bot/core/database/drift_db.dart';
-import 'package:diagno_bot/core/database/tables/doctor_tables.dart';
 import 'package:diagno_bot/core/helpers/networkHelper.dart';
 import 'package:diagno_bot/core/model/doctor.model.dart';
 import 'package:diagno_bot/core/networking/errors/errorMesage.dart';
@@ -10,6 +11,7 @@ import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/features/home/cubit/home.state.dart';
 import 'package:drift/drift.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeCubit extends Cubit<HomeState> {
@@ -19,20 +21,23 @@ class HomeCubit extends Cubit<HomeState> {
     New(
       id: 0,
       date: DateTime.now(),
-      title: 'Looking for\nSpecialist Doctors?',
-      image: 'assets/image/final_on_obourding_image.png',
+      title: 'meet_doctors_online'.tr(),
+      image: 'assets/image/first_on_obourding_image.png',
+      description: 'onboarding_description_1'.tr(),
     ),
     New(
       id: 0,
       date: DateTime.now(),
-      title: 'Looking for\nSpecialist Doctors?',
-      image: 'assets/image/final_on_obourding_image.png',
+      title: 'connect_with_specialists'.tr(),
+      image: 'assets/image/sconde_on_obourding_image.png',
+      description: 'onboarding_description_2'.tr(),
     ),
     New(
       id: 0,
       date: DateTime.now(),
-      title: 'Looking for\nSpecialist Doctors?',
+      title: 'thousands_of_online_specialists'.tr(),
       image: 'assets/image/final_on_obourding_image.png',
+      description: 'onboarding_description_3'.tr(),
     ),
   ];
 
@@ -52,7 +57,7 @@ class HomeCubit extends Cubit<HomeState> {
       if (!isClosed) {
         emit(
           HomeState.success(
-            specialties: specialties,
+            specialties: specialties.take(6).toList(),
             doctors: doctors,
             filteredDoctors: doctors,
           ),
@@ -114,7 +119,11 @@ class HomeCubit extends Cubit<HomeState> {
         request: Request(url: ApiConstants.initEndpoint),
         method: RemoteMethod.get,
         onSuccess: (res, statsCode) async {
+          log(res.data.toString());
           try {
+            // if (res.data['specialties'].isNotEmpty) {
+            //   await insertSpecialties(res.data['specialties']);
+            // }
             if (res.data['doctors'].isNotEmpty) {
               await insertDoctorWithUser(res.data['doctors']);
             }
@@ -225,7 +234,7 @@ class HomeCubit extends Cubit<HomeState> {
             return Review.fromJson({
               ...review,
               'doctorId': review['doctor'],
-              'patientId': review['patient'],
+              'patientId': review['patient']['user']['id'],
               'createdAt': review['created_at'],
               'updatedAt': review['updated_at'],
             });

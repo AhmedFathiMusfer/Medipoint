@@ -54,7 +54,7 @@ class EditProfileForm {
   ];
   getGender(String? gander) {
     if (gander != null) {
-      return (genders.where((gander) => gander['id'] == gander).firstOrNull) ??
+      return (genders.where((g) => g['id'] == gander).firstOrNull) ??
           genders.first;
     }
     return genders.first;

@@ -1,11 +1,12 @@
+import 'package:diagno_bot/core/database/drift_db.dart';
 import 'package:diagno_bot/core/theming/color.dart';
-import 'package:diagno_bot/features/appointment/bookAppointment/view/bookAppointment.view.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class NewsCard extends StatelessWidget {
-  const NewsCard({super.key});
+  final New news;
+
+  const NewsCard({super.key, required this.news});
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +30,7 @@ class NewsCard extends StatelessWidget {
                 bottomLeft: Radius.circular(24),
                 topLeft: Radius.circular(24),
               ),
-              child: Image.asset(
-                "assets/image/final_on_obourding_image.png",
-                fit: BoxFit.cover,
-              ),
+              child: Image.asset(news.image, fit: BoxFit.cover),
             ),
           ),
           Positioned.fill(
@@ -49,29 +47,37 @@ class NewsCard extends StatelessWidget {
           Positioned.directional(
             textDirection: Directionality.of(context),
             start: 20,
-            top: 30,
+            top: 50,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "looking_for_specialist".tr(),
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    height: 1.3,
-                    fontWeight: FontWeight.bold,
+                SizedBox(
+                  width: 200.w,
+                  child: Text(
+                    news.title,
+                    softWrap: true,
+                    maxLines: 2,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      height: 1.3,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 SizedBox(height: 12),
-                Text(
-                  "schedule_appointment".tr(),
-                  style: TextStyle(color: Colors.white70, fontSize: 15),
+                SizedBox(
+                  width: 120.w,
+                  child: Text(
+                    news.description,
+                    softWrap: true,
+                    maxLines: 3,
+                    style: TextStyle(color: Colors.white70, fontSize: 15),
+                  ),
                 ),
               ],
             ),
           ),
-
-          // صورة الدكتورة على اليمين
         ],
       ),
     );

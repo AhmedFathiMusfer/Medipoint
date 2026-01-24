@@ -5,6 +5,7 @@ part 'login.state.freezed.dart';
 class LoginState with _$LoginState {
   const factory LoginState.initial() = _Initial;
   const factory LoginState.loding({@Default(false) bool loading}) = _Loding;
+  const factory LoginState.verifyEmail() = _VerifyEmail;
 
   const factory LoginState.loginSuccess() = _LoginSuccess;
 }

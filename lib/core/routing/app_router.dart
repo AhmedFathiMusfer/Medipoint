@@ -18,7 +18,7 @@ import 'package:diagno_bot/features/auth/resetPassword/cubit/resetPassword.cubit
 import 'package:diagno_bot/features/auth/resetPassword/view/resetPassword.view.dart';
 import 'package:diagno_bot/features/auth/registration/cubit/registration.cubit.dart';
 
-import 'package:diagno_bot/features/auth/registration/view/registration.view%20.dart';
+import 'package:diagno_bot/features/auth/registration/view/registration.view.dart';
 import 'package:diagno_bot/features/appointment/bookAppointment/cubit/bookAppointment.cubit.dart';
 import 'package:diagno_bot/features/doctor/doctorDetails/cubit/doctorDetails.cubit.dart';
 import 'package:diagno_bot/features/doctor/doctorDetails/cubit/doctorDetails.state.dart';
@@ -157,10 +157,7 @@ class AppRouter {
           pageBuilder:
               (context, animation, secondaryAnimation) => BlocProvider(
                 create:
-                    (_) => DoctorDetailsCubit(
-                      doctorId: doctorId,
-                      DoctorDetailsState.initial(),
-                    )..loadAll(),
+                    (_) => DoctorDetailsCubit(doctorId: doctorId)..loadAll(),
                 child: DoctorDetailsView(),
               ),
           transitionDuration: Duration.zero,

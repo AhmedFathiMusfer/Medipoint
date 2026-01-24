@@ -1191,6 +1191,17 @@ class $NewsTable extends News with TableInfo<$NewsTable, New> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _dateMeta = const VerificationMeta('date');
   @override
   late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
@@ -1201,7 +1212,7 @@ class $NewsTable extends News with TableInfo<$NewsTable, New> {
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, title, image, date];
+  List<GeneratedColumn> get $columns => [id, title, image, description, date];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1232,6 +1243,17 @@ class $NewsTable extends News with TableInfo<$NewsTable, New> {
       );
     } else if (isInserting) {
       context.missing(_imageMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
     }
     if (data.containsKey('date')) {
       context.handle(
@@ -1265,6 +1287,11 @@ class $NewsTable extends News with TableInfo<$NewsTable, New> {
             DriftSqlType.string,
             data['${effectivePrefix}image'],
           )!,
+      description:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}description'],
+          )!,
       date:
           attachedDatabase.typeMapping.read(
             DriftSqlType.dateTime,
@@ -1283,11 +1310,13 @@ class New extends DataClass implements Insertable<New> {
   final int id;
   final String title;
   final String image;
+  final String description;
   final DateTime date;
   const New({
     required this.id,
     required this.title,
     required this.image,
+    required this.description,
     required this.date,
   });
   @override
@@ -1296,6 +1325,7 @@ class New extends DataClass implements Insertable<New> {
     map['id'] = Variable<int>(id);
     map['title'] = Variable<String>(title);
     map['image'] = Variable<String>(image);
+    map['description'] = Variable<String>(description);
     map['date'] = Variable<DateTime>(date);
     return map;
   }
@@ -1305,6 +1335,7 @@ class New extends DataClass implements Insertable<New> {
       id: Value(id),
       title: Value(title),
       image: Value(image),
+      description: Value(description),
       date: Value(date),
     );
   }
@@ -1318,6 +1349,7 @@ class New extends DataClass implements Insertable<New> {
       id: serializer.fromJson<int>(json['id']),
       title: serializer.fromJson<String>(json['title']),
       image: serializer.fromJson<String>(json['image']),
+      description: serializer.fromJson<String>(json['description']),
       date: serializer.fromJson<DateTime>(json['date']),
     );
   }
@@ -1328,14 +1360,22 @@ class New extends DataClass implements Insertable<New> {
       'id': serializer.toJson<int>(id),
       'title': serializer.toJson<String>(title),
       'image': serializer.toJson<String>(image),
+      'description': serializer.toJson<String>(description),
       'date': serializer.toJson<DateTime>(date),
     };
   }
 
-  New copyWith({int? id, String? title, String? image, DateTime? date}) => New(
+  New copyWith({
+    int? id,
+    String? title,
+    String? image,
+    String? description,
+    DateTime? date,
+  }) => New(
     id: id ?? this.id,
     title: title ?? this.title,
     image: image ?? this.image,
+    description: description ?? this.description,
     date: date ?? this.date,
   );
   New copyWithCompanion(NewsCompanion data) {
@@ -1343,6 +1383,8 @@ class New extends DataClass implements Insertable<New> {
       id: data.id.present ? data.id.value : this.id,
       title: data.title.present ? data.title.value : this.title,
       image: data.image.present ? data.image.value : this.image,
+      description:
+          data.description.present ? data.description.value : this.description,
       date: data.date.present ? data.date.value : this.date,
     );
   }
@@ -1353,13 +1395,14 @@ class New extends DataClass implements Insertable<New> {
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('image: $image, ')
+          ..write('description: $description, ')
           ..write('date: $date')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, title, image, date);
+  int get hashCode => Object.hash(id, title, image, description, date);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1367,6 +1410,7 @@ class New extends DataClass implements Insertable<New> {
           other.id == this.id &&
           other.title == this.title &&
           other.image == this.image &&
+          other.description == this.description &&
           other.date == this.date);
 }
 
@@ -1374,31 +1418,37 @@ class NewsCompanion extends UpdateCompanion<New> {
   final Value<int> id;
   final Value<String> title;
   final Value<String> image;
+  final Value<String> description;
   final Value<DateTime> date;
   const NewsCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
     this.image = const Value.absent(),
+    this.description = const Value.absent(),
     this.date = const Value.absent(),
   });
   NewsCompanion.insert({
     this.id = const Value.absent(),
     required String title,
     required String image,
+    required String description,
     required DateTime date,
   }) : title = Value(title),
        image = Value(image),
+       description = Value(description),
        date = Value(date);
   static Insertable<New> custom({
     Expression<int>? id,
     Expression<String>? title,
     Expression<String>? image,
+    Expression<String>? description,
     Expression<DateTime>? date,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (title != null) 'title': title,
       if (image != null) 'image': image,
+      if (description != null) 'description': description,
       if (date != null) 'date': date,
     });
   }
@@ -1407,12 +1457,14 @@ class NewsCompanion extends UpdateCompanion<New> {
     Value<int>? id,
     Value<String>? title,
     Value<String>? image,
+    Value<String>? description,
     Value<DateTime>? date,
   }) {
     return NewsCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
       image: image ?? this.image,
+      description: description ?? this.description,
       date: date ?? this.date,
     );
   }
@@ -1429,6 +1481,9 @@ class NewsCompanion extends UpdateCompanion<New> {
     if (image.present) {
       map['image'] = Variable<String>(image.value);
     }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
     if (date.present) {
       map['date'] = Variable<DateTime>(date.value);
     }
@@ -1441,6 +1496,7 @@ class NewsCompanion extends UpdateCompanion<New> {
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('image: $image, ')
+          ..write('description: $description, ')
           ..write('date: $date')
           ..write(')'))
         .toString();
@@ -5604,6 +5660,7 @@ typedef $$NewsTableCreateCompanionBuilder =
       Value<int> id,
       required String title,
       required String image,
+      required String description,
       required DateTime date,
     });
 typedef $$NewsTableUpdateCompanionBuilder =
@@ -5611,6 +5668,7 @@ typedef $$NewsTableUpdateCompanionBuilder =
       Value<int> id,
       Value<String> title,
       Value<String> image,
+      Value<String> description,
       Value<DateTime> date,
     });
 
@@ -5634,6 +5692,11 @@ class $$NewsTableFilterComposer extends Composer<_$AppDatabase, $NewsTable> {
 
   ColumnFilters<String> get image => $composableBuilder(
     column: $table.image,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -5666,6 +5729,11 @@ class $$NewsTableOrderingComposer extends Composer<_$AppDatabase, $NewsTable> {
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get date => $composableBuilder(
     column: $table.date,
     builder: (column) => ColumnOrderings(column),
@@ -5689,6 +5757,11 @@ class $$NewsTableAnnotationComposer
 
   GeneratedColumn<String> get image =>
       $composableBuilder(column: $table.image, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<DateTime> get date =>
       $composableBuilder(column: $table.date, builder: (column) => column);
@@ -5725,19 +5798,27 @@ class $$NewsTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> title = const Value.absent(),
                 Value<String> image = const Value.absent(),
+                Value<String> description = const Value.absent(),
                 Value<DateTime> date = const Value.absent(),
-              }) =>
-                  NewsCompanion(id: id, title: title, image: image, date: date),
+              }) => NewsCompanion(
+                id: id,
+                title: title,
+                image: image,
+                description: description,
+                date: date,
+              ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
                 required String title,
                 required String image,
+                required String description,
                 required DateTime date,
               }) => NewsCompanion.insert(
                 id: id,
                 title: title,
                 image: image,
+                description: description,
                 date: date,
               ),
           withReferenceMapper:

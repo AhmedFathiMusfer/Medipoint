@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:diagno_bot/core/auth/authManager.dart';
 import 'package:diagno_bot/core/helpers/networkHelper.dart';
 import 'package:diagno_bot/core/networking/errors/errorMesage.dart';
@@ -26,10 +28,21 @@ class RegisterCubit extends Cubit<RegisterState> {
           method: RemoteMethod.post,
           onSuccess: (res, statsCode) async {
             res.data['password'] = form.body['password'];
+            log(res.data.toString());
+            if (res.data['message'] != null &&
+                res.data['message'].toString().contains(
+                  'Verification OTP resent. Please verify your email',
+                )) {
+              if (res.data['email'] != null) {
+                await AuthManager().setUser(res.data);
+              }
+              emit(RegisterState.registerSuccess());
+              return;
+            }
             await AuthManager().setUser(res.data);
             emit(RegisterState.registerSuccess());
           },
-          onError: (_, statsCode) {
+          onError: (res, statsCode) {
             if (statsCode == 400) {
               AppSnackBar.error('error_email_already_exists'.tr());
               emit(RegisterState.initial(loading: false));

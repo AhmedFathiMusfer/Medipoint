@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:diagno_bot/core/auth/authManager.dart';
 import 'package:diagno_bot/core/database/drift_db.dart';
 import 'package:diagno_bot/core/database/tables/appointments_tables.dart';
 import 'package:diagno_bot/core/helpers/networkHelper.dart';
@@ -144,8 +147,12 @@ class BookAppointmentCubit extends Cubit<BookAppointmentState> {
             );
           }
         } catch (ex) {
+          log(ex.toString());
           AppSnackBar.error(
-            ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+            ErrorMessages.instance.fromExceptionType(
+                  ExceptionTypes.unexpected,
+                ) +
+                ex.toString(),
           );
         }
       },
@@ -170,7 +177,7 @@ class BookAppointmentCubit extends Cubit<BookAppointmentState> {
           additionalInfo: Value(data['additional_info']),
           datetime: Value(data['datetime']),
           doctorId: Value(data['doctor']['user']['id']),
-          patientId: Value(data['patient']),
+          patientId: Value(data['patient'] ?? AuthManager().currentUser?.id),
           status: Value(
             const AppointmentStatusConverter().fromJson(data['status']),
           ),

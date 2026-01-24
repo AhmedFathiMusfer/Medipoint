@@ -22,7 +22,7 @@ class ErrorMessages {
       case 503:
         return "error_server_error".tr();
       default:
-        return "error_something_wrong".tr();
+        return "";
     }
   }
 

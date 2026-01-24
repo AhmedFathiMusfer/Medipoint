@@ -1,6 +1,6 @@
 {
-  "app_name": "تطبيق الطبيب",
-  "healthpal": "HealthPal",
+  "app_name": "MediPoint",
+  "healthpal": "MediPoint",
   "welcome": "مرحباً",
   "cancel": "إلغاء",
   "save": "حفظ",
@@ -63,7 +63,7 @@
   "my_booking": "حجوزاتي",
   "upcoming": "قادمة",
   "completed": "مكتملة",
-  "canceled": "ملغاة",
+  "canceled": "ملغية",
   "pay": "دفع",
   "pending": "قيد الانتظار",
   "paid": "مدفوعة",
@@ -95,6 +95,7 @@
   "specialties_title": "التخصصات",
   "doctors_title": "الأطباء",
   "next": "التالي",
+  "skip": "تخطي",
   "get_started": "ابدأ الآن",
   "meet_doctors_online": "احجز موعدك مع الأطباء بسهولة",
   "connect_with_specialists": "تواصل مع أفضل الأطباء المتخصصين",
@@ -110,7 +111,7 @@
   "passwords_not_match": "كلمات المرور غير متطابقة",
   "no_found_data": "لا توجد بيانات",
   "forgot_password_question": "نسيت كلمة المرور؟",
-  "dont_worry_reset": "لا تقلق! أدخل عنوان بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيين كلمة المرور.",
+  "dont_worry_reset": "لا تقلق! أدخل عنوان بريدك الإلكتروني وسنرسل لك كود لإعادة تعيين كلمة المرور.",
   "reset_password": "إعادة تعيين كلمة المرور",
   "please_enter_new_password": "يرجى إدخال كلمة المرور الجديدة",
   "please_enter_code_sent": "يرجى إدخال رمز التحقق المرسل إلى",
@@ -218,5 +219,8 @@
   "password_invalid": "يجب أن تحتوي كلمة المرور على حرف كبير وحرف صغير ورقم ورمز",
   "greeting_ai": "مرحباً! كيف يمكنني مساعدتك اليوم؟",
   "Ask anything": "اسأل أي شيء",
-  "fees": "الرسوم"
+  "fees": "الرسوم",
+  "Recommended Doctors": "الأطباء الموصى بهم",
+  "for the": "لـ",
+  "No internet connection": "لا يوجد اتصال بالإنترنت"
 }

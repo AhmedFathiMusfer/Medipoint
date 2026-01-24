@@ -13,7 +13,7 @@
 
 
     <application
-        android:label="diagno_bot"
+        android:label="MediPoint"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />

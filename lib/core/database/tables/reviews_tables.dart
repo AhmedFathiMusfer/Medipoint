@@ -5,6 +5,8 @@ import 'package:drift/drift.dart';
 class Reviews extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get patientId => text().references(Patients, #userId)();
+  TextColumn get patientName => text()();
+  TextColumn get patientImage => text().nullable()();
   IntColumn get rating => integer()();
   TextColumn get content => text().nullable()();
   TextColumn get doctorId => text().nullable().references(Doctors, #userId)();

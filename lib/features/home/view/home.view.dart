@@ -58,7 +58,7 @@ class HomeView extends StatelessWidget {
               CarouselSlider(
                 items:
                     homeCubit.news.map((slider) {
-                      return NewsCard();
+                      return NewsCard(news: slider);
                     }).toList(),
                 options: CarouselOptions(
                   height: 200,

@@ -19,12 +19,11 @@ class _OnboardingViewState extends State<OnboardingView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
+      body: Padding(
         padding: const EdgeInsets.all(0),
         child: Column(
           children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.75,
+            Expanded(
               child: PageView.builder(
                 controller: _pageController,
                 itemCount: onboardingPages.length,
@@ -35,100 +34,109 @@ class _OnboardingViewState extends State<OnboardingView> {
                 },
                 itemBuilder: (context, index) {
                   final page = onboardingPages[index];
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Image.asset(
-                        page.image,
-                        height: 470.h,
-                        width: double.infinity,
-                        fit: BoxFit.fitHeight,
-                      ),
-                      30.verticalSpace,
-                      Text(
-                        page.title,
-                        style: TextStyle(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.grey[700],
+                  return SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Image.asset(
+                          page.image,
+                          height: 470,
+                          width: double.infinity,
+                          fit: BoxFit.fitHeight,
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                      10.verticalSpace,
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                        child: Text(
-                          page.description,
+                        30.verticalSpace,
+                        Text(
+                          page.title,
                           style: TextStyle(
-                            fontSize: 12.sp,
-                            color: Colors.grey[500],
-                            fontWeight: FontWeight.w400,
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.grey[700],
                           ),
                           textAlign: TextAlign.center,
                         ),
-                      ),
-                    ],
+                        10.verticalSpace,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                          child: Text(
+                            page.description,
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color: Colors.grey[500],
+                              fontWeight: FontWeight.w400,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
                   );
                 },
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14.0),
-              child: SimpleButton(
-                text:
-                    _currentPage == onboardingPages.length - 1
-                        ? 'get_started'.tr()
-                        : 'next'.tr(),
-                onPressed: () {
-                  if (_currentPage < onboardingPages.length - 1) {
-                    _pageController.nextPage(
-                      duration: Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14.0,
+                    vertical: 8,
+                  ),
+                  child: SimpleButton(
+                    text:
+                        _currentPage == onboardingPages.length - 1
+                            ? 'get_started'.tr()
+                            : 'next'.tr(),
+                    onPressed: () {
+                      if (_currentPage < onboardingPages.length - 1) {
+                        _pageController.nextPage(
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      } else {
+                        context.pushNamedAndRemoveUntil(
+                          Routers.registrationView,
+                          predicate: (root) => true,
+                        );
+                      }
+                    },
+                  ),
+                ),
+                20.verticalSpace,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(onboardingPages.length, (index) {
+                    return Container(
+                      margin: EdgeInsets.symmetric(horizontal: 4),
+                      width: _currentPage == index ? 30 : 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.circular(20.r),
+                        color:
+                            _currentPage == index
+                                ? Color.fromRGBO(38, 35, 47, 1)
+                                : Color.fromRGBO(155, 155, 155, 1),
+                      ),
                     );
-                  } else {
+                  }),
+                ),
+                20.verticalSpace,
+                TextButton(
+                  onPressed: () {
                     context.pushNamedAndRemoveUntil(
                       Routers.registrationView,
                       predicate: (root) => true,
                     );
-                  }
-                },
-              ),
-            ),
-            20.verticalSpace,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(onboardingPages.length, (index) {
-                return Container(
-                  margin: EdgeInsets.symmetric(horizontal: 4),
-                  width: _currentPage == index ? 30 : 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.circular(20.r),
-                    color:
-                        _currentPage == index
-                            ? Color.fromRGBO(38, 35, 47, 1)
-                            : Color.fromRGBO(155, 155, 155, 1),
+                  },
+                  child: Text(
+                    'skip'.tr(),
+                    style: TextStyle(
+                      color: Colors.grey[500],
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
-                );
-              }),
-            ),
-            20.verticalSpace,
-            TextButton(
-              onPressed: () {
-                context.pushNamedAndRemoveUntil(
-                  Routers.registrationView,
-                  predicate: (root) => true,
-                );
-              },
-              child: Text(
-                'skip'.tr(),
-                style: TextStyle(
-                  color: Colors.grey[500],
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w400,
                 ),
-              ),
+              ],
             ),
           ],
         ),

@@ -22,12 +22,13 @@ class AppointmentCubit extends Cubit<AppointmentState> {
   AppDatabase db = AppDatabase();
   Future<void> loadAll() async {
     emit(AppointmentState.loading());
-    if (await getAppointmentsLength() == 0) {
-      await loadOnlineData();
-    } else {
-      await loadLocalData();
-      await loadOnlineData();
-    }
+    await loadOnlineData();
+    // if (await getAppointmentsLength() == 0) {
+
+    // } else {
+    //   await loadLocalData();
+    //   await loadOnlineData();
+    // }
   }
 
   Future<void> loadLocalData() async {
@@ -36,7 +37,11 @@ class AppointmentCubit extends Cubit<AppointmentState> {
 
       final appointments = results[0];
       if (!isClosed) {
-        emit(AppointmentState.success(appointments: appointments));
+        emit(
+          AppointmentState.success(
+            appointments: appointments.reversed.toList(),
+          ),
+        );
       }
     } catch (e) {
       AppSnackBar.error(

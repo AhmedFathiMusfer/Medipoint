@@ -89,7 +89,7 @@ class RemoteProvider {
 
       return response;
     } catch (exception) {
-      log(exception.toString());
+      log(exception.toString() + "kkkkkkkkkkk");
       if (onError != null) {
         onError(response, statusCode);
       } else {

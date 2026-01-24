@@ -1,6 +1,4 @@
-import 'package:diagno_bot/core/database/tables/specialties_tables.dart';
 import 'package:diagno_bot/core/database/tables/users_tables.dart';
-import 'package:diagno_bot/core/model/doctor.model.dart';
 import 'package:drift/drift.dart';
 
 enum DoctorStatus { A, U }

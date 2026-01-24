@@ -28,6 +28,9 @@ class Comments extends Table {
   IntColumn get reviewId => integer().references(Reviews, #id)();
   TextColumn get type => text().map(const CommentTypeConverter())();
   TextColumn get userId => text().references(Users, #id)();
+  TextColumn get userName => text().references(Users, #id)();
+  TextColumn get userImage => text().references(Users, #id)();
+
   TextColumn get content => text().withLength(min: 1)();
   TextColumn get createdAt => text().named('created_at')();
   TextColumn get updatedAt => text().named('updated_at')();

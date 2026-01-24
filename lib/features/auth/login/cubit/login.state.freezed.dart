@@ -55,12 +55,13 @@ extension LoginStatePatterns on LoginState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loding value)?  loding,TResult Function( _LoginSuccess value)?  loginSuccess,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loding value)?  loding,TResult Function( _VerifyEmail value)?  verifyEmail,TResult Function( _LoginSuccess value)?  loginSuccess,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loding() when loding != null:
-return loding(_that);case _LoginSuccess() when loginSuccess != null:
+return loding(_that);case _VerifyEmail() when verifyEmail != null:
+return verifyEmail(_that);case _LoginSuccess() when loginSuccess != null:
 return loginSuccess(_that);case _:
   return orElse();
 
@@ -79,12 +80,13 @@ return loginSuccess(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loding value)  loding,required TResult Function( _LoginSuccess value)  loginSuccess,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loding value)  loding,required TResult Function( _VerifyEmail value)  verifyEmail,required TResult Function( _LoginSuccess value)  loginSuccess,}){
 final _that = this;
 switch (_that) {
 case _Initial():
 return initial(_that);case _Loding():
-return loding(_that);case _LoginSuccess():
+return loding(_that);case _VerifyEmail():
+return verifyEmail(_that);case _LoginSuccess():
 return loginSuccess(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -102,12 +104,13 @@ return loginSuccess(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loding value)?  loding,TResult? Function( _LoginSuccess value)?  loginSuccess,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loding value)?  loding,TResult? Function( _VerifyEmail value)?  verifyEmail,TResult? Function( _LoginSuccess value)?  loginSuccess,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loding() when loding != null:
-return loding(_that);case _LoginSuccess() when loginSuccess != null:
+return loding(_that);case _VerifyEmail() when verifyEmail != null:
+return verifyEmail(_that);case _LoginSuccess() when loginSuccess != null:
 return loginSuccess(_that);case _:
   return null;
 
@@ -125,11 +128,12 @@ return loginSuccess(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( bool loading)?  loding,TResult Function()?  loginSuccess,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( bool loading)?  loding,TResult Function()?  verifyEmail,TResult Function()?  loginSuccess,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loding() when loding != null:
-return loding(_that.loading);case _LoginSuccess() when loginSuccess != null:
+return loding(_that.loading);case _VerifyEmail() when verifyEmail != null:
+return verifyEmail();case _LoginSuccess() when loginSuccess != null:
 return loginSuccess();case _:
   return orElse();
 
@@ -148,11 +152,12 @@ return loginSuccess();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( bool loading)  loding,required TResult Function()  loginSuccess,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( bool loading)  loding,required TResult Function()  verifyEmail,required TResult Function()  loginSuccess,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loding():
-return loding(_that.loading);case _LoginSuccess():
+return loding(_that.loading);case _VerifyEmail():
+return verifyEmail();case _LoginSuccess():
 return loginSuccess();case _:
   throw StateError('Unexpected subclass');
 
@@ -170,11 +175,12 @@ return loginSuccess();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( bool loading)?  loding,TResult? Function()?  loginSuccess,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( bool loading)?  loding,TResult? Function()?  verifyEmail,TResult? Function()?  loginSuccess,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loding() when loding != null:
-return loding(_that.loading);case _LoginSuccess() when loginSuccess != null:
+return loding(_that.loading);case _VerifyEmail() when verifyEmail != null:
+return verifyEmail();case _LoginSuccess() when loginSuccess != null:
 return loginSuccess();case _:
   return null;
 
@@ -280,6 +286,38 @@ as bool,
 
 
 }
+
+/// @nodoc
+
+
+class _VerifyEmail implements LoginState {
+  const _VerifyEmail();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VerifyEmail);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'LoginState.verifyEmail()';
+}
+
+
+}
+
+
+
 
 /// @nodoc
 

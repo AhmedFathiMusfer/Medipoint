@@ -1,6 +1,6 @@
 {
   "app_name": "Doc App",
-  "healthpal": "HealthPal",
+  "healthpal": "MediPoint",
   "welcome": "Welcome",
   "cancel": "Cancel",
   "save": "Save",
@@ -111,7 +111,7 @@
   "passwords_not_match": "Passwords do not match ",
   "no_found_data": "No found data",
   "forgot_password_question": "Forgot Password?",
-  "dont_worry_reset": "Don't worry! Enter your email address and we'll send you a link to reset your password.",
+  "dont_worry_reset": "Don't worry! Enter your email address and we'll send you a code to reset your password.",
   "reset_password": "Reset Password",
   "please_enter_new_password": "Please enter your new password",
   "please_enter_code_sent": "Please enter the verification code sent to",
@@ -219,5 +219,8 @@
   "password_invalid": "Password must contain uppercase, lowercase, number and symbol",
   "greeting_ai": "Hello! How can I assist you today?",
   "Ask anything": "Ask anything",
-  "fees": "Fees"
+  "fees": "Fees",
+  "Recommended Doctors": "Recommended Doctors",
+  "for the": "for the",
+  "No internet connection": "No internet connection"
 }

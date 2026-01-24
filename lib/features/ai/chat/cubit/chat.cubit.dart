@@ -49,7 +49,7 @@ class ChatCubit extends Cubit<ChatState> {
       if (!connected) {
         _messages.add(
           ChatMessage(
-            text: "No internet connection",
+            text: "No internet connection".tr(),
             isErorr: true,
             isUser: false,
           ),
@@ -219,87 +219,3 @@ class ChatCubit extends Cubit<ChatState> {
     }
   }
 }
-// ChatMessage(
-//           text: "Hello! How can I assist you today?",
-//           isUser: false,
-//           isDetected: true,
-//           isExisted: true,
-//           doctors:
-//               ([
-//                         {
-//                           "user": {
-//                             "id": "dbe07302-b4dc-4b1a-9826-ebd3f306ec5d",
-//                             "role": "D",
-//                             "email": "michael-johnson@hospital.com",
-//                             "image": null,
-//                             "full_name": "Dr. Michael Johnson",
-//                             "gender": "M",
-//                             "dob": null,
-//                           },
-//                           "specialty": "Neurologist",
-//                           "experience": "10 Years",
-//                           "fees": "100.00",
-//                           "rating": 0.0,
-//                         },
-//                         {
-//                           "user": {
-//                             "id": "77b5909f-39a3-45cb-b1f6-e8804d33b57d",
-//                             "role": "D",
-//                             "email": "ethan-clark@hospital.com",
-//                             "image": null,
-//                             "full_name": "Dr. Ethan Clark",
-//                             "gender": "M",
-//                             "dob": null,
-//                           },
-//                           "specialty": "Neurologist",
-//                           "experience": "6 Years",
-//                           "fees": "85.00",
-//                           "rating": 0.0,
-//                         },
-//                         {
-//                           "user": {
-//                             "id": "6c329cff-3300-411e-884e-aa9ab6366532",
-//                             "role": "D",
-//                             "email": "isabella-hall@hospital.com",
-//                             "image": null,
-//                             "full_name": "Dr. Isabella Hall",
-//                             "gender": "M",
-//                             "dob": null,
-//                           },
-//                           "specialty": "Neurologist",
-//                           "experience": "9 Years",
-//                           "fees": "100.00",
-//                           "rating": 0.0,
-//                         },
-//                       ]
-//                       as List)
-//                   .map((doctorJson) {
-//                     // Convert snake_case API format to camelCase for DoctorModel
-//                     final userJson = doctorJson['user'] ?? {};
-//                     final convertedJson = {
-//                       'userId': userJson['id'] ?? doctorJson['user_id'],
-//                       'fullName':
-//                           userJson['full_name'] ?? doctorJson['full_name'],
-//                       'role': userJson['role'] ?? doctorJson['role'],
-//                       'email': userJson['email'] ?? doctorJson['email'],
-//                       'image': userJson['image'] ?? doctorJson['image'],
-//                       'gender': userJson['gender'] ?? doctorJson['gender'],
-//                       'dob': userJson['dob'] ?? doctorJson['dob'],
-//                       'fees': doctorJson['fees'] ?? '',
-//                       'experience': doctorJson['experience'] ?? '',
-//                       'education': doctorJson['education'] ?? '',
-//                       'specialty': doctorJson['specialty'] ?? '',
-//                       'about': doctorJson['about'],
-//                       'rating': doctorJson['rating'],
-//                       'reviews': doctorJson['reviews'],
-//                       'addressLine1': doctorJson['address_line1'],
-//                       'addressLine2': doctorJson['address_line2'],
-//                       'status': doctorJson['status'] ?? 'A',
-//                       'isVerified': doctorJson['is_verified'] ?? false,
-//                       'degreeDocument': doctorJson['degree_document'],
-//                     };
-//                     return DoctorModel.fromJson(convertedJson);
-//                   })
-//                   .toList(),
-//         ),
-//       );

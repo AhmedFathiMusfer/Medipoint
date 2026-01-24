@@ -2,8 +2,8 @@ import 'package:diagno_bot/core/theming/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class singleStat extends StatelessWidget {
-  const singleStat({
+class SingleStat extends StatelessWidget {
+  const SingleStat({
     super.key,
     required this.icon,
     required this.number,

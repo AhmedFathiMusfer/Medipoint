@@ -4,5 +4,6 @@ class News extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get title => text()();
   TextColumn get image => text()();
+  TextColumn get description => text()();
   DateTimeColumn? get date => dateTime()();
 }

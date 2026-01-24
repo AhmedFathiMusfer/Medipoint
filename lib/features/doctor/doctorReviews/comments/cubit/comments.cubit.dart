@@ -95,6 +95,7 @@ class CommentsCubit extends Cubit<CommentsState> {
                 ...res.data,
                 'reviewId': res.data['review'],
                 'userId': res.data['user'],
+                'type': CommentTypeConverter().fromSql(res.data['type']),
                 'createdAt': res.data['created_at'],
                 'updatedAt': res.data['updated_at'],
               }),

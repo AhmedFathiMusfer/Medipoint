@@ -70,7 +70,7 @@ class ReviewCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      _formatDate(review.createdAt),
+                      _formatDate(review.createdAt, context),
                       style: TextStyle(
                         fontSize: 12.sp,
                         color: Colors.grey.shade500,
@@ -124,20 +124,23 @@ class ReviewCard extends StatelessWidget {
             ),
           ],
           SizedBox(height: 5.h),
-          ReviewComments(reviewId: review.id, canAddComment: true),
+          ReviewComments(reviewId: review.id, canAddComment: isMyReview),
         ],
       ),
     );
   }
 
-  String _formatDate(String dateStr) {
+  String _formatDate(String dateStr, BuildContext context) {
     try {
       final date = DateTime.parse(dateStr);
       final now = DateTime.now();
       final difference = now.difference(date);
 
       if (difference.inDays > 7) {
-        return DateFormat('MMM dd, yyyy').format(date);
+        return DateFormat(
+          'MMM dd, yyyy',
+          context.locale.languageCode,
+        ).format(date);
       } else if (difference.inDays > 0) {
         return '${difference.inDays}d ${'ago'.tr()}';
       } else if (difference.inHours > 0) {

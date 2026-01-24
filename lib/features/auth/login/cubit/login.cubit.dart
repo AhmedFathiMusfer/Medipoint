@@ -27,6 +27,13 @@ class LoginCubit extends Cubit<LoginState> {
           method: RemoteMethod.post,
           onSuccess: (res, statsCode) async {
             log(res.toString());
+            if (res.data["message"] != null &&
+                res.data["message"].toString().contains(
+                  "Verification OTP resent. Please verify your email",
+                )) {
+              emit(LoginState.verifyEmail());
+              return;
+            }
             await AuthManager().setToken(res.data);
             emit(LoginState.loginSuccess());
           },

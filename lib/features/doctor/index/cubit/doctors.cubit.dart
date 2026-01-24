@@ -1,4 +1,5 @@
 import 'dart:developer';
+
 import 'package:diagno_bot/core/database/drift_db.dart';
 import 'package:diagno_bot/core/helpers/networkHelper.dart';
 import 'package:diagno_bot/core/model/doctor.model.dart';
@@ -21,13 +22,16 @@ class DoctorsCubit extends Cubit<DoctorsState> {
     if (!isClosed) {
       emit(DoctorsState.loading());
     }
+
     await loadLocalData();
+    if (isClosed) return;
     await loadOnlineData();
     specialty = null;
   }
 
   Future<void> loadLocalData() async {
     try {
+      if (isClosed) return;
       final results = await Future.wait([
         db.select(db.specialties).get(),
         getDoctors(specialty: specialty),
@@ -37,21 +41,22 @@ class DoctorsCubit extends Cubit<DoctorsState> {
       if (!isClosed) {
         emit(
           DoctorsState.success(
-            doctors: doctors,
+            doctors: doctors.reversed.toList(),
             specialities: specialties,
             specialtySelected: specialty ?? "All",
           ),
         );
       }
     } catch (e) {
-      AppSnackBar.error(
-        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
-      );
+      // AppSnackBar.error(
+      //   ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+      // );
     }
   }
 
   Future<void> loadOnlineData() async {
     try {
+      if (isClosed) return;
       bool isConnected = await NetworkHelper.isConnected();
       if (isConnected) {
         await Future.wait([fetchDoctors()]);
@@ -60,28 +65,32 @@ class DoctorsCubit extends Cubit<DoctorsState> {
           ErrorMessages.instance.fromExceptionType(ExceptionTypes.connection),
         );
       }
+      if (isClosed) return;
       await loadLocalData();
     } catch (e) {
-      AppSnackBar.error(
-        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
-      );
+      // AppSnackBar.error(
+      //   ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+      // );
     }
   }
 
   fillterDoctorBySpecialtyOrName(String? specialty, String? name) async {
+    if (isClosed) return;
     final filteredDoctors = await getDoctors(specialty: specialty, name: name);
-    state.mapOrNull(
-      success: (state) {
-        if (!isClosed) {
-          emit(
-            state.copyWith(
-              doctors: filteredDoctors,
-              specialtySelected: specialty ?? 'All',
-            ),
-          );
-        }
-      },
-    );
+    if (!isClosed) {
+      state.mapOrNull(
+        success: (state) {
+          if (!isClosed) {
+            emit(
+              state.copyWith(
+                doctors: filteredDoctors,
+                specialtySelected: specialty ?? 'All',
+              ),
+            );
+          }
+        },
+      );
+    }
   }
   // ******************************************Api************************************************************
 
@@ -95,12 +104,13 @@ class DoctorsCubit extends Cubit<DoctorsState> {
             await insertSpecialties(res.data['results']);
           }
         } catch (ex) {
-          AppSnackBar.error(
-            ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
-          );
+          // AppSnackBar.error(
+          //   ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+          // );
         }
       },
       onError: (_, statsCode) {
+        log(statsCode.toString());
         AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statsCode));
       },
     );
@@ -116,9 +126,9 @@ class DoctorsCubit extends Cubit<DoctorsState> {
             await insertDoctorWithUser(res.data['results']);
           }
         } catch (ex) {
-          AppSnackBar.error(
-            ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
-          );
+          // AppSnackBar.error(
+          //   ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+          // );
         }
       },
       onError: (_, statsCode) {
