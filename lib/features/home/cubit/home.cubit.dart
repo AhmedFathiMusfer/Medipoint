@@ -235,6 +235,8 @@ class HomeCubit extends Cubit<HomeState> {
               ...review,
               'doctorId': review['doctor'],
               'patientId': review['patient']['user']['id'],
+              'patientName': review['patient']['user']['full_name'],
+              'patientImage': review['patient']['user']['image'],
               'createdAt': review['created_at'],
               'updatedAt': review['updated_at'],
             });

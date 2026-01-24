@@ -49,7 +49,9 @@ class CommentCard extends StatelessWidget {
               // User Avatar
               CircleAvatar(
                 radius: 16.r,
-                backgroundColor: ColorManager.primaryColor.withOpacity(0.1),
+                backgroundColor: ColorManager.primaryColor.withValues(
+                  alpha: 0.1,
+                ),
                 child: Icon(
                   Icons.person,
                   size: 18.sp,
@@ -62,7 +64,7 @@ class CommentCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      comment.content,
+                      comment.userName,
                       style: TextStyle(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w300,
@@ -151,15 +153,15 @@ class CommentCard extends StatelessWidget {
                 ),
             ],
           ),
-          // SizedBox(height: 8.h),
-          // Text(
-          //   comment.content,
-          //   style: TextStyle(
-          //     fontSize: 13.sp,
-          //     color: Colors.grey.shade700,
-          //     height: 1.4,
-          //   ),
-          // ),
+          SizedBox(height: 8.h),
+          Text(
+            comment.content,
+            style: TextStyle(
+              fontSize: 13.sp,
+              color: Colors.grey.shade700,
+              height: 1.4,
+            ),
+          ),
         ],
       ),
     );

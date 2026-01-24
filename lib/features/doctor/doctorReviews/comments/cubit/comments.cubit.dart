@@ -94,8 +94,11 @@ class CommentsCubit extends Cubit<CommentsState> {
               Comment.fromJson({
                 ...res.data,
                 'reviewId': res.data['review'],
-                'userId': res.data['user'],
+                'userId': res.data['user']['id'],
+                'userName': res.data['user']['full_name'],
+                'userImage': res.data['user']['image'],
                 'type': CommentTypeConverter().fromSql(res.data['type']),
+
                 'createdAt': res.data['created_at'],
                 'updatedAt': res.data['updated_at'],
               }),
@@ -132,7 +135,9 @@ class CommentsCubit extends Cubit<CommentsState> {
           return Comment.fromJson({
             ...c,
             'reviewId': c['review'],
-            'userId': c['user'],
+            'userId': c['user']['id'],
+            'userName': c['user']['full_name'],
+            'userImage': c['user']['image'],
             'type': CommentTypeConverter().fromSql(c['type']),
             'createdAt': c['created_at'],
             'updatedAt': c['updated_at'],

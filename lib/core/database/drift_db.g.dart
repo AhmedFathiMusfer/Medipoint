@@ -2364,6 +2364,28 @@ class $ReviewsTable extends Reviews with TableInfo<$ReviewsTable, Review> {
       'REFERENCES patients (user_id)',
     ),
   );
+  static const VerificationMeta _patientNameMeta = const VerificationMeta(
+    'patientName',
+  );
+  @override
+  late final GeneratedColumn<String> patientName = GeneratedColumn<String>(
+    'patient_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _patientImageMeta = const VerificationMeta(
+    'patientImage',
+  );
+  @override
+  late final GeneratedColumn<String> patientImage = GeneratedColumn<String>(
+    'patient_image',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _ratingMeta = const VerificationMeta('rating');
   @override
   late final GeneratedColumn<int> rating = GeneratedColumn<int>(
@@ -2424,6 +2446,8 @@ class $ReviewsTable extends Reviews with TableInfo<$ReviewsTable, Review> {
   List<GeneratedColumn> get $columns => [
     id,
     patientId,
+    patientName,
+    patientImage,
     rating,
     content,
     doctorId,
@@ -2452,6 +2476,26 @@ class $ReviewsTable extends Reviews with TableInfo<$ReviewsTable, Review> {
       );
     } else if (isInserting) {
       context.missing(_patientIdMeta);
+    }
+    if (data.containsKey('patient_name')) {
+      context.handle(
+        _patientNameMeta,
+        patientName.isAcceptableOrUnknown(
+          data['patient_name']!,
+          _patientNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_patientNameMeta);
+    }
+    if (data.containsKey('patient_image')) {
+      context.handle(
+        _patientImageMeta,
+        patientImage.isAcceptableOrUnknown(
+          data['patient_image']!,
+          _patientImageMeta,
+        ),
+      );
     }
     if (data.containsKey('rating')) {
       context.handle(
@@ -2508,6 +2552,15 @@ class $ReviewsTable extends Reviews with TableInfo<$ReviewsTable, Review> {
             DriftSqlType.string,
             data['${effectivePrefix}patient_id'],
           )!,
+      patientName:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}patient_name'],
+          )!,
+      patientImage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}patient_image'],
+      ),
       rating:
           attachedDatabase.typeMapping.read(
             DriftSqlType.int,
@@ -2543,6 +2596,8 @@ class $ReviewsTable extends Reviews with TableInfo<$ReviewsTable, Review> {
 class Review extends DataClass implements Insertable<Review> {
   final int id;
   final String patientId;
+  final String patientName;
+  final String? patientImage;
   final int rating;
   final String? content;
   final String? doctorId;
@@ -2551,6 +2606,8 @@ class Review extends DataClass implements Insertable<Review> {
   const Review({
     required this.id,
     required this.patientId,
+    required this.patientName,
+    this.patientImage,
     required this.rating,
     this.content,
     this.doctorId,
@@ -2562,6 +2619,10 @@ class Review extends DataClass implements Insertable<Review> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['patient_id'] = Variable<String>(patientId);
+    map['patient_name'] = Variable<String>(patientName);
+    if (!nullToAbsent || patientImage != null) {
+      map['patient_image'] = Variable<String>(patientImage);
+    }
     map['rating'] = Variable<int>(rating);
     if (!nullToAbsent || content != null) {
       map['content'] = Variable<String>(content);
@@ -2578,6 +2639,11 @@ class Review extends DataClass implements Insertable<Review> {
     return ReviewsCompanion(
       id: Value(id),
       patientId: Value(patientId),
+      patientName: Value(patientName),
+      patientImage:
+          patientImage == null && nullToAbsent
+              ? const Value.absent()
+              : Value(patientImage),
       rating: Value(rating),
       content:
           content == null && nullToAbsent
@@ -2600,6 +2666,8 @@ class Review extends DataClass implements Insertable<Review> {
     return Review(
       id: serializer.fromJson<int>(json['id']),
       patientId: serializer.fromJson<String>(json['patientId']),
+      patientName: serializer.fromJson<String>(json['patientName']),
+      patientImage: serializer.fromJson<String?>(json['patientImage']),
       rating: serializer.fromJson<int>(json['rating']),
       content: serializer.fromJson<String?>(json['content']),
       doctorId: serializer.fromJson<String?>(json['doctorId']),
@@ -2613,6 +2681,8 @@ class Review extends DataClass implements Insertable<Review> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'patientId': serializer.toJson<String>(patientId),
+      'patientName': serializer.toJson<String>(patientName),
+      'patientImage': serializer.toJson<String?>(patientImage),
       'rating': serializer.toJson<int>(rating),
       'content': serializer.toJson<String?>(content),
       'doctorId': serializer.toJson<String?>(doctorId),
@@ -2624,6 +2694,8 @@ class Review extends DataClass implements Insertable<Review> {
   Review copyWith({
     int? id,
     String? patientId,
+    String? patientName,
+    Value<String?> patientImage = const Value.absent(),
     int? rating,
     Value<String?> content = const Value.absent(),
     Value<String?> doctorId = const Value.absent(),
@@ -2632,6 +2704,8 @@ class Review extends DataClass implements Insertable<Review> {
   }) => Review(
     id: id ?? this.id,
     patientId: patientId ?? this.patientId,
+    patientName: patientName ?? this.patientName,
+    patientImage: patientImage.present ? patientImage.value : this.patientImage,
     rating: rating ?? this.rating,
     content: content.present ? content.value : this.content,
     doctorId: doctorId.present ? doctorId.value : this.doctorId,
@@ -2642,6 +2716,12 @@ class Review extends DataClass implements Insertable<Review> {
     return Review(
       id: data.id.present ? data.id.value : this.id,
       patientId: data.patientId.present ? data.patientId.value : this.patientId,
+      patientName:
+          data.patientName.present ? data.patientName.value : this.patientName,
+      patientImage:
+          data.patientImage.present
+              ? data.patientImage.value
+              : this.patientImage,
       rating: data.rating.present ? data.rating.value : this.rating,
       content: data.content.present ? data.content.value : this.content,
       doctorId: data.doctorId.present ? data.doctorId.value : this.doctorId,
@@ -2655,6 +2735,8 @@ class Review extends DataClass implements Insertable<Review> {
     return (StringBuffer('Review(')
           ..write('id: $id, ')
           ..write('patientId: $patientId, ')
+          ..write('patientName: $patientName, ')
+          ..write('patientImage: $patientImage, ')
           ..write('rating: $rating, ')
           ..write('content: $content, ')
           ..write('doctorId: $doctorId, ')
@@ -2668,6 +2750,8 @@ class Review extends DataClass implements Insertable<Review> {
   int get hashCode => Object.hash(
     id,
     patientId,
+    patientName,
+    patientImage,
     rating,
     content,
     doctorId,
@@ -2680,6 +2764,8 @@ class Review extends DataClass implements Insertable<Review> {
       (other is Review &&
           other.id == this.id &&
           other.patientId == this.patientId &&
+          other.patientName == this.patientName &&
+          other.patientImage == this.patientImage &&
           other.rating == this.rating &&
           other.content == this.content &&
           other.doctorId == this.doctorId &&
@@ -2690,6 +2776,8 @@ class Review extends DataClass implements Insertable<Review> {
 class ReviewsCompanion extends UpdateCompanion<Review> {
   final Value<int> id;
   final Value<String> patientId;
+  final Value<String> patientName;
+  final Value<String?> patientImage;
   final Value<int> rating;
   final Value<String?> content;
   final Value<String?> doctorId;
@@ -2698,6 +2786,8 @@ class ReviewsCompanion extends UpdateCompanion<Review> {
   const ReviewsCompanion({
     this.id = const Value.absent(),
     this.patientId = const Value.absent(),
+    this.patientName = const Value.absent(),
+    this.patientImage = const Value.absent(),
     this.rating = const Value.absent(),
     this.content = const Value.absent(),
     this.doctorId = const Value.absent(),
@@ -2707,18 +2797,23 @@ class ReviewsCompanion extends UpdateCompanion<Review> {
   ReviewsCompanion.insert({
     this.id = const Value.absent(),
     required String patientId,
+    required String patientName,
+    this.patientImage = const Value.absent(),
     required int rating,
     this.content = const Value.absent(),
     this.doctorId = const Value.absent(),
     required String createdAt,
     required String updatedAt,
   }) : patientId = Value(patientId),
+       patientName = Value(patientName),
        rating = Value(rating),
        createdAt = Value(createdAt),
        updatedAt = Value(updatedAt);
   static Insertable<Review> custom({
     Expression<int>? id,
     Expression<String>? patientId,
+    Expression<String>? patientName,
+    Expression<String>? patientImage,
     Expression<int>? rating,
     Expression<String>? content,
     Expression<String>? doctorId,
@@ -2728,6 +2823,8 @@ class ReviewsCompanion extends UpdateCompanion<Review> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (patientId != null) 'patient_id': patientId,
+      if (patientName != null) 'patient_name': patientName,
+      if (patientImage != null) 'patient_image': patientImage,
       if (rating != null) 'rating': rating,
       if (content != null) 'content': content,
       if (doctorId != null) 'doctor_id': doctorId,
@@ -2739,6 +2836,8 @@ class ReviewsCompanion extends UpdateCompanion<Review> {
   ReviewsCompanion copyWith({
     Value<int>? id,
     Value<String>? patientId,
+    Value<String>? patientName,
+    Value<String?>? patientImage,
     Value<int>? rating,
     Value<String?>? content,
     Value<String?>? doctorId,
@@ -2748,6 +2847,8 @@ class ReviewsCompanion extends UpdateCompanion<Review> {
     return ReviewsCompanion(
       id: id ?? this.id,
       patientId: patientId ?? this.patientId,
+      patientName: patientName ?? this.patientName,
+      patientImage: patientImage ?? this.patientImage,
       rating: rating ?? this.rating,
       content: content ?? this.content,
       doctorId: doctorId ?? this.doctorId,
@@ -2764,6 +2865,12 @@ class ReviewsCompanion extends UpdateCompanion<Review> {
     }
     if (patientId.present) {
       map['patient_id'] = Variable<String>(patientId.value);
+    }
+    if (patientName.present) {
+      map['patient_name'] = Variable<String>(patientName.value);
+    }
+    if (patientImage.present) {
+      map['patient_image'] = Variable<String>(patientImage.value);
     }
     if (rating.present) {
       map['rating'] = Variable<int>(rating.value);
@@ -2788,6 +2895,8 @@ class ReviewsCompanion extends UpdateCompanion<Review> {
     return (StringBuffer('ReviewsCompanion(')
           ..write('id: $id, ')
           ..write('patientId: $patientId, ')
+          ..write('patientName: $patientName, ')
+          ..write('patientImage: $patientImage, ')
           ..write('rating: $rating, ')
           ..write('content: $content, ')
           ..write('doctorId: $doctorId, ')
@@ -2851,6 +2960,34 @@ class $CommentsTable extends Comments with TableInfo<$CommentsTable, Comment> {
       'REFERENCES users (id)',
     ),
   );
+  static const VerificationMeta _userNameMeta = const VerificationMeta(
+    'userName',
+  );
+  @override
+  late final GeneratedColumn<String> userName = GeneratedColumn<String>(
+    'user_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES users (id)',
+    ),
+  );
+  static const VerificationMeta _userImageMeta = const VerificationMeta(
+    'userImage',
+  );
+  @override
+  late final GeneratedColumn<String> userImage = GeneratedColumn<String>(
+    'user_image',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES users (id)',
+    ),
+  );
   static const VerificationMeta _contentMeta = const VerificationMeta(
     'content',
   );
@@ -2891,6 +3028,8 @@ class $CommentsTable extends Comments with TableInfo<$CommentsTable, Comment> {
     reviewId,
     type,
     userId,
+    userName,
+    userImage,
     content,
     createdAt,
     updatedAt,
@@ -2925,6 +3064,22 @@ class $CommentsTable extends Comments with TableInfo<$CommentsTable, Comment> {
       );
     } else if (isInserting) {
       context.missing(_userIdMeta);
+    }
+    if (data.containsKey('user_name')) {
+      context.handle(
+        _userNameMeta,
+        userName.isAcceptableOrUnknown(data['user_name']!, _userNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_userNameMeta);
+    }
+    if (data.containsKey('user_image')) {
+      context.handle(
+        _userImageMeta,
+        userImage.isAcceptableOrUnknown(data['user_image']!, _userImageMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_userImageMeta);
     }
     if (data.containsKey('content')) {
       context.handle(
@@ -2980,6 +3135,16 @@ class $CommentsTable extends Comments with TableInfo<$CommentsTable, Comment> {
             DriftSqlType.string,
             data['${effectivePrefix}user_id'],
           )!,
+      userName:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}user_name'],
+          )!,
+      userImage:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}user_image'],
+          )!,
       content:
           attachedDatabase.typeMapping.read(
             DriftSqlType.string,
@@ -3012,6 +3177,8 @@ class Comment extends DataClass implements Insertable<Comment> {
   final int reviewId;
   final CommentType type;
   final String userId;
+  final String userName;
+  final String userImage;
   final String content;
   final String createdAt;
   final String updatedAt;
@@ -3020,6 +3187,8 @@ class Comment extends DataClass implements Insertable<Comment> {
     required this.reviewId,
     required this.type,
     required this.userId,
+    required this.userName,
+    required this.userImage,
     required this.content,
     required this.createdAt,
     required this.updatedAt,
@@ -3033,6 +3202,8 @@ class Comment extends DataClass implements Insertable<Comment> {
       map['type'] = Variable<String>($CommentsTable.$convertertype.toSql(type));
     }
     map['user_id'] = Variable<String>(userId);
+    map['user_name'] = Variable<String>(userName);
+    map['user_image'] = Variable<String>(userImage);
     map['content'] = Variable<String>(content);
     map['created_at'] = Variable<String>(createdAt);
     map['updated_at'] = Variable<String>(updatedAt);
@@ -3045,6 +3216,8 @@ class Comment extends DataClass implements Insertable<Comment> {
       reviewId: Value(reviewId),
       type: Value(type),
       userId: Value(userId),
+      userName: Value(userName),
+      userImage: Value(userImage),
       content: Value(content),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
@@ -3061,6 +3234,8 @@ class Comment extends DataClass implements Insertable<Comment> {
       reviewId: serializer.fromJson<int>(json['reviewId']),
       type: serializer.fromJson<CommentType>(json['type']),
       userId: serializer.fromJson<String>(json['userId']),
+      userName: serializer.fromJson<String>(json['userName']),
+      userImage: serializer.fromJson<String>(json['userImage']),
       content: serializer.fromJson<String>(json['content']),
       createdAt: serializer.fromJson<String>(json['createdAt']),
       updatedAt: serializer.fromJson<String>(json['updatedAt']),
@@ -3074,6 +3249,8 @@ class Comment extends DataClass implements Insertable<Comment> {
       'reviewId': serializer.toJson<int>(reviewId),
       'type': serializer.toJson<CommentType>(type),
       'userId': serializer.toJson<String>(userId),
+      'userName': serializer.toJson<String>(userName),
+      'userImage': serializer.toJson<String>(userImage),
       'content': serializer.toJson<String>(content),
       'createdAt': serializer.toJson<String>(createdAt),
       'updatedAt': serializer.toJson<String>(updatedAt),
@@ -3085,6 +3262,8 @@ class Comment extends DataClass implements Insertable<Comment> {
     int? reviewId,
     CommentType? type,
     String? userId,
+    String? userName,
+    String? userImage,
     String? content,
     String? createdAt,
     String? updatedAt,
@@ -3093,6 +3272,8 @@ class Comment extends DataClass implements Insertable<Comment> {
     reviewId: reviewId ?? this.reviewId,
     type: type ?? this.type,
     userId: userId ?? this.userId,
+    userName: userName ?? this.userName,
+    userImage: userImage ?? this.userImage,
     content: content ?? this.content,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -3103,6 +3284,8 @@ class Comment extends DataClass implements Insertable<Comment> {
       reviewId: data.reviewId.present ? data.reviewId.value : this.reviewId,
       type: data.type.present ? data.type.value : this.type,
       userId: data.userId.present ? data.userId.value : this.userId,
+      userName: data.userName.present ? data.userName.value : this.userName,
+      userImage: data.userImage.present ? data.userImage.value : this.userImage,
       content: data.content.present ? data.content.value : this.content,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
@@ -3116,6 +3299,8 @@ class Comment extends DataClass implements Insertable<Comment> {
           ..write('reviewId: $reviewId, ')
           ..write('type: $type, ')
           ..write('userId: $userId, ')
+          ..write('userName: $userName, ')
+          ..write('userImage: $userImage, ')
           ..write('content: $content, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -3124,8 +3309,17 @@ class Comment extends DataClass implements Insertable<Comment> {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, reviewId, type, userId, content, createdAt, updatedAt);
+  int get hashCode => Object.hash(
+    id,
+    reviewId,
+    type,
+    userId,
+    userName,
+    userImage,
+    content,
+    createdAt,
+    updatedAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3134,6 +3328,8 @@ class Comment extends DataClass implements Insertable<Comment> {
           other.reviewId == this.reviewId &&
           other.type == this.type &&
           other.userId == this.userId &&
+          other.userName == this.userName &&
+          other.userImage == this.userImage &&
           other.content == this.content &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -3144,6 +3340,8 @@ class CommentsCompanion extends UpdateCompanion<Comment> {
   final Value<int> reviewId;
   final Value<CommentType> type;
   final Value<String> userId;
+  final Value<String> userName;
+  final Value<String> userImage;
   final Value<String> content;
   final Value<String> createdAt;
   final Value<String> updatedAt;
@@ -3152,6 +3350,8 @@ class CommentsCompanion extends UpdateCompanion<Comment> {
     this.reviewId = const Value.absent(),
     this.type = const Value.absent(),
     this.userId = const Value.absent(),
+    this.userName = const Value.absent(),
+    this.userImage = const Value.absent(),
     this.content = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -3161,12 +3361,16 @@ class CommentsCompanion extends UpdateCompanion<Comment> {
     required int reviewId,
     required CommentType type,
     required String userId,
+    required String userName,
+    required String userImage,
     required String content,
     required String createdAt,
     required String updatedAt,
   }) : reviewId = Value(reviewId),
        type = Value(type),
        userId = Value(userId),
+       userName = Value(userName),
+       userImage = Value(userImage),
        content = Value(content),
        createdAt = Value(createdAt),
        updatedAt = Value(updatedAt);
@@ -3175,6 +3379,8 @@ class CommentsCompanion extends UpdateCompanion<Comment> {
     Expression<int>? reviewId,
     Expression<String>? type,
     Expression<String>? userId,
+    Expression<String>? userName,
+    Expression<String>? userImage,
     Expression<String>? content,
     Expression<String>? createdAt,
     Expression<String>? updatedAt,
@@ -3184,6 +3390,8 @@ class CommentsCompanion extends UpdateCompanion<Comment> {
       if (reviewId != null) 'review_id': reviewId,
       if (type != null) 'type': type,
       if (userId != null) 'user_id': userId,
+      if (userName != null) 'user_name': userName,
+      if (userImage != null) 'user_image': userImage,
       if (content != null) 'content': content,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -3195,6 +3403,8 @@ class CommentsCompanion extends UpdateCompanion<Comment> {
     Value<int>? reviewId,
     Value<CommentType>? type,
     Value<String>? userId,
+    Value<String>? userName,
+    Value<String>? userImage,
     Value<String>? content,
     Value<String>? createdAt,
     Value<String>? updatedAt,
@@ -3204,6 +3414,8 @@ class CommentsCompanion extends UpdateCompanion<Comment> {
       reviewId: reviewId ?? this.reviewId,
       type: type ?? this.type,
       userId: userId ?? this.userId,
+      userName: userName ?? this.userName,
+      userImage: userImage ?? this.userImage,
       content: content ?? this.content,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -3227,6 +3439,12 @@ class CommentsCompanion extends UpdateCompanion<Comment> {
     if (userId.present) {
       map['user_id'] = Variable<String>(userId.value);
     }
+    if (userName.present) {
+      map['user_name'] = Variable<String>(userName.value);
+    }
+    if (userImage.present) {
+      map['user_image'] = Variable<String>(userImage.value);
+    }
     if (content.present) {
       map['content'] = Variable<String>(content.value);
     }
@@ -3246,6 +3464,8 @@ class CommentsCompanion extends UpdateCompanion<Comment> {
           ..write('reviewId: $reviewId, ')
           ..write('type: $type, ')
           ..write('userId: $userId, ')
+          ..write('userName: $userName, ')
+          ..write('userImage: $userImage, ')
           ..write('content: $content, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -4752,25 +4972,6 @@ final class $$UsersTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
-
-  static MultiTypedResultKey<$CommentsTable, List<Comment>> _commentsRefsTable(
-    _$AppDatabase db,
-  ) => MultiTypedResultKey.fromTable(
-    db.comments,
-    aliasName: $_aliasNameGenerator(db.users.id, db.comments.userId),
-  );
-
-  $$CommentsTableProcessedTableManager get commentsRefs {
-    final manager = $$CommentsTableTableManager(
-      $_db,
-      $_db.comments,
-    ).filter((f) => f.userId.id.sqlEquals($_itemColumn<String>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_commentsRefsTable($_db));
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
 }
 
 class $$UsersTableFilterComposer extends Composer<_$AppDatabase, $UsersTable> {
@@ -4857,31 +5058,6 @@ class $$UsersTableFilterComposer extends Composer<_$AppDatabase, $UsersTable> {
           }) => $$PatientsTableFilterComposer(
             $db: $db,
             $table: $db.patients,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
-  Expression<bool> commentsRefs(
-    Expression<bool> Function($$CommentsTableFilterComposer f) f,
-  ) {
-    final $$CommentsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.comments,
-      getReferencedColumn: (t) => t.userId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$CommentsTableFilterComposer(
-            $db: $db,
-            $table: $db.comments,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -5016,31 +5192,6 @@ class $$UsersTableAnnotationComposer
     );
     return f(composer);
   }
-
-  Expression<T> commentsRefs<T extends Object>(
-    Expression<T> Function($$CommentsTableAnnotationComposer a) f,
-  ) {
-    final $$CommentsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.comments,
-      getReferencedColumn: (t) => t.userId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$CommentsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.comments,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
 }
 
 class $$UsersTableTableManager
@@ -5056,11 +5207,7 @@ class $$UsersTableTableManager
           $$UsersTableUpdateCompanionBuilder,
           (User, $$UsersTableReferences),
           User,
-          PrefetchHooks Function({
-            bool doctorsRefs,
-            bool patientsRefs,
-            bool commentsRefs,
-          })
+          PrefetchHooks Function({bool doctorsRefs, bool patientsRefs})
         > {
   $$UsersTableTableManager(_$AppDatabase db, $UsersTable table)
     : super(
@@ -5123,17 +5270,12 @@ class $$UsersTableTableManager
                         ),
                       )
                       .toList(),
-          prefetchHooksCallback: ({
-            doctorsRefs = false,
-            patientsRefs = false,
-            commentsRefs = false,
-          }) {
+          prefetchHooksCallback: ({doctorsRefs = false, patientsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
                 if (doctorsRefs) db.doctors,
                 if (patientsRefs) db.patients,
-                if (commentsRefs) db.comments,
               ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
@@ -5169,23 +5311,6 @@ class $$UsersTableTableManager
                               referencedItems.where((e) => e.userId == item.id),
                       typedResults: items,
                     ),
-                  if (commentsRefs)
-                    await $_getPrefetchedData<User, $UsersTable, Comment>(
-                      currentTable: table,
-                      referencedTable: $$UsersTableReferences
-                          ._commentsRefsTable(db),
-                      managerFromTypedResult:
-                          (p0) =>
-                              $$UsersTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).commentsRefs,
-                      referencedItemsForCurrentItem:
-                          (item, referencedItems) =>
-                              referencedItems.where((e) => e.userId == item.id),
-                      typedResults: items,
-                    ),
                 ];
               },
             );
@@ -5206,11 +5331,7 @@ typedef $$UsersTableProcessedTableManager =
       $$UsersTableUpdateCompanionBuilder,
       (User, $$UsersTableReferences),
       User,
-      PrefetchHooks Function({
-        bool doctorsRefs,
-        bool patientsRefs,
-        bool commentsRefs,
-      })
+      PrefetchHooks Function({bool doctorsRefs, bool patientsRefs})
     >;
 typedef $$DoctorsTableCreateCompanionBuilder =
     DoctorsCompanion Function({
@@ -6557,6 +6678,8 @@ typedef $$ReviewsTableCreateCompanionBuilder =
     ReviewsCompanion Function({
       Value<int> id,
       required String patientId,
+      required String patientName,
+      Value<String?> patientImage,
       required int rating,
       Value<String?> content,
       Value<String?> doctorId,
@@ -6567,6 +6690,8 @@ typedef $$ReviewsTableUpdateCompanionBuilder =
     ReviewsCompanion Function({
       Value<int> id,
       Value<String> patientId,
+      Value<String> patientName,
+      Value<String?> patientImage,
       Value<int> rating,
       Value<String?> content,
       Value<String?> doctorId,
@@ -6609,6 +6734,16 @@ class $$ReviewsTableFilterComposer
   });
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get patientName => $composableBuilder(
+    column: $table.patientName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get patientImage => $composableBuilder(
+    column: $table.patientImage,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -6672,6 +6807,16 @@ class $$ReviewsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get patientName => $composableBuilder(
+    column: $table.patientName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get patientImage => $composableBuilder(
+    column: $table.patientImage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get rating => $composableBuilder(
     column: $table.rating,
     builder: (column) => ColumnOrderings(column),
@@ -6704,6 +6849,16 @@ class $$ReviewsTableAnnotationComposer
   });
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get patientName => $composableBuilder(
+    column: $table.patientName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get patientImage => $composableBuilder(
+    column: $table.patientImage,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get rating =>
       $composableBuilder(column: $table.rating, builder: (column) => column);
@@ -6773,6 +6928,8 @@ class $$ReviewsTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<String> patientId = const Value.absent(),
+                Value<String> patientName = const Value.absent(),
+                Value<String?> patientImage = const Value.absent(),
                 Value<int> rating = const Value.absent(),
                 Value<String?> content = const Value.absent(),
                 Value<String?> doctorId = const Value.absent(),
@@ -6781,6 +6938,8 @@ class $$ReviewsTableTableManager
               }) => ReviewsCompanion(
                 id: id,
                 patientId: patientId,
+                patientName: patientName,
+                patientImage: patientImage,
                 rating: rating,
                 content: content,
                 doctorId: doctorId,
@@ -6791,6 +6950,8 @@ class $$ReviewsTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 required String patientId,
+                required String patientName,
+                Value<String?> patientImage = const Value.absent(),
                 required int rating,
                 Value<String?> content = const Value.absent(),
                 Value<String?> doctorId = const Value.absent(),
@@ -6799,6 +6960,8 @@ class $$ReviewsTableTableManager
               }) => ReviewsCompanion.insert(
                 id: id,
                 patientId: patientId,
+                patientName: patientName,
+                patientImage: patientImage,
                 rating: rating,
                 content: content,
                 doctorId: doctorId,
@@ -6868,6 +7031,8 @@ typedef $$CommentsTableCreateCompanionBuilder =
       required int reviewId,
       required CommentType type,
       required String userId,
+      required String userName,
+      required String userImage,
       required String content,
       required String createdAt,
       required String updatedAt,
@@ -6878,6 +7043,8 @@ typedef $$CommentsTableUpdateCompanionBuilder =
       Value<int> reviewId,
       Value<CommentType> type,
       Value<String> userId,
+      Value<String> userName,
+      Value<String> userImage,
       Value<String> content,
       Value<String> createdAt,
       Value<String> updatedAt,
@@ -6916,6 +7083,42 @@ final class $$CommentsTableReferences
       $_db.users,
     ).filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_userIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $UsersTable _userNameTable(_$AppDatabase db) => db.users.createAlias(
+    $_aliasNameGenerator(db.comments.userName, db.users.id),
+  );
+
+  $$UsersTableProcessedTableManager get userName {
+    final $_column = $_itemColumn<String>('user_name')!;
+
+    final manager = $$UsersTableTableManager(
+      $_db,
+      $_db.users,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_userNameTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $UsersTable _userImageTable(_$AppDatabase db) => db.users.createAlias(
+    $_aliasNameGenerator(db.comments.userImage, db.users.id),
+  );
+
+  $$UsersTableProcessedTableManager get userImage {
+    final $_column = $_itemColumn<String>('user_image')!;
+
+    final manager = $$UsersTableTableManager(
+      $_db,
+      $_db.users,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_userImageTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: [item]),
@@ -6985,6 +7188,52 @@ class $$CommentsTableFilterComposer
     final $$UsersTableFilterComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.userId,
+      referencedTable: $db.users,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UsersTableFilterComposer(
+            $db: $db,
+            $table: $db.users,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$UsersTableFilterComposer get userName {
+    final $$UsersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.userName,
+      referencedTable: $db.users,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UsersTableFilterComposer(
+            $db: $db,
+            $table: $db.users,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$UsersTableFilterComposer get userImage {
+    final $$UsersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.userImage,
       referencedTable: $db.users,
       getReferencedColumn: (t) => t.id,
       builder:
@@ -7084,6 +7333,52 @@ class $$CommentsTableOrderingComposer
     );
     return composer;
   }
+
+  $$UsersTableOrderingComposer get userName {
+    final $$UsersTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.userName,
+      referencedTable: $db.users,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UsersTableOrderingComposer(
+            $db: $db,
+            $table: $db.users,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$UsersTableOrderingComposer get userImage {
+    final $$UsersTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.userImage,
+      referencedTable: $db.users,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UsersTableOrderingComposer(
+            $db: $db,
+            $table: $db.users,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$CommentsTableAnnotationComposer
@@ -7155,6 +7450,52 @@ class $$CommentsTableAnnotationComposer
     );
     return composer;
   }
+
+  $$UsersTableAnnotationComposer get userName {
+    final $$UsersTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.userName,
+      referencedTable: $db.users,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UsersTableAnnotationComposer(
+            $db: $db,
+            $table: $db.users,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$UsersTableAnnotationComposer get userImage {
+    final $$UsersTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.userImage,
+      referencedTable: $db.users,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UsersTableAnnotationComposer(
+            $db: $db,
+            $table: $db.users,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$CommentsTableTableManager
@@ -7170,7 +7511,12 @@ class $$CommentsTableTableManager
           $$CommentsTableUpdateCompanionBuilder,
           (Comment, $$CommentsTableReferences),
           Comment,
-          PrefetchHooks Function({bool reviewId, bool userId})
+          PrefetchHooks Function({
+            bool reviewId,
+            bool userId,
+            bool userName,
+            bool userImage,
+          })
         > {
   $$CommentsTableTableManager(_$AppDatabase db, $CommentsTable table)
     : super(
@@ -7189,6 +7535,8 @@ class $$CommentsTableTableManager
                 Value<int> reviewId = const Value.absent(),
                 Value<CommentType> type = const Value.absent(),
                 Value<String> userId = const Value.absent(),
+                Value<String> userName = const Value.absent(),
+                Value<String> userImage = const Value.absent(),
                 Value<String> content = const Value.absent(),
                 Value<String> createdAt = const Value.absent(),
                 Value<String> updatedAt = const Value.absent(),
@@ -7197,6 +7545,8 @@ class $$CommentsTableTableManager
                 reviewId: reviewId,
                 type: type,
                 userId: userId,
+                userName: userName,
+                userImage: userImage,
                 content: content,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -7207,6 +7557,8 @@ class $$CommentsTableTableManager
                 required int reviewId,
                 required CommentType type,
                 required String userId,
+                required String userName,
+                required String userImage,
                 required String content,
                 required String createdAt,
                 required String updatedAt,
@@ -7215,6 +7567,8 @@ class $$CommentsTableTableManager
                 reviewId: reviewId,
                 type: type,
                 userId: userId,
+                userName: userName,
+                userImage: userImage,
                 content: content,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -7229,7 +7583,12 @@ class $$CommentsTableTableManager
                         ),
                       )
                       .toList(),
-          prefetchHooksCallback: ({reviewId = false, userId = false}) {
+          prefetchHooksCallback: ({
+            reviewId = false,
+            userId = false,
+            userName = false,
+            userImage = false,
+          }) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
@@ -7272,6 +7631,32 @@ class $$CommentsTableTableManager
                           )
                           as T;
                 }
+                if (userName) {
+                  state =
+                      state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.userName,
+                            referencedTable: $$CommentsTableReferences
+                                ._userNameTable(db),
+                            referencedColumn:
+                                $$CommentsTableReferences._userNameTable(db).id,
+                          )
+                          as T;
+                }
+                if (userImage) {
+                  state =
+                      state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.userImage,
+                            referencedTable: $$CommentsTableReferences
+                                ._userImageTable(db),
+                            referencedColumn:
+                                $$CommentsTableReferences
+                                    ._userImageTable(db)
+                                    .id,
+                          )
+                          as T;
+                }
 
                 return state;
               },
@@ -7296,7 +7681,12 @@ typedef $$CommentsTableProcessedTableManager =
       $$CommentsTableUpdateCompanionBuilder,
       (Comment, $$CommentsTableReferences),
       Comment,
-      PrefetchHooks Function({bool reviewId, bool userId})
+      PrefetchHooks Function({
+        bool reviewId,
+        bool userId,
+        bool userName,
+        bool userImage,
+      })
     >;
 typedef $$AppointmentsTableCreateCompanionBuilder =
     AppointmentsCompanion Function({

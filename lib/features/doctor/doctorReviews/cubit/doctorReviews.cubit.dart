@@ -164,7 +164,9 @@ class DoctorReviewsCubit extends Cubit<DoctorReviewsState> {
           Review.fromJson({
             ...review,
             'doctorId': review['doctor'],
-            'patientId': review['patient'],
+            'patientId': review['patient']['user']['id'],
+            'patientName': review['patient']['user']['full_name'],
+            'patientImage': review['patient']['user']['image'],
             'createdAt': review['created_at'],
             'updatedAt': review['updated_at'],
           }),
@@ -180,7 +182,9 @@ class DoctorReviewsCubit extends Cubit<DoctorReviewsState> {
           return Review.fromJson({
             ...review,
             'doctorId': review['doctor'],
-            'patientId': review['patient'],
+            'patientId': review['patient']['user']['id'],
+            'patientName': review['patient']['user']['full_name'],
+            'patientImage': review['patient']['user']['image'],
             'createdAt': review['created_at'],
             'updatedAt': review['updated_at'],
           });

@@ -62,7 +62,7 @@ class ReviewCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      isMyReview ? "you_label".tr() : "patient_label".tr(),
+                      isMyReview ? "you_label".tr() : review.patientName,
                       style: TextStyle(
                         fontSize: 15.sp,
                         fontWeight: FontWeight.bold,
