@@ -28,6 +28,7 @@ class DocApp extends StatelessWidget {
           title: 'app_name'.tr(),
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
+            fontFamily: 'ArbFONTS',
             primaryColor: ColorManager.primaryColor,
             scaffoldBackgroundColor: Colors.white,
           ),

@@ -115,6 +115,11 @@ flutter:
     - assets/image/
     - assets/icons/
     - assets/translations/
+  fonts:
+    - family: ArbFONTS
+      fonts:
+        - asset: assets/fonts/ArbFonts/ArbFONTS-t2216.otf
+        - asset: assets/fonts/ArbFonts/ArbFONTS-IBMPlexArabic-Text.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
