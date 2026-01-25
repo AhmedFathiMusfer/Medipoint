@@ -242,6 +242,7 @@ class DoctorDetailsCubit extends Cubit<DoctorDetailsState> {
           experience: Value(doctorJson['experience']),
           education: Value(doctorJson['education']),
           specialty: Value(doctorJson['specialty']),
+          specialtyAr: Value(doctorJson['specialty_ar']),
           about: Value(doctorJson['about']),
           addressLine1: Value(doctorJson['address_line1']),
           addressLine2: Value(doctorJson['address_line2']),

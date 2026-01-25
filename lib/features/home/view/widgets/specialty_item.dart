@@ -11,8 +11,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class SpecialtyItem extends StatelessWidget {
   final String icon;
   final String title;
+  final String specialty;
 
-  const SpecialtyItem({super.key, required this.icon, required this.title});
+  const SpecialtyItem({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.specialty,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +26,7 @@ class SpecialtyItem extends StatelessWidget {
       onTap: () {
         context.pushNamedAndRemoveUntil(
           Routers.doctorsView,
-          arguments: title,
+          arguments: specialty,
           predicate: (root) => false,
         );
       },

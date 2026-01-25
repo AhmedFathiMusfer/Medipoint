@@ -30,6 +30,7 @@ class Doctors extends Table {
   TextColumn get experience => text().withLength(min: 1, max: 30)();
   TextColumn get education => text().withLength(min: 1, max: 100)();
   TextColumn get specialty => text()();
+  TextColumn get specialtyAr => text().nullable()();
   TextColumn get about => text().nullable()();
   TextColumn get addressLine1 => text().nullable().withLength(max: 255)();
   TextColumn get addressLine2 => text().nullable().withLength(max: 255)();

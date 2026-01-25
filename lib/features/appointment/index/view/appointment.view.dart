@@ -308,7 +308,10 @@ class _AppointmentViewState extends State<AppointmentView>
                       ),
                     ),
                     Text(
-                      appointment.doctor.specialty,
+                      context.locale.languageCode == 'ar'
+                          ? appointment.doctor.specialtyAr ??
+                              appointment.doctor.specialty
+                          : appointment.doctor.specialty,
                       style: const TextStyle(color: Colors.grey),
                     ),
                     Row(

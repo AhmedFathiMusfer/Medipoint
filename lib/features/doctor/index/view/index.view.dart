@@ -79,7 +79,10 @@ class DoctorsView extends StatelessWidget {
                                       );
                                 },
                                 child: SpecialtChip(
-                                  text: specialty.name,
+                                  text:
+                                      context.locale.languageCode == 'ar'
+                                          ? specialty.name_ar
+                                          : specialty.name,
                                   selected:
                                       state.specialtySelected == specialty.name,
                                 ),

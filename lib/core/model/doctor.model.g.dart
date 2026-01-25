@@ -18,6 +18,8 @@ DoctorModel _$DoctorModelFromJson(Map<String, dynamic> json) => DoctorModel(
   experience: json['experience'] as String,
   education: json['education'] as String,
   specialty: json['specialty'] as String,
+  specialtyAr: json['specialtyAr'] as String,
+
   about: json['about'] as String?,
   rating: (json['rating'] as num?)?.toDouble(),
   reviews: (json['reviews'] as num?)?.toInt(),
@@ -41,6 +43,7 @@ Map<String, dynamic> _$DoctorModelToJson(DoctorModel instance) =>
       'experience': instance.experience,
       'education': instance.education,
       'specialty': instance.specialty,
+      'specialtyAr': instance.specialtyAr,
       'about': instance.about,
       'reviews': instance.reviews,
       'rating': instance.rating,

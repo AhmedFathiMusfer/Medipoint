@@ -128,7 +128,11 @@ class HomeView extends StatelessWidget {
                       children: [
                         ...specialties.map(
                           (specialty) => SpecialtyItem(
-                            title: specialty.name,
+                            specialty: specialty.name,
+                            title:
+                                context.locale.languageCode == 'ar'
+                                    ? specialty.name_ar
+                                    : specialty.name,
 
                             icon: specialty.icon ?? '',
                           ),
@@ -185,7 +189,10 @@ class HomeView extends StatelessWidget {
                             fullName: doctor.fullName,
                             imageUrl: doctor.image ?? '',
                             experience: doctor.experience,
-                            specialty: doctor.specialty,
+                            specialty:
+                                context.locale.languageCode == 'ar'
+                                    ? doctor.specialtyAr ?? doctor.specialty
+                                    : doctor.specialty,
                             fees: doctor.fees,
                             id: doctor.userId,
                           ),

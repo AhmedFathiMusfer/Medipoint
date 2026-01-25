@@ -51,7 +51,11 @@ class SpecialtiesView extends StatelessWidget {
                       children: [
                         ...specialties.map(
                           (specialty) => SpecialtyItem(
-                            title: specialty.name,
+                            specialty: specialty.name,
+                            title:
+                                context.locale.languageCode == 'ar'
+                                    ? specialty.name_ar
+                                    : specialty.name,
 
                             icon: specialty.icon ?? '',
                           ),

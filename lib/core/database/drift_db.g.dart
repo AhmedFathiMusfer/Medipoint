@@ -520,6 +520,17 @@ class $DoctorsTable extends Doctors with TableInfo<$DoctorsTable, Doctor> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _specialtyArMeta = const VerificationMeta(
+    'specialtyAr',
+  );
+  @override
+  late final GeneratedColumn<String> specialtyAr = GeneratedColumn<String>(
+    'specialty_ar',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _aboutMeta = const VerificationMeta('about');
   @override
   late final GeneratedColumn<String> about = GeneratedColumn<String>(
@@ -595,6 +606,7 @@ class $DoctorsTable extends Doctors with TableInfo<$DoctorsTable, Doctor> {
     experience,
     education,
     specialty,
+    specialtyAr,
     about,
     addressLine1,
     addressLine2,
@@ -653,6 +665,15 @@ class $DoctorsTable extends Doctors with TableInfo<$DoctorsTable, Doctor> {
       );
     } else if (isInserting) {
       context.missing(_specialtyMeta);
+    }
+    if (data.containsKey('specialty_ar')) {
+      context.handle(
+        _specialtyArMeta,
+        specialtyAr.isAcceptableOrUnknown(
+          data['specialty_ar']!,
+          _specialtyArMeta,
+        ),
+      );
     }
     if (data.containsKey('about')) {
       context.handle(
@@ -727,6 +748,10 @@ class $DoctorsTable extends Doctors with TableInfo<$DoctorsTable, Doctor> {
             DriftSqlType.string,
             data['${effectivePrefix}specialty'],
           )!,
+      specialtyAr: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}specialty_ar'],
+      ),
       about: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}about'],
@@ -772,6 +797,7 @@ class Doctor extends DataClass implements Insertable<Doctor> {
   final String experience;
   final String education;
   final String specialty;
+  final String? specialtyAr;
   final String? about;
   final String? addressLine1;
   final String? addressLine2;
@@ -784,6 +810,7 @@ class Doctor extends DataClass implements Insertable<Doctor> {
     required this.experience,
     required this.education,
     required this.specialty,
+    this.specialtyAr,
     this.about,
     this.addressLine1,
     this.addressLine2,
@@ -799,6 +826,9 @@ class Doctor extends DataClass implements Insertable<Doctor> {
     map['experience'] = Variable<String>(experience);
     map['education'] = Variable<String>(education);
     map['specialty'] = Variable<String>(specialty);
+    if (!nullToAbsent || specialtyAr != null) {
+      map['specialty_ar'] = Variable<String>(specialtyAr);
+    }
     if (!nullToAbsent || about != null) {
       map['about'] = Variable<String>(about);
     }
@@ -827,6 +857,10 @@ class Doctor extends DataClass implements Insertable<Doctor> {
       experience: Value(experience),
       education: Value(education),
       specialty: Value(specialty),
+      specialtyAr:
+          specialtyAr == null && nullToAbsent
+              ? const Value.absent()
+              : Value(specialtyAr),
       about:
           about == null && nullToAbsent ? const Value.absent() : Value(about),
       addressLine1:
@@ -857,6 +891,7 @@ class Doctor extends DataClass implements Insertable<Doctor> {
       experience: serializer.fromJson<String>(json['experience']),
       education: serializer.fromJson<String>(json['education']),
       specialty: serializer.fromJson<String>(json['specialty']),
+      specialtyAr: serializer.fromJson<String?>(json['specialtyAr']),
       about: serializer.fromJson<String?>(json['about']),
       addressLine1: serializer.fromJson<String?>(json['addressLine1']),
       addressLine2: serializer.fromJson<String?>(json['addressLine2']),
@@ -874,6 +909,7 @@ class Doctor extends DataClass implements Insertable<Doctor> {
       'experience': serializer.toJson<String>(experience),
       'education': serializer.toJson<String>(education),
       'specialty': serializer.toJson<String>(specialty),
+      'specialtyAr': serializer.toJson<String?>(specialtyAr),
       'about': serializer.toJson<String?>(about),
       'addressLine1': serializer.toJson<String?>(addressLine1),
       'addressLine2': serializer.toJson<String?>(addressLine2),
@@ -889,6 +925,7 @@ class Doctor extends DataClass implements Insertable<Doctor> {
     String? experience,
     String? education,
     String? specialty,
+    Value<String?> specialtyAr = const Value.absent(),
     Value<String?> about = const Value.absent(),
     Value<String?> addressLine1 = const Value.absent(),
     Value<String?> addressLine2 = const Value.absent(),
@@ -901,6 +938,7 @@ class Doctor extends DataClass implements Insertable<Doctor> {
     experience: experience ?? this.experience,
     education: education ?? this.education,
     specialty: specialty ?? this.specialty,
+    specialtyAr: specialtyAr.present ? specialtyAr.value : this.specialtyAr,
     about: about.present ? about.value : this.about,
     addressLine1: addressLine1.present ? addressLine1.value : this.addressLine1,
     addressLine2: addressLine2.present ? addressLine2.value : this.addressLine2,
@@ -917,6 +955,8 @@ class Doctor extends DataClass implements Insertable<Doctor> {
           data.experience.present ? data.experience.value : this.experience,
       education: data.education.present ? data.education.value : this.education,
       specialty: data.specialty.present ? data.specialty.value : this.specialty,
+      specialtyAr:
+          data.specialtyAr.present ? data.specialtyAr.value : this.specialtyAr,
       about: data.about.present ? data.about.value : this.about,
       addressLine1:
           data.addressLine1.present
@@ -944,6 +984,7 @@ class Doctor extends DataClass implements Insertable<Doctor> {
           ..write('experience: $experience, ')
           ..write('education: $education, ')
           ..write('specialty: $specialty, ')
+          ..write('specialtyAr: $specialtyAr, ')
           ..write('about: $about, ')
           ..write('addressLine1: $addressLine1, ')
           ..write('addressLine2: $addressLine2, ')
@@ -961,6 +1002,7 @@ class Doctor extends DataClass implements Insertable<Doctor> {
     experience,
     education,
     specialty,
+    specialtyAr,
     about,
     addressLine1,
     addressLine2,
@@ -977,6 +1019,7 @@ class Doctor extends DataClass implements Insertable<Doctor> {
           other.experience == this.experience &&
           other.education == this.education &&
           other.specialty == this.specialty &&
+          other.specialtyAr == this.specialtyAr &&
           other.about == this.about &&
           other.addressLine1 == this.addressLine1 &&
           other.addressLine2 == this.addressLine2 &&
@@ -991,6 +1034,7 @@ class DoctorsCompanion extends UpdateCompanion<Doctor> {
   final Value<String> experience;
   final Value<String> education;
   final Value<String> specialty;
+  final Value<String?> specialtyAr;
   final Value<String?> about;
   final Value<String?> addressLine1;
   final Value<String?> addressLine2;
@@ -1004,6 +1048,7 @@ class DoctorsCompanion extends UpdateCompanion<Doctor> {
     this.experience = const Value.absent(),
     this.education = const Value.absent(),
     this.specialty = const Value.absent(),
+    this.specialtyAr = const Value.absent(),
     this.about = const Value.absent(),
     this.addressLine1 = const Value.absent(),
     this.addressLine2 = const Value.absent(),
@@ -1018,6 +1063,7 @@ class DoctorsCompanion extends UpdateCompanion<Doctor> {
     required String experience,
     required String education,
     required String specialty,
+    this.specialtyAr = const Value.absent(),
     this.about = const Value.absent(),
     this.addressLine1 = const Value.absent(),
     this.addressLine2 = const Value.absent(),
@@ -1037,6 +1083,7 @@ class DoctorsCompanion extends UpdateCompanion<Doctor> {
     Expression<String>? experience,
     Expression<String>? education,
     Expression<String>? specialty,
+    Expression<String>? specialtyAr,
     Expression<String>? about,
     Expression<String>? addressLine1,
     Expression<String>? addressLine2,
@@ -1051,6 +1098,7 @@ class DoctorsCompanion extends UpdateCompanion<Doctor> {
       if (experience != null) 'experience': experience,
       if (education != null) 'education': education,
       if (specialty != null) 'specialty': specialty,
+      if (specialtyAr != null) 'specialty_ar': specialtyAr,
       if (about != null) 'about': about,
       if (addressLine1 != null) 'address_line1': addressLine1,
       if (addressLine2 != null) 'address_line2': addressLine2,
@@ -1067,6 +1115,7 @@ class DoctorsCompanion extends UpdateCompanion<Doctor> {
     Value<String>? experience,
     Value<String>? education,
     Value<String>? specialty,
+    Value<String?>? specialtyAr,
     Value<String?>? about,
     Value<String?>? addressLine1,
     Value<String?>? addressLine2,
@@ -1081,6 +1130,7 @@ class DoctorsCompanion extends UpdateCompanion<Doctor> {
       experience: experience ?? this.experience,
       education: education ?? this.education,
       specialty: specialty ?? this.specialty,
+      specialtyAr: specialtyAr ?? this.specialtyAr,
       about: about ?? this.about,
       addressLine1: addressLine1 ?? this.addressLine1,
       addressLine2: addressLine2 ?? this.addressLine2,
@@ -1108,6 +1158,9 @@ class DoctorsCompanion extends UpdateCompanion<Doctor> {
     }
     if (specialty.present) {
       map['specialty'] = Variable<String>(specialty.value);
+    }
+    if (specialtyAr.present) {
+      map['specialty_ar'] = Variable<String>(specialtyAr.value);
     }
     if (about.present) {
       map['about'] = Variable<String>(about.value);
@@ -1143,6 +1196,7 @@ class DoctorsCompanion extends UpdateCompanion<Doctor> {
           ..write('experience: $experience, ')
           ..write('education: $education, ')
           ..write('specialty: $specialty, ')
+          ..write('specialtyAr: $specialtyAr, ')
           ..write('about: $about, ')
           ..write('addressLine1: $addressLine1, ')
           ..write('addressLine2: $addressLine2, ')
@@ -1545,6 +1599,21 @@ class $SpecialtiesTable extends Specialties
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _name_arMeta = const VerificationMeta(
+    'name_ar',
+  );
+  @override
+  late final GeneratedColumn<String> name_ar = GeneratedColumn<String>(
+    'name_ar',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 100,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _iconMeta = const VerificationMeta('icon');
   @override
   late final GeneratedColumn<String> icon = GeneratedColumn<String>(
@@ -1555,7 +1624,7 @@ class $SpecialtiesTable extends Specialties
     requiredDuringInsert: false,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, slug, name, icon];
+  List<GeneratedColumn> get $columns => [id, slug, name, name_ar, icon];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1587,6 +1656,14 @@ class $SpecialtiesTable extends Specialties
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
+    if (data.containsKey('name_ar')) {
+      context.handle(
+        _name_arMeta,
+        name_ar.isAcceptableOrUnknown(data['name_ar']!, _name_arMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_name_arMeta);
+    }
     if (data.containsKey('icon')) {
       context.handle(
         _iconMeta,
@@ -1617,6 +1694,11 @@ class $SpecialtiesTable extends Specialties
             DriftSqlType.string,
             data['${effectivePrefix}name'],
           )!,
+      name_ar:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}name_ar'],
+          )!,
       icon: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}icon'],
@@ -1634,11 +1716,13 @@ class Specialty extends DataClass implements Insertable<Specialty> {
   final int id;
   final String slug;
   final String name;
+  final String name_ar;
   final String? icon;
   const Specialty({
     required this.id,
     required this.slug,
     required this.name,
+    required this.name_ar,
     this.icon,
   });
   @override
@@ -1647,6 +1731,7 @@ class Specialty extends DataClass implements Insertable<Specialty> {
     map['id'] = Variable<int>(id);
     map['slug'] = Variable<String>(slug);
     map['name'] = Variable<String>(name);
+    map['name_ar'] = Variable<String>(name_ar);
     if (!nullToAbsent || icon != null) {
       map['icon'] = Variable<String>(icon);
     }
@@ -1658,6 +1743,7 @@ class Specialty extends DataClass implements Insertable<Specialty> {
       id: Value(id),
       slug: Value(slug),
       name: Value(name),
+      name_ar: Value(name_ar),
       icon: icon == null && nullToAbsent ? const Value.absent() : Value(icon),
     );
   }
@@ -1671,6 +1757,7 @@ class Specialty extends DataClass implements Insertable<Specialty> {
       id: serializer.fromJson<int>(json['id']),
       slug: serializer.fromJson<String>(json['slug']),
       name: serializer.fromJson<String>(json['name']),
+      name_ar: serializer.fromJson<String>(json['name_ar']),
       icon: serializer.fromJson<String?>(json['icon']),
     );
   }
@@ -1681,6 +1768,7 @@ class Specialty extends DataClass implements Insertable<Specialty> {
       'id': serializer.toJson<int>(id),
       'slug': serializer.toJson<String>(slug),
       'name': serializer.toJson<String>(name),
+      'name_ar': serializer.toJson<String>(name_ar),
       'icon': serializer.toJson<String?>(icon),
     };
   }
@@ -1689,11 +1777,13 @@ class Specialty extends DataClass implements Insertable<Specialty> {
     int? id,
     String? slug,
     String? name,
+    String? name_ar,
     Value<String?> icon = const Value.absent(),
   }) => Specialty(
     id: id ?? this.id,
     slug: slug ?? this.slug,
     name: name ?? this.name,
+    name_ar: name_ar ?? this.name_ar,
     icon: icon.present ? icon.value : this.icon,
   );
   Specialty copyWithCompanion(SpecialtiesCompanion data) {
@@ -1701,6 +1791,7 @@ class Specialty extends DataClass implements Insertable<Specialty> {
       id: data.id.present ? data.id.value : this.id,
       slug: data.slug.present ? data.slug.value : this.slug,
       name: data.name.present ? data.name.value : this.name,
+      name_ar: data.name_ar.present ? data.name_ar.value : this.name_ar,
       icon: data.icon.present ? data.icon.value : this.icon,
     );
   }
@@ -1711,13 +1802,14 @@ class Specialty extends DataClass implements Insertable<Specialty> {
           ..write('id: $id, ')
           ..write('slug: $slug, ')
           ..write('name: $name, ')
+          ..write('name_ar: $name_ar, ')
           ..write('icon: $icon')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, slug, name, icon);
+  int get hashCode => Object.hash(id, slug, name, name_ar, icon);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1725,6 +1817,7 @@ class Specialty extends DataClass implements Insertable<Specialty> {
           other.id == this.id &&
           other.slug == this.slug &&
           other.name == this.name &&
+          other.name_ar == this.name_ar &&
           other.icon == this.icon);
 }
 
@@ -1732,30 +1825,36 @@ class SpecialtiesCompanion extends UpdateCompanion<Specialty> {
   final Value<int> id;
   final Value<String> slug;
   final Value<String> name;
+  final Value<String> name_ar;
   final Value<String?> icon;
   const SpecialtiesCompanion({
     this.id = const Value.absent(),
     this.slug = const Value.absent(),
     this.name = const Value.absent(),
+    this.name_ar = const Value.absent(),
     this.icon = const Value.absent(),
   });
   SpecialtiesCompanion.insert({
     this.id = const Value.absent(),
     required String slug,
     required String name,
+    required String name_ar,
     this.icon = const Value.absent(),
   }) : slug = Value(slug),
-       name = Value(name);
+       name = Value(name),
+       name_ar = Value(name_ar);
   static Insertable<Specialty> custom({
     Expression<int>? id,
     Expression<String>? slug,
     Expression<String>? name,
+    Expression<String>? name_ar,
     Expression<String>? icon,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (slug != null) 'slug': slug,
       if (name != null) 'name': name,
+      if (name_ar != null) 'name_ar': name_ar,
       if (icon != null) 'icon': icon,
     });
   }
@@ -1764,12 +1863,14 @@ class SpecialtiesCompanion extends UpdateCompanion<Specialty> {
     Value<int>? id,
     Value<String>? slug,
     Value<String>? name,
+    Value<String>? name_ar,
     Value<String?>? icon,
   }) {
     return SpecialtiesCompanion(
       id: id ?? this.id,
       slug: slug ?? this.slug,
       name: name ?? this.name,
+      name_ar: name_ar ?? this.name_ar,
       icon: icon ?? this.icon,
     );
   }
@@ -1786,6 +1887,9 @@ class SpecialtiesCompanion extends UpdateCompanion<Specialty> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
+    if (name_ar.present) {
+      map['name_ar'] = Variable<String>(name_ar.value);
+    }
     if (icon.present) {
       map['icon'] = Variable<String>(icon.value);
     }
@@ -1798,6 +1902,7 @@ class SpecialtiesCompanion extends UpdateCompanion<Specialty> {
           ..write('id: $id, ')
           ..write('slug: $slug, ')
           ..write('name: $name, ')
+          ..write('name_ar: $name_ar, ')
           ..write('icon: $icon')
           ..write(')'))
         .toString();
@@ -5340,6 +5445,7 @@ typedef $$DoctorsTableCreateCompanionBuilder =
       required String experience,
       required String education,
       required String specialty,
+      Value<String?> specialtyAr,
       Value<String?> about,
       Value<String?> addressLine1,
       Value<String?> addressLine2,
@@ -5355,6 +5461,7 @@ typedef $$DoctorsTableUpdateCompanionBuilder =
       Value<String> experience,
       Value<String> education,
       Value<String> specialty,
+      Value<String?> specialtyAr,
       Value<String?> about,
       Value<String?> addressLine1,
       Value<String?> addressLine2,
@@ -5413,6 +5520,11 @@ class $$DoctorsTableFilterComposer
 
   ColumnFilters<String> get specialty => $composableBuilder(
     column: $table.specialty,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get specialtyAr => $composableBuilder(
+    column: $table.specialtyAr,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -5500,6 +5612,11 @@ class $$DoctorsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get specialtyAr => $composableBuilder(
+    column: $table.specialtyAr,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get about => $composableBuilder(
     column: $table.about,
     builder: (column) => ColumnOrderings(column),
@@ -5576,6 +5693,11 @@ class $$DoctorsTableAnnotationComposer
 
   GeneratedColumn<String> get specialty =>
       $composableBuilder(column: $table.specialty, builder: (column) => column);
+
+  GeneratedColumn<String> get specialtyAr => $composableBuilder(
+    column: $table.specialtyAr,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get about =>
       $composableBuilder(column: $table.about, builder: (column) => column);
@@ -5660,6 +5782,7 @@ class $$DoctorsTableTableManager
                 Value<String> experience = const Value.absent(),
                 Value<String> education = const Value.absent(),
                 Value<String> specialty = const Value.absent(),
+                Value<String?> specialtyAr = const Value.absent(),
                 Value<String?> about = const Value.absent(),
                 Value<String?> addressLine1 = const Value.absent(),
                 Value<String?> addressLine2 = const Value.absent(),
@@ -5673,6 +5796,7 @@ class $$DoctorsTableTableManager
                 experience: experience,
                 education: education,
                 specialty: specialty,
+                specialtyAr: specialtyAr,
                 about: about,
                 addressLine1: addressLine1,
                 addressLine2: addressLine2,
@@ -5688,6 +5812,7 @@ class $$DoctorsTableTableManager
                 required String experience,
                 required String education,
                 required String specialty,
+                Value<String?> specialtyAr = const Value.absent(),
                 Value<String?> about = const Value.absent(),
                 Value<String?> addressLine1 = const Value.absent(),
                 Value<String?> addressLine2 = const Value.absent(),
@@ -5701,6 +5826,7 @@ class $$DoctorsTableTableManager
                 experience: experience,
                 education: education,
                 specialty: specialty,
+                specialtyAr: specialtyAr,
                 about: about,
                 addressLine1: addressLine1,
                 addressLine2: addressLine2,
@@ -5976,6 +6102,7 @@ typedef $$SpecialtiesTableCreateCompanionBuilder =
       Value<int> id,
       required String slug,
       required String name,
+      required String name_ar,
       Value<String?> icon,
     });
 typedef $$SpecialtiesTableUpdateCompanionBuilder =
@@ -5983,6 +6110,7 @@ typedef $$SpecialtiesTableUpdateCompanionBuilder =
       Value<int> id,
       Value<String> slug,
       Value<String> name,
+      Value<String> name_ar,
       Value<String?> icon,
     });
 
@@ -6007,6 +6135,11 @@ class $$SpecialtiesTableFilterComposer
 
   ColumnFilters<String> get name => $composableBuilder(
     column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name_ar => $composableBuilder(
+    column: $table.name_ar,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -6040,6 +6173,11 @@ class $$SpecialtiesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get name_ar => $composableBuilder(
+    column: $table.name_ar,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get icon => $composableBuilder(
     column: $table.icon,
     builder: (column) => ColumnOrderings(column),
@@ -6063,6 +6201,9 @@ class $$SpecialtiesTableAnnotationComposer
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get name_ar =>
+      $composableBuilder(column: $table.name_ar, builder: (column) => column);
 
   GeneratedColumn<String> get icon =>
       $composableBuilder(column: $table.icon, builder: (column) => column);
@@ -6103,11 +6244,13 @@ class $$SpecialtiesTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> slug = const Value.absent(),
                 Value<String> name = const Value.absent(),
+                Value<String> name_ar = const Value.absent(),
                 Value<String?> icon = const Value.absent(),
               }) => SpecialtiesCompanion(
                 id: id,
                 slug: slug,
                 name: name,
+                name_ar: name_ar,
                 icon: icon,
               ),
           createCompanionCallback:
@@ -6115,11 +6258,13 @@ class $$SpecialtiesTableTableManager
                 Value<int> id = const Value.absent(),
                 required String slug,
                 required String name,
+                required String name_ar,
                 Value<String?> icon = const Value.absent(),
               }) => SpecialtiesCompanion.insert(
                 id: id,
                 slug: slug,
                 name: name,
+                name_ar: name_ar,
                 icon: icon,
               ),
           withReferenceMapper:

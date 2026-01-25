@@ -81,7 +81,12 @@ class DoctorCard extends StatelessWidget {
                   ),
 
                   5.verticalSpace,
-                  Text(speciality, style: const TextStyle(color: Colors.grey)),
+                  Text(
+                    context.locale.languageCode == 'ar'
+                        ? doctor.specialtyAr ?? doctor.specialty
+                        : doctor.specialty,
+                    style: const TextStyle(color: Colors.grey),
+                  ),
 
                   5.verticalSpace,
                   Text(

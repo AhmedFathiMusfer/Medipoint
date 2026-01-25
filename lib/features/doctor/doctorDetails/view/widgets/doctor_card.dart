@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:diagno_bot/core/model/doctor.model.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -51,7 +52,11 @@ class DoctorCard extends StatelessWidget {
               ),
               5.verticalSpace,
               5.verticalSpace,
-              Text(doctor.specialty),
+              Text(
+                context.locale.languageCode == 'ar'
+                    ? doctor.specialtyAr ?? doctor.specialty
+                    : doctor.specialty,
+              ),
               5.verticalSpace,
               Row(
                 children: [

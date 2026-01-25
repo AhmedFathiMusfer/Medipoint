@@ -4,6 +4,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:diagno_bot/core/helpers/extensions.dart';
 import 'package:diagno_bot/core/routing/router.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -84,13 +85,28 @@ class DoctorCard extends StatelessWidget {
                         style: TextStyle(fontSize: 12.sp, color: Colors.grey),
                       ),
                       5.verticalSpace,
-                      Text(
-                        'Fees: \$$fees',
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
+                      Row(
+                        children: [
+                          Text(
+                            '${'fees'.tr()}: ',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              fees,
+                              style: const TextStyle(color: Colors.grey),
+                            ),
+                          ),
+                        ],
                       ),
+                      // Text(
+                      //   'Fees: \$$fees',
+                      //   style: TextStyle(
+                      //     fontSize: 14.sp,
+                      //     fontWeight: FontWeight.w500,
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
