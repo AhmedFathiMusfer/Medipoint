@@ -4980,6 +4980,494 @@ class PatientFilesCompanion extends UpdateCompanion<PatientFile> {
   }
 }
 
+class $PatientSharedFoldersTable extends PatientSharedFolders
+    with TableInfo<$PatientSharedFoldersTable, PatientSharedFolder> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PatientSharedFoldersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _patientIdMeta = const VerificationMeta(
+    'patientId',
+  );
+  @override
+  late final GeneratedColumn<String> patientId = GeneratedColumn<String>(
+    'patient_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES patients (user_id)',
+    ),
+  );
+  static const VerificationMeta _doctorIdMeta = const VerificationMeta(
+    'doctorId',
+  );
+  @override
+  late final GeneratedColumn<String> doctorId = GeneratedColumn<String>(
+    'doctor_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES doctors (user_id)',
+    ),
+  );
+  static const VerificationMeta _folderIdMeta = const VerificationMeta(
+    'folderId',
+  );
+  @override
+  late final GeneratedColumn<int> folderId = GeneratedColumn<int>(
+    'folder_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES patient_folders (id)',
+    ),
+  );
+  static const VerificationMeta _appointmentIdMeta = const VerificationMeta(
+    'appointmentId',
+  );
+  @override
+  late final GeneratedColumn<int> appointmentId = GeneratedColumn<int>(
+    'appointment_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES appointments (id)',
+    ),
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<SharingType, String> sharingType =
+      GeneratedColumn<String>(
+        'sharing_type',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<SharingType>(
+        $PatientSharedFoldersTable.$convertersharingType,
+      );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<String> createdAt = GeneratedColumn<String>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    patientId,
+    doctorId,
+    folderId,
+    appointmentId,
+    sharingType,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'patient_shared_folders';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PatientSharedFolder> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('patient_id')) {
+      context.handle(
+        _patientIdMeta,
+        patientId.isAcceptableOrUnknown(data['patient_id']!, _patientIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_patientIdMeta);
+    }
+    if (data.containsKey('doctor_id')) {
+      context.handle(
+        _doctorIdMeta,
+        doctorId.isAcceptableOrUnknown(data['doctor_id']!, _doctorIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_doctorIdMeta);
+    }
+    if (data.containsKey('folder_id')) {
+      context.handle(
+        _folderIdMeta,
+        folderId.isAcceptableOrUnknown(data['folder_id']!, _folderIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_folderIdMeta);
+    }
+    if (data.containsKey('appointment_id')) {
+      context.handle(
+        _appointmentIdMeta,
+        appointmentId.isAcceptableOrUnknown(
+          data['appointment_id']!,
+          _appointmentIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PatientSharedFolder map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PatientSharedFolder(
+      id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}id'],
+          )!,
+      patientId:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}patient_id'],
+          )!,
+      doctorId:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}doctor_id'],
+          )!,
+      folderId:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}folder_id'],
+          )!,
+      appointmentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}appointment_id'],
+      ),
+      sharingType: $PatientSharedFoldersTable.$convertersharingType.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}sharing_type'],
+        )!,
+      ),
+      createdAt:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}created_at'],
+          )!,
+    );
+  }
+
+  @override
+  $PatientSharedFoldersTable createAlias(String alias) {
+    return $PatientSharedFoldersTable(attachedDatabase, alias);
+  }
+
+  static TypeConverter<SharingType, String> $convertersharingType =
+      const SharingTypeConverter();
+}
+
+class PatientSharedFolder extends DataClass
+    implements Insertable<PatientSharedFolder> {
+  final int id;
+  final String patientId;
+  final String doctorId;
+  final int folderId;
+  final int? appointmentId;
+  final SharingType sharingType;
+  final String createdAt;
+  const PatientSharedFolder({
+    required this.id,
+    required this.patientId,
+    required this.doctorId,
+    required this.folderId,
+    this.appointmentId,
+    required this.sharingType,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['patient_id'] = Variable<String>(patientId);
+    map['doctor_id'] = Variable<String>(doctorId);
+    map['folder_id'] = Variable<int>(folderId);
+    if (!nullToAbsent || appointmentId != null) {
+      map['appointment_id'] = Variable<int>(appointmentId);
+    }
+    {
+      map['sharing_type'] = Variable<String>(
+        $PatientSharedFoldersTable.$convertersharingType.toSql(sharingType),
+      );
+    }
+    map['created_at'] = Variable<String>(createdAt);
+    return map;
+  }
+
+  PatientSharedFoldersCompanion toCompanion(bool nullToAbsent) {
+    return PatientSharedFoldersCompanion(
+      id: Value(id),
+      patientId: Value(patientId),
+      doctorId: Value(doctorId),
+      folderId: Value(folderId),
+      appointmentId:
+          appointmentId == null && nullToAbsent
+              ? const Value.absent()
+              : Value(appointmentId),
+      sharingType: Value(sharingType),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory PatientSharedFolder.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PatientSharedFolder(
+      id: serializer.fromJson<int>(json['id']),
+      patientId: serializer.fromJson<String>(json['patientId']),
+      doctorId: serializer.fromJson<String>(json['doctorId']),
+      folderId: serializer.fromJson<int>(json['folderId']),
+      appointmentId: serializer.fromJson<int?>(json['appointmentId']),
+      sharingType: serializer.fromJson<SharingType>(json['sharingType']),
+      createdAt: serializer.fromJson<String>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'patientId': serializer.toJson<String>(patientId),
+      'doctorId': serializer.toJson<String>(doctorId),
+      'folderId': serializer.toJson<int>(folderId),
+      'appointmentId': serializer.toJson<int?>(appointmentId),
+      'sharingType': serializer.toJson<SharingType>(sharingType),
+      'createdAt': serializer.toJson<String>(createdAt),
+    };
+  }
+
+  PatientSharedFolder copyWith({
+    int? id,
+    String? patientId,
+    String? doctorId,
+    int? folderId,
+    Value<int?> appointmentId = const Value.absent(),
+    SharingType? sharingType,
+    String? createdAt,
+  }) => PatientSharedFolder(
+    id: id ?? this.id,
+    patientId: patientId ?? this.patientId,
+    doctorId: doctorId ?? this.doctorId,
+    folderId: folderId ?? this.folderId,
+    appointmentId:
+        appointmentId.present ? appointmentId.value : this.appointmentId,
+    sharingType: sharingType ?? this.sharingType,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  PatientSharedFolder copyWithCompanion(PatientSharedFoldersCompanion data) {
+    return PatientSharedFolder(
+      id: data.id.present ? data.id.value : this.id,
+      patientId: data.patientId.present ? data.patientId.value : this.patientId,
+      doctorId: data.doctorId.present ? data.doctorId.value : this.doctorId,
+      folderId: data.folderId.present ? data.folderId.value : this.folderId,
+      appointmentId:
+          data.appointmentId.present
+              ? data.appointmentId.value
+              : this.appointmentId,
+      sharingType:
+          data.sharingType.present ? data.sharingType.value : this.sharingType,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PatientSharedFolder(')
+          ..write('id: $id, ')
+          ..write('patientId: $patientId, ')
+          ..write('doctorId: $doctorId, ')
+          ..write('folderId: $folderId, ')
+          ..write('appointmentId: $appointmentId, ')
+          ..write('sharingType: $sharingType, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    patientId,
+    doctorId,
+    folderId,
+    appointmentId,
+    sharingType,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PatientSharedFolder &&
+          other.id == this.id &&
+          other.patientId == this.patientId &&
+          other.doctorId == this.doctorId &&
+          other.folderId == this.folderId &&
+          other.appointmentId == this.appointmentId &&
+          other.sharingType == this.sharingType &&
+          other.createdAt == this.createdAt);
+}
+
+class PatientSharedFoldersCompanion
+    extends UpdateCompanion<PatientSharedFolder> {
+  final Value<int> id;
+  final Value<String> patientId;
+  final Value<String> doctorId;
+  final Value<int> folderId;
+  final Value<int?> appointmentId;
+  final Value<SharingType> sharingType;
+  final Value<String> createdAt;
+  const PatientSharedFoldersCompanion({
+    this.id = const Value.absent(),
+    this.patientId = const Value.absent(),
+    this.doctorId = const Value.absent(),
+    this.folderId = const Value.absent(),
+    this.appointmentId = const Value.absent(),
+    this.sharingType = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  PatientSharedFoldersCompanion.insert({
+    this.id = const Value.absent(),
+    required String patientId,
+    required String doctorId,
+    required int folderId,
+    this.appointmentId = const Value.absent(),
+    required SharingType sharingType,
+    required String createdAt,
+  }) : patientId = Value(patientId),
+       doctorId = Value(doctorId),
+       folderId = Value(folderId),
+       sharingType = Value(sharingType),
+       createdAt = Value(createdAt);
+  static Insertable<PatientSharedFolder> custom({
+    Expression<int>? id,
+    Expression<String>? patientId,
+    Expression<String>? doctorId,
+    Expression<int>? folderId,
+    Expression<int>? appointmentId,
+    Expression<String>? sharingType,
+    Expression<String>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (patientId != null) 'patient_id': patientId,
+      if (doctorId != null) 'doctor_id': doctorId,
+      if (folderId != null) 'folder_id': folderId,
+      if (appointmentId != null) 'appointment_id': appointmentId,
+      if (sharingType != null) 'sharing_type': sharingType,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  PatientSharedFoldersCompanion copyWith({
+    Value<int>? id,
+    Value<String>? patientId,
+    Value<String>? doctorId,
+    Value<int>? folderId,
+    Value<int?>? appointmentId,
+    Value<SharingType>? sharingType,
+    Value<String>? createdAt,
+  }) {
+    return PatientSharedFoldersCompanion(
+      id: id ?? this.id,
+      patientId: patientId ?? this.patientId,
+      doctorId: doctorId ?? this.doctorId,
+      folderId: folderId ?? this.folderId,
+      appointmentId: appointmentId ?? this.appointmentId,
+      sharingType: sharingType ?? this.sharingType,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (patientId.present) {
+      map['patient_id'] = Variable<String>(patientId.value);
+    }
+    if (doctorId.present) {
+      map['doctor_id'] = Variable<String>(doctorId.value);
+    }
+    if (folderId.present) {
+      map['folder_id'] = Variable<int>(folderId.value);
+    }
+    if (appointmentId.present) {
+      map['appointment_id'] = Variable<int>(appointmentId.value);
+    }
+    if (sharingType.present) {
+      map['sharing_type'] = Variable<String>(
+        $PatientSharedFoldersTable.$convertersharingType.toSql(
+          sharingType.value,
+        ),
+      );
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<String>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PatientSharedFoldersCompanion(')
+          ..write('id: $id, ')
+          ..write('patientId: $patientId, ')
+          ..write('doctorId: $doctorId, ')
+          ..write('folderId: $folderId, ')
+          ..write('appointmentId: $appointmentId, ')
+          ..write('sharingType: $sharingType, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -4994,6 +5482,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $AppointmentsTable appointments = $AppointmentsTable(this);
   late final $PatientFoldersTable patientFolders = $PatientFoldersTable(this);
   late final $PatientFilesTable patientFiles = $PatientFilesTable(this);
+  late final $PatientSharedFoldersTable patientSharedFolders =
+      $PatientSharedFoldersTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -5010,6 +5500,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     appointments,
     patientFolders,
     patientFiles,
+    patientSharedFolders,
   ];
 }
 
@@ -7881,6 +8372,34 @@ final class $$AppointmentsTableReferences
       manager.$state.copyWith(prefetchedData: [item]),
     );
   }
+
+  static MultiTypedResultKey<
+    $PatientSharedFoldersTable,
+    List<PatientSharedFolder>
+  >
+  _patientSharedFoldersRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.patientSharedFolders,
+        aliasName: $_aliasNameGenerator(
+          db.appointments.id,
+          db.patientSharedFolders.appointmentId,
+        ),
+      );
+
+  $$PatientSharedFoldersTableProcessedTableManager
+  get patientSharedFoldersRefs {
+    final manager = $$PatientSharedFoldersTableTableManager(
+      $_db,
+      $_db.patientSharedFolders,
+    ).filter((f) => f.appointmentId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _patientSharedFoldersRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$AppointmentsTableFilterComposer
@@ -7939,6 +8458,31 @@ class $$AppointmentsTableFilterComposer
           ),
     );
     return composer;
+  }
+
+  Expression<bool> patientSharedFoldersRefs(
+    Expression<bool> Function($$PatientSharedFoldersTableFilterComposer f) f,
+  ) {
+    final $$PatientSharedFoldersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.patientSharedFolders,
+      getReferencedColumn: (t) => t.appointmentId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatientSharedFoldersTableFilterComposer(
+            $db: $db,
+            $table: $db.patientSharedFolders,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
   }
 }
 
@@ -8048,6 +8592,32 @@ class $$AppointmentsTableAnnotationComposer
     );
     return composer;
   }
+
+  Expression<T> patientSharedFoldersRefs<T extends Object>(
+    Expression<T> Function($$PatientSharedFoldersTableAnnotationComposer a) f,
+  ) {
+    final $$PatientSharedFoldersTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.patientSharedFolders,
+          getReferencedColumn: (t) => t.appointmentId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$PatientSharedFoldersTableAnnotationComposer(
+                $db: $db,
+                $table: $db.patientSharedFolders,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$AppointmentsTableTableManager
@@ -8063,7 +8633,10 @@ class $$AppointmentsTableTableManager
           $$AppointmentsTableUpdateCompanionBuilder,
           (Appointment, $$AppointmentsTableReferences),
           Appointment,
-          PrefetchHooks Function({bool workingHoursId})
+          PrefetchHooks Function({
+            bool workingHoursId,
+            bool patientSharedFoldersRefs,
+          })
         > {
   $$AppointmentsTableTableManager(_$AppDatabase db, $AppointmentsTable table)
     : super(
@@ -8127,10 +8700,15 @@ class $$AppointmentsTableTableManager
                         ),
                       )
                       .toList(),
-          prefetchHooksCallback: ({workingHoursId = false}) {
+          prefetchHooksCallback: ({
+            workingHoursId = false,
+            patientSharedFoldersRefs = false,
+          }) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [],
+              explicitlyWatchedTables: [
+                if (patientSharedFoldersRefs) db.patientSharedFolders,
+              ],
               addJoins: <
                 T extends TableManagerState<
                   dynamic,
@@ -8164,7 +8742,30 @@ class $$AppointmentsTableTableManager
                 return state;
               },
               getPrefetchedDataCallback: (items) async {
-                return [];
+                return [
+                  if (patientSharedFoldersRefs)
+                    await $_getPrefetchedData<
+                      Appointment,
+                      $AppointmentsTable,
+                      PatientSharedFolder
+                    >(
+                      currentTable: table,
+                      referencedTable: $$AppointmentsTableReferences
+                          ._patientSharedFoldersRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$AppointmentsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).patientSharedFoldersRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) => referencedItems.where(
+                            (e) => e.appointmentId == item.id,
+                          ),
+                      typedResults: items,
+                    ),
+                ];
               },
             );
           },
@@ -8184,7 +8785,10 @@ typedef $$AppointmentsTableProcessedTableManager =
       $$AppointmentsTableUpdateCompanionBuilder,
       (Appointment, $$AppointmentsTableReferences),
       Appointment,
-      PrefetchHooks Function({bool workingHoursId})
+      PrefetchHooks Function({
+        bool workingHoursId,
+        bool patientSharedFoldersRefs,
+      })
     >;
 typedef $$PatientFoldersTableCreateCompanionBuilder =
     PatientFoldersCompanion Function({
@@ -8229,6 +8833,34 @@ final class $$PatientFoldersTableReferences
     ).filter((f) => f.folderId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_patientFilesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $PatientSharedFoldersTable,
+    List<PatientSharedFolder>
+  >
+  _patientSharedFoldersRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.patientSharedFolders,
+        aliasName: $_aliasNameGenerator(
+          db.patientFolders.id,
+          db.patientSharedFolders.folderId,
+        ),
+      );
+
+  $$PatientSharedFoldersTableProcessedTableManager
+  get patientSharedFoldersRefs {
+    final manager = $$PatientSharedFoldersTableTableManager(
+      $_db,
+      $_db.patientSharedFolders,
+    ).filter((f) => f.folderId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _patientSharedFoldersRefsTable($_db),
+    );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -8290,6 +8922,31 @@ class $$PatientFoldersTableFilterComposer
           }) => $$PatientFilesTableFilterComposer(
             $db: $db,
             $table: $db.patientFiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> patientSharedFoldersRefs(
+    Expression<bool> Function($$PatientSharedFoldersTableFilterComposer f) f,
+  ) {
+    final $$PatientSharedFoldersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.patientSharedFolders,
+      getReferencedColumn: (t) => t.folderId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatientSharedFoldersTableFilterComposer(
+            $db: $db,
+            $table: $db.patientSharedFolders,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -8393,6 +9050,32 @@ class $$PatientFoldersTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> patientSharedFoldersRefs<T extends Object>(
+    Expression<T> Function($$PatientSharedFoldersTableAnnotationComposer a) f,
+  ) {
+    final $$PatientSharedFoldersTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.patientSharedFolders,
+          getReferencedColumn: (t) => t.folderId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$PatientSharedFoldersTableAnnotationComposer(
+                $db: $db,
+                $table: $db.patientSharedFolders,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$PatientFoldersTableTableManager
@@ -8408,7 +9091,10 @@ class $$PatientFoldersTableTableManager
           $$PatientFoldersTableUpdateCompanionBuilder,
           (PatientFolder, $$PatientFoldersTableReferences),
           PatientFolder,
-          PrefetchHooks Function({bool patientFilesRefs})
+          PrefetchHooks Function({
+            bool patientFilesRefs,
+            bool patientSharedFoldersRefs,
+          })
         > {
   $$PatientFoldersTableTableManager(
     _$AppDatabase db,
@@ -8469,10 +9155,16 @@ class $$PatientFoldersTableTableManager
                         ),
                       )
                       .toList(),
-          prefetchHooksCallback: ({patientFilesRefs = false}) {
+          prefetchHooksCallback: ({
+            patientFilesRefs = false,
+            patientSharedFoldersRefs = false,
+          }) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [if (patientFilesRefs) db.patientFiles],
+              explicitlyWatchedTables: [
+                if (patientFilesRefs) db.patientFiles,
+                if (patientSharedFoldersRefs) db.patientSharedFolders,
+              ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
                 return [
@@ -8492,6 +9184,28 @@ class $$PatientFoldersTableTableManager
                                 table,
                                 p0,
                               ).patientFilesRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) => referencedItems.where(
+                            (e) => e.folderId == item.id,
+                          ),
+                      typedResults: items,
+                    ),
+                  if (patientSharedFoldersRefs)
+                    await $_getPrefetchedData<
+                      PatientFolder,
+                      $PatientFoldersTable,
+                      PatientSharedFolder
+                    >(
+                      currentTable: table,
+                      referencedTable: $$PatientFoldersTableReferences
+                          ._patientSharedFoldersRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$PatientFoldersTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).patientSharedFoldersRefs,
                       referencedItemsForCurrentItem:
                           (item, referencedItems) => referencedItems.where(
                             (e) => e.folderId == item.id,
@@ -8518,7 +9232,10 @@ typedef $$PatientFoldersTableProcessedTableManager =
       $$PatientFoldersTableUpdateCompanionBuilder,
       (PatientFolder, $$PatientFoldersTableReferences),
       PatientFolder,
-      PrefetchHooks Function({bool patientFilesRefs})
+      PrefetchHooks Function({
+        bool patientFilesRefs,
+        bool patientSharedFoldersRefs,
+      })
     >;
 typedef $$PatientFilesTableCreateCompanionBuilder =
     PatientFilesCompanion Function({
@@ -8874,6 +9591,454 @@ typedef $$PatientFilesTableProcessedTableManager =
       PatientFile,
       PrefetchHooks Function({bool folderId})
     >;
+typedef $$PatientSharedFoldersTableCreateCompanionBuilder =
+    PatientSharedFoldersCompanion Function({
+      Value<int> id,
+      required String patientId,
+      required String doctorId,
+      required int folderId,
+      Value<int?> appointmentId,
+      required SharingType sharingType,
+      required String createdAt,
+    });
+typedef $$PatientSharedFoldersTableUpdateCompanionBuilder =
+    PatientSharedFoldersCompanion Function({
+      Value<int> id,
+      Value<String> patientId,
+      Value<String> doctorId,
+      Value<int> folderId,
+      Value<int?> appointmentId,
+      Value<SharingType> sharingType,
+      Value<String> createdAt,
+    });
+
+final class $$PatientSharedFoldersTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $PatientSharedFoldersTable,
+          PatientSharedFolder
+        > {
+  $$PatientSharedFoldersTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $PatientFoldersTable _folderIdTable(_$AppDatabase db) =>
+      db.patientFolders.createAlias(
+        $_aliasNameGenerator(
+          db.patientSharedFolders.folderId,
+          db.patientFolders.id,
+        ),
+      );
+
+  $$PatientFoldersTableProcessedTableManager get folderId {
+    final $_column = $_itemColumn<int>('folder_id')!;
+
+    final manager = $$PatientFoldersTableTableManager(
+      $_db,
+      $_db.patientFolders,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_folderIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $AppointmentsTable _appointmentIdTable(_$AppDatabase db) =>
+      db.appointments.createAlias(
+        $_aliasNameGenerator(
+          db.patientSharedFolders.appointmentId,
+          db.appointments.id,
+        ),
+      );
+
+  $$AppointmentsTableProcessedTableManager? get appointmentId {
+    final $_column = $_itemColumn<int>('appointment_id');
+    if ($_column == null) return null;
+    final manager = $$AppointmentsTableTableManager(
+      $_db,
+      $_db.appointments,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_appointmentIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$PatientSharedFoldersTableFilterComposer
+    extends Composer<_$AppDatabase, $PatientSharedFoldersTable> {
+  $$PatientSharedFoldersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<SharingType, SharingType, String>
+  get sharingType => $composableBuilder(
+    column: $table.sharingType,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$PatientFoldersTableFilterComposer get folderId {
+    final $$PatientFoldersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.folderId,
+      referencedTable: $db.patientFolders,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatientFoldersTableFilterComposer(
+            $db: $db,
+            $table: $db.patientFolders,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$AppointmentsTableFilterComposer get appointmentId {
+    final $$AppointmentsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.appointmentId,
+      referencedTable: $db.appointments,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AppointmentsTableFilterComposer(
+            $db: $db,
+            $table: $db.appointments,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PatientSharedFoldersTableOrderingComposer
+    extends Composer<_$AppDatabase, $PatientSharedFoldersTable> {
+  $$PatientSharedFoldersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sharingType => $composableBuilder(
+    column: $table.sharingType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$PatientFoldersTableOrderingComposer get folderId {
+    final $$PatientFoldersTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.folderId,
+      referencedTable: $db.patientFolders,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatientFoldersTableOrderingComposer(
+            $db: $db,
+            $table: $db.patientFolders,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$AppointmentsTableOrderingComposer get appointmentId {
+    final $$AppointmentsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.appointmentId,
+      referencedTable: $db.appointments,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AppointmentsTableOrderingComposer(
+            $db: $db,
+            $table: $db.appointments,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PatientSharedFoldersTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PatientSharedFoldersTable> {
+  $$PatientSharedFoldersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<SharingType, String> get sharingType =>
+      $composableBuilder(
+        column: $table.sharingType,
+        builder: (column) => column,
+      );
+
+  GeneratedColumn<String> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  $$PatientFoldersTableAnnotationComposer get folderId {
+    final $$PatientFoldersTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.folderId,
+      referencedTable: $db.patientFolders,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatientFoldersTableAnnotationComposer(
+            $db: $db,
+            $table: $db.patientFolders,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$AppointmentsTableAnnotationComposer get appointmentId {
+    final $$AppointmentsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.appointmentId,
+      referencedTable: $db.appointments,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AppointmentsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.appointments,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PatientSharedFoldersTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PatientSharedFoldersTable,
+          PatientSharedFolder,
+          $$PatientSharedFoldersTableFilterComposer,
+          $$PatientSharedFoldersTableOrderingComposer,
+          $$PatientSharedFoldersTableAnnotationComposer,
+          $$PatientSharedFoldersTableCreateCompanionBuilder,
+          $$PatientSharedFoldersTableUpdateCompanionBuilder,
+          (PatientSharedFolder, $$PatientSharedFoldersTableReferences),
+          PatientSharedFolder,
+          PrefetchHooks Function({bool folderId, bool appointmentId})
+        > {
+  $$PatientSharedFoldersTableTableManager(
+    _$AppDatabase db,
+    $PatientSharedFoldersTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer:
+              () => $$PatientSharedFoldersTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer:
+              () => $$PatientSharedFoldersTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer:
+              () => $$PatientSharedFoldersTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> patientId = const Value.absent(),
+                Value<String> doctorId = const Value.absent(),
+                Value<int> folderId = const Value.absent(),
+                Value<int?> appointmentId = const Value.absent(),
+                Value<SharingType> sharingType = const Value.absent(),
+                Value<String> createdAt = const Value.absent(),
+              }) => PatientSharedFoldersCompanion(
+                id: id,
+                patientId: patientId,
+                doctorId: doctorId,
+                folderId: folderId,
+                appointmentId: appointmentId,
+                sharingType: sharingType,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String patientId,
+                required String doctorId,
+                required int folderId,
+                Value<int?> appointmentId = const Value.absent(),
+                required SharingType sharingType,
+                required String createdAt,
+              }) => PatientSharedFoldersCompanion.insert(
+                id: id,
+                patientId: patientId,
+                doctorId: doctorId,
+                folderId: folderId,
+                appointmentId: appointmentId,
+                sharingType: sharingType,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper:
+              (p0) =>
+                  p0
+                      .map(
+                        (e) => (
+                          e.readTable(table),
+                          $$PatientSharedFoldersTableReferences(db, table, e),
+                        ),
+                      )
+                      .toList(),
+          prefetchHooksCallback: ({folderId = false, appointmentId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                T extends TableManagerState<
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic
+                >
+              >(state) {
+                if (folderId) {
+                  state =
+                      state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.folderId,
+                            referencedTable:
+                                $$PatientSharedFoldersTableReferences
+                                    ._folderIdTable(db),
+                            referencedColumn:
+                                $$PatientSharedFoldersTableReferences
+                                    ._folderIdTable(db)
+                                    .id,
+                          )
+                          as T;
+                }
+                if (appointmentId) {
+                  state =
+                      state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.appointmentId,
+                            referencedTable:
+                                $$PatientSharedFoldersTableReferences
+                                    ._appointmentIdTable(db),
+                            referencedColumn:
+                                $$PatientSharedFoldersTableReferences
+                                    ._appointmentIdTable(db)
+                                    .id,
+                          )
+                          as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$PatientSharedFoldersTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PatientSharedFoldersTable,
+      PatientSharedFolder,
+      $$PatientSharedFoldersTableFilterComposer,
+      $$PatientSharedFoldersTableOrderingComposer,
+      $$PatientSharedFoldersTableAnnotationComposer,
+      $$PatientSharedFoldersTableCreateCompanionBuilder,
+      $$PatientSharedFoldersTableUpdateCompanionBuilder,
+      (PatientSharedFolder, $$PatientSharedFoldersTableReferences),
+      PatientSharedFolder,
+      PrefetchHooks Function({bool folderId, bool appointmentId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -8899,4 +10064,6 @@ class $AppDatabaseManager {
       $$PatientFoldersTableTableManager(_db, _db.patientFolders);
   $$PatientFilesTableTableManager get patientFiles =>
       $$PatientFilesTableTableManager(_db, _db.patientFiles);
+  $$PatientSharedFoldersTableTableManager get patientSharedFolders =>
+      $$PatientSharedFoldersTableTableManager(_db, _db.patientSharedFolders);
 }

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:diagno_bot/core/auth/authManager.dart';
 import 'package:diagno_bot/core/database/drift_db.dart';
 import 'package:diagno_bot/core/database/tables/appointments_tables.dart';
+import 'package:diagno_bot/core/database/tables/patient_shared_folders_tables.dart';
 import 'package:diagno_bot/core/helpers/networkHelper.dart';
 import 'package:diagno_bot/core/model/appointment.model.dart';
 import 'package:diagno_bot/core/model/doctor.model.dart';
@@ -189,6 +190,32 @@ class AppointmentCubit extends Cubit<AppointmentState> {
           ),
           mode: InsertMode.insertOrReplace,
         );
+        for (var sharedFolder in appointment['shared_folders']) {
+          log(sharedFolder.toString());
+          await db
+              .into(db.patientSharedFolders)
+              .insert(
+                PatientSharedFoldersCompanion(
+                  id: Value(sharedFolder['id']),
+                  appointmentId: Value(appointment['id']),
+                  doctorId: Value(appointment['doctor']['user']['id']),
+                  patientId: Value(
+                    appointment['patient'] ?? AuthManager().currentUser!.id,
+                  ),
+                  sharingType: Value(
+                    const SharingTypeConverter().fromSql(
+                      sharedFolder['sharing_type'],
+                    ),
+                  ),
+                  folderId: Value(sharedFolder['folder']['id']),
+                  createdAt: Value(
+                    sharedFolder['created_at'] ??
+                        DateTime.now().toIso8601String(),
+                  ),
+                ),
+                mode: InsertMode.insertOrReplace,
+              );
+        }
       }
     });
   }

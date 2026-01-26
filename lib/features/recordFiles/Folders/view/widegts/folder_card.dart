@@ -11,6 +11,8 @@ class FolderCard extends StatelessWidget {
   final Function(int id) onTap;
   final Function(int id) onDelete;
   final Function(PatientFolder folder) onRename;
+  final Function(PatientFolder folder)? onShare;
+  final Function(PatientFolder folder)? shareWith;
 
   const FolderCard({
     super.key,
@@ -18,6 +20,8 @@ class FolderCard extends StatelessWidget {
     required this.onTap,
     required this.onDelete,
     required this.onRename,
+    this.onShare,
+    this.shareWith,
   });
 
   @override
@@ -74,6 +78,14 @@ class FolderCard extends StatelessWidget {
           onSelected: (value) async {
             if (value == 'rename') {
               await onRename(folder);
+            } else if (value == 'share') {
+              if (onShare != null) {
+                await onShare!(folder);
+              }
+            } else if (value == 'shareWith') {
+              if (shareWith != null) {
+                await shareWith!(folder);
+              }
             } else if (value == 'delete') {
               showConfirmDialog(
                 context: context,
@@ -99,6 +111,28 @@ class FolderCard extends StatelessWidget {
                     ],
                   ),
                 ),
+                if (onShare != null)
+                  PopupMenuItem(
+                    value: 'share',
+                    child: Row(
+                      children: [
+                        Icon(Icons.share, color: ColorManager.primaryColor),
+                        8.horizontalSpace,
+                        Text('share'.tr()),
+                      ],
+                    ),
+                  ),
+                if (shareWith != null)
+                  PopupMenuItem(
+                    value: 'shareWith',
+                    child: Row(
+                      children: [
+                        Icon(Icons.share, color: ColorManager.primaryColor),
+                        8.horizontalSpace,
+                        Text('shareWith'.tr()),
+                      ],
+                    ),
+                  ),
                 PopupMenuItem(
                   value: 'delete',
                   child: Row(

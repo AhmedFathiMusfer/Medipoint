@@ -8,6 +8,9 @@ import 'package:diagno_bot/features/ai/chat/view/chat.view.dart';
 import 'package:diagno_bot/features/appointment/bookAppointment/view/bookAppointment.view.dart';
 import 'package:diagno_bot/features/appointment/index/cubit/appointment.cubit.dart';
 import 'package:diagno_bot/features/appointment/index/view/appointment.view.dart';
+import 'package:diagno_bot/features/appointment/appointmentDetails/cubit/appointment_details.cubit.dart';
+import 'package:diagno_bot/features/appointment/appointmentDetails/view/appointment_details.view.dart';
+import 'package:diagno_bot/core/model/appointment.model.dart';
 import 'package:diagno_bot/features/auth/login/cubit/login.cubit.dart';
 import 'package:diagno_bot/features/auth/login/view/login.view.dart';
 import 'package:diagno_bot/features/auth/forgetPassword/cubit/forgetPassword.cubit.dart';
@@ -120,6 +123,24 @@ class AppRouter {
               (context, animation, secondaryAnimation) => BlocProvider(
                 create: (_) => AppointmentCubit()..loadAll(),
                 child: AppointmentView(),
+              ),
+          transitionDuration: Duration.zero,
+        );
+      case Routers.appointmentDetailsView:
+        var args = settings.arguments as Map<String, dynamic>;
+        var appointment = args['appointment'] as AppointmentModel;
+        var onUpdated = args['onUpdated'] as VoidCallback?;
+        return PageRouteBuilder(
+          pageBuilder:
+              (context, animation, secondaryAnimation) => BlocProvider(
+                create: (_) => AppointmentDetailsCubit(
+                  appointmentId: appointment.id,
+                  doctorId: appointment.doctor.userId,
+                )..loadSharedFolders(),
+                child: AppointmentDetailsView(
+                  appointment: appointment,
+                  onAppointmentUpdated: onUpdated,
+                ),
               ),
           transitionDuration: Duration.zero,
         );

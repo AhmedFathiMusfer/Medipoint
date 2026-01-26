@@ -92,7 +92,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<void> fetchSpecialties() async {
     await RemoteProvider().send(
-      request: Request(url: ApiConstants.specialtyEndpoint),
+      request: Request(url: ApiConstants.specialtyEndpoint + '?page_size=100'),
       method: RemoteMethod.get,
       onSuccess: (res, statsCode) async {
         try {

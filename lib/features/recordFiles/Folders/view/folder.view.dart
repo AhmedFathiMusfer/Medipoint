@@ -3,6 +3,8 @@ import 'package:diagno_bot/core/helpers/extensions.dart';
 import 'package:diagno_bot/core/routing/router.dart';
 import 'package:diagno_bot/core/theming/color.dart';
 import 'package:diagno_bot/core/widgets/noData.dart';
+import 'package:diagno_bot/features/folderSharing/cubit/folder_sharing.cubit.dart';
+import 'package:diagno_bot/features/folderSharing/view/widgets/select_doctor_dialog.dart';
 import 'package:diagno_bot/features/recordFiles/Folders/cubit/folder.cubit.dart';
 import 'package:diagno_bot/features/recordFiles/Folders/cubit/folder.state.dart';
 import 'package:diagno_bot/features/recordFiles/Folders/view/widegts/folder_card.dart';
@@ -135,6 +137,40 @@ class PatientFoldersView extends StatelessWidget {
                                   return true;
                                 },
                               );
+                            },
+                            onShare: (folder) async {
+                              final selectedDoctor =
+                                  await showSelectDoctorDialog(
+                                    context: context,
+                                    shareFolderWithDoctor: ({
+                                      required String doctorId,
+                                    }) async {
+                                      final sharingCubit = FolderSharingCubit();
+                                      await sharingCubit.shareFolderWithDoctor(
+                                        folderId: folder.id,
+                                        doctorId: doctorId,
+                                      );
+                                    },
+                                  );
+                              //  context.pop();
+                              // Optionally, handle selectedDoctor if needed
+                            },
+                            shareWith: (folder) async {
+                              final selectedDoctor =
+                                  await showSelectDoctorDialog(
+                                    context: context,
+                                    shareFolderWithDoctor: ({
+                                      required String doctorId,
+                                    }) async {
+                                      final sharingCubit = FolderSharingCubit();
+                                      await sharingCubit.shareFolderWithDoctor(
+                                        folderId: folder.id,
+                                        doctorId: doctorId,
+                                      );
+                                    },
+                                  );
+                              //  context.pop();
+                              // Optionally, handle selectedDoctor if needed
                             },
                           );
                         },

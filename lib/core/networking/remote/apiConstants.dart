@@ -34,5 +34,10 @@ class ApiConstants {
   static String reviewComment(int commentId) => 'comments/$commentId/';
   static String reviewItemEndpoint(int reviewId) => 'reviews/$reviewId/';
 
+  // Folder Sharing endpoints
+  // static const String sharedFoldersEndpoint = "patients/me/shared-folders/";
+  static String shareFolderEndpoint = "patient-folders/shared/bulk/";
+  static String unshareFolderEndpoint = "patient-folders/shared/bulk/";
+
   static const String itemsEndpoint = "items";
 }
