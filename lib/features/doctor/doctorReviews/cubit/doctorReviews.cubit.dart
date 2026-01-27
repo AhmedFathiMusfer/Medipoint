@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:diagno_bot/core/database/drift_db.dart';
 import 'package:diagno_bot/core/helpers/networkHelper.dart';
 import 'package:diagno_bot/core/networking/errors/errorMesage.dart';

@@ -18,7 +18,6 @@ class CommentsCubit extends Cubit<CommentsState> {
   CommentsCubit({required this.db, required this.reviewId})
     : super(const CommentsState.initial());
 
-  /// 🔹 load all
   Future<void> loadAll() async {
     emit(const CommentsState.loading());
     await loadLocal();
@@ -36,7 +35,6 @@ class CommentsCubit extends Cubit<CommentsState> {
     emit(CommentsState.success(comments));
   }
 
-  /// 🔹 online
   Future<void> loadOnline() async {
     if (!await NetworkHelper.isConnected()) return;
 
@@ -55,7 +53,6 @@ class CommentsCubit extends Cubit<CommentsState> {
     );
   }
 
-  /// ➕ add comment
   Future<void> addComment({
     required String content,
     required CommentType type,
@@ -76,7 +73,6 @@ class CommentsCubit extends Cubit<CommentsState> {
     );
   }
 
-  /// ✏️ update comment
   Future<void> updateComment({
     required int commentId,
     required String content,
@@ -111,7 +107,6 @@ class CommentsCubit extends Cubit<CommentsState> {
     );
   }
 
-  /// 🗑️ delete comment
   Future<void> deleteComment(int commentId) async {
     await RemoteProvider().send(
       request: Request(url: ApiConstants.reviewComment(commentId)),
@@ -129,6 +124,7 @@ class CommentsCubit extends Cubit<CommentsState> {
 
   Future<void> insertComments(List comments) async {
     await db.batch((batch) {
+      batch.deleteWhere(db.comments, (tbl) => tbl.reviewId.equals(reviewId));
       batch.insertAllOnConflictUpdate(
         db.comments,
         comments.map((c) {

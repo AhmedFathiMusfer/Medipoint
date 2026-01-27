@@ -253,6 +253,10 @@ class DoctorDetailsCubit extends Cubit<DoctorDetailsState> {
         ),
         mode: InsertMode.insertOrReplace,
       );
+      batch.deleteWhere(
+        db.workingHours,
+        (tbl) => tbl.doctorId.equals(doctorId),
+      );
       for (var workingHour in workingHours) {
         batch.insert(
           db.workingHours,

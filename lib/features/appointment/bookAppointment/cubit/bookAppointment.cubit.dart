@@ -94,7 +94,9 @@ class BookAppointmentCubit extends Cubit<BookAppointmentState> {
 
     for (var wh in workingHours) {
       final start = DateTime.parse(wh.startTime);
-      days.add(start);
+      if (start.isAfter(DateTime.now())) {
+        days.add(start);
+      }
     }
 
     return days.toList()..sort();

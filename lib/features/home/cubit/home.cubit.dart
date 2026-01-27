@@ -177,6 +177,10 @@ class HomeCubit extends Cubit<HomeState> {
 
   insertDoctorWithUser(data) async {
     await db.batch((batch) {
+      batch.deleteAll(db.workingHours);
+      batch.deleteAll(db.reviews);
+      batch.deleteAll(db.doctors);
+      batch.deleteAll(db.users);
       for (final doctorJson in data) {
         final userJson = doctorJson['user'];
         final workingHours = doctorJson['working_hours'];

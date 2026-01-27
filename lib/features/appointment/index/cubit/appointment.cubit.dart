@@ -191,7 +191,6 @@ class AppointmentCubit extends Cubit<AppointmentState> {
           mode: InsertMode.insertOrReplace,
         );
         for (var sharedFolder in appointment['shared_folders']) {
-          log(sharedFolder.toString());
           await db
               .into(db.patientSharedFolders)
               .insert(
