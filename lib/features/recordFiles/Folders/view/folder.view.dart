@@ -5,6 +5,7 @@ import 'package:diagno_bot/core/theming/color.dart';
 import 'package:diagno_bot/core/widgets/noData.dart';
 import 'package:diagno_bot/features/folderSharing/cubit/folder_sharing.cubit.dart';
 import 'package:diagno_bot/features/folderSharing/view/widgets/select_doctor_dialog.dart';
+import 'package:diagno_bot/features/folderSharing/view/widgets/shared_doctors_dialog.dart';
 import 'package:diagno_bot/features/recordFiles/Folders/cubit/folder.cubit.dart';
 import 'package:diagno_bot/features/recordFiles/Folders/cubit/folder.state.dart';
 import 'package:diagno_bot/features/recordFiles/Folders/view/widegts/folder_card.dart';
@@ -105,6 +106,7 @@ class PatientFoldersView extends StatelessWidget {
                     child: AnimationLimiter(
                       child: ListView.separated(
                         padding: const EdgeInsets.all(20),
+                        physics: const BouncingScrollPhysics(),
                         separatorBuilder: (_, __) => const SizedBox(height: 15),
                         itemCount: folders.length,
                         itemBuilder: (context, index) {
@@ -139,38 +141,27 @@ class PatientFoldersView extends StatelessWidget {
                               );
                             },
                             onShare: (folder) async {
-                              final selectedDoctor =
-                                  await showSelectDoctorDialog(
-                                    context: context,
-                                    shareFolderWithDoctor: ({
-                                      required String doctorId,
-                                    }) async {
-                                      final sharingCubit = FolderSharingCubit();
-                                      await sharingCubit.shareFolderWithDoctor(
-                                        folderId: folder.id,
-                                        doctorId: doctorId,
-                                      );
-                                    },
+                              await showSelectDoctorDialog(
+                                context: context,
+                                folderId: folder.id,
+                                shareFolderWithDoctor: ({
+                                  required String doctorId,
+                                }) async {
+                                  final sharingCubit = FolderSharingCubit();
+                                  await sharingCubit.shareFolderWithDoctor(
+                                    folderId: folder.id,
+                                    doctorId: doctorId,
                                   );
-                              //  context.pop();
+                                },
+                              );
                               // Optionally, handle selectedDoctor if needed
                             },
                             shareWith: (folder) async {
-                              final selectedDoctor =
-                                  await showSelectDoctorDialog(
-                                    context: context,
-                                    shareFolderWithDoctor: ({
-                                      required String doctorId,
-                                    }) async {
-                                      final sharingCubit = FolderSharingCubit();
-                                      await sharingCubit.shareFolderWithDoctor(
-                                        folderId: folder.id,
-                                        doctorId: doctorId,
-                                      );
-                                    },
-                                  );
-                              //  context.pop();
-                              // Optionally, handle selectedDoctor if needed
+                              await showSharedDoctorsDialog(
+                                context: context,
+                                folderId: folder.id,
+                                folderName: folder.name,
+                              );
                             },
                           );
                         },

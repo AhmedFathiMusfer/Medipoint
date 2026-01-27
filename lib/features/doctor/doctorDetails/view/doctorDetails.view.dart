@@ -23,6 +23,7 @@ class DoctorDetailsView extends StatelessWidget {
       title: 'doctor_details'.tr(),
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
+        physics: const BouncingScrollPhysics(),
         child: BlocBuilder<DoctorDetailsCubit, DoctorDetailsState>(
           builder: (context, state) {
             return state.maybeMap(

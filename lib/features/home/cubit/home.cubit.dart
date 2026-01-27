@@ -1,6 +1,8 @@
 import 'dart:developer';
 
+import 'package:diagno_bot/core/auth/authManager.dart';
 import 'package:diagno_bot/core/database/drift_db.dart';
+import 'package:diagno_bot/core/database/tables/patient_shared_folders_tables.dart';
 import 'package:diagno_bot/core/helpers/networkHelper.dart';
 import 'package:diagno_bot/core/model/doctor.model.dart';
 import 'package:diagno_bot/core/networking/errors/errorMesage.dart';
@@ -127,6 +129,9 @@ class HomeCubit extends Cubit<HomeState> {
             if (res.data['doctors'].isNotEmpty) {
               await insertDoctorWithUser(res.data['doctors']);
             }
+            if (res.data['shared_folders'].isNotEmpty) {
+              await insertSharedFolder(res.data['shared_folders']);
+            }
           } catch (ex) {
             AppSnackBar.error(
               '${ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected)}+${ex.toString()}',
@@ -246,6 +251,42 @@ class HomeCubit extends Cubit<HomeState> {
               'updatedAt': review['updated_at'],
             });
           }),
+        );
+      }
+    });
+  }
+
+  Future<void> insertSharedFolder(dynamic sharedFolders) async {
+    await db.batch((batch) {
+      for (var data in sharedFolders) {
+        data['createdAt'] =
+            data['created_at'] ?? DateTime.now().toIso8601String();
+        data['sharingType'] = data['sharing_type'];
+        data['doctorId'] = data['doctor'];
+        data['folderId'] = data['folder'] != null ? data['folder']['id'] : null;
+        data['appointmentId'] = data['appointment'];
+        log(data.toString());
+        batch.insert(
+          db.patientSharedFolders,
+          PatientSharedFoldersCompanion(
+            id: Value(data['id'] as int),
+            patientId: Value(AuthManager().currentUser!.id),
+            doctorId: Value(data['doctorId'] as String),
+            folderId: Value(data['folderId'] as int),
+            appointmentId:
+                data['appointmentId'] == null
+                    ? const Value.absent()
+                    : Value(data['appointmentId'] as int),
+            sharingType: Value(
+              const SharingTypeConverter().fromSql(
+                data['sharingType'] as String,
+              ),
+            ),
+            createdAt: Value(
+              data['createdAt'] as String? ?? DateTime.now().toIso8601String(),
+            ),
+          ),
+          mode: InsertMode.insertOrReplace,
         );
       }
     });

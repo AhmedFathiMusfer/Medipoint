@@ -246,5 +246,14 @@
   "share_folders_hint": "Share your medical folders with the doctor for better consultation",
   "unshare_folder": "Unshare Folder",
   "confirm_unshare_folder": "Are you sure you want to unshare this folder?",
-  "view_details": "View Details"
+  "view_details": "View Details",
+  "shared_with": "Shared With",
+  "no_shared_doctors": "No shared doctors",
+  "folder_not_shared_with_anyone": "This folder is not shared with any doctor",
+  "error_loading_shared_doctors": "Error loading shared doctors",
+  "confirm_unshare": "Confirm Unshare",
+  "are_you_sure_unshare_with": "Are you sure you want to unshare with",
+  "unshare": "Unshare",
+  "via_appointment": "Via Appointment",
+  "direct_share": "Direct Share"
 }

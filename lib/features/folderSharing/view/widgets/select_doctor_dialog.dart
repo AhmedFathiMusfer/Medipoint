@@ -8,11 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// Dialog لاختيار دكتور للمشاركة معه
 Future<DoctorModel?> showSelectDoctorDialog({
   required Future<void> Function({required String doctorId})
   shareFolderWithDoctor,
   required BuildContext context,
+  required int folderId,
 }) async {
   return showModalBottomSheet<DoctorModel>(
     context: context,
@@ -20,7 +20,7 @@ Future<DoctorModel?> showSelectDoctorDialog({
     backgroundColor: Colors.transparent,
     builder: (context) {
       return BlocProvider(
-        create: (_) => FolderSharingCubit()..loadDoctors(),
+        create: (_) => FolderSharingCubit()..loadDoctors(folderId),
         child: _SelectDoctorContent(
           shareFolderWithDoctor: shareFolderWithDoctor,
         ),
@@ -236,7 +236,7 @@ class _DoctorTile extends StatelessWidget {
                     ),
                   )
                   : Icon(
-                    Icons.arrow_forward_ios_rounded,
+                    Icons.share,
                     size: 16.r,
                     color: ColorManager.primaryColor,
                   ),

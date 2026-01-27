@@ -11,6 +11,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 Future<PatientFolder?> showSelectFolderDialog({
   required Future<void> Function({required int folderId})
   shareFolderWithAppointment,
+  required int appointmentId,
   required BuildContext context,
 }) async {
   return showModalBottomSheet<PatientFolder>(
@@ -19,7 +20,7 @@ Future<PatientFolder?> showSelectFolderDialog({
     backgroundColor: Colors.transparent,
     builder: (context) {
       return BlocProvider(
-        create: (_) => FolderSharingCubit()..loadFolders(),
+        create: (_) => FolderSharingCubit()..loadFolders(appointmentId),
         child: _SelectFolderContent(
           shareFolderWithAppointment: shareFolderWithAppointment,
         ),
@@ -250,7 +251,7 @@ class _FolderTile extends StatelessWidget {
                       color: ColorManager.primaryColor,
                     ),
                   )
-                  : Icon(Icons.chevron_right, color: ColorManager.primaryColor),
+                  : Icon(Icons.share, color: ColorManager.primaryColor),
           onTap: () async {
             setState(() {
               _isLoading = true;

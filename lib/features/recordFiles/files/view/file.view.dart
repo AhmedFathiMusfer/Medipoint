@@ -103,6 +103,7 @@ class PatientFilesView extends StatelessWidget {
                   if (files.isEmpty) Nodata(),
                   Expanded(
                     child: ListView.separated(
+                      physics: const BouncingScrollPhysics(),
                       padding: const EdgeInsets.all(16),
                       itemCount: files.length,
                       separatorBuilder: (_, __) => const SizedBox(height: 12),

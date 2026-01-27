@@ -122,17 +122,17 @@ class FolderCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                // if (shareWith != null)
-                //   PopupMenuItem(
-                //     value: 'shareWith',
-                //     child: Row(
-                //       children: [
-                //         Icon(Icons.share, color: ColorManager.primaryColor),
-                //         8.horizontalSpace,
-                //         Text('shareWith'.tr()),
-                //       ],
-                //     ),
-                //   ),
+                if (shareWith != null)
+                  PopupMenuItem(
+                    value: 'shareWith',
+                    child: Row(
+                      children: [
+                        Icon(Icons.people_outline, color: ColorManager.primaryColor),
+                        8.horizontalSpace,
+                        Text('shared_with'.tr()),
+                      ],
+                    ),
+                  ),
                 PopupMenuItem(
                   value: 'delete',
                   child: Row(

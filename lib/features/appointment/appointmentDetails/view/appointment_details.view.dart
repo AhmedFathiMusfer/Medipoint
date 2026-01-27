@@ -527,6 +527,7 @@ class AppointmentDetailsView extends StatelessWidget {
                 onTap: () async {
                   final selectedFolder = await showSelectFolderDialog(
                     context: context,
+                    appointmentId: appointment.id,
                     shareFolderWithAppointment: ({required folderId}) async {
                       final sharingCubit = FolderSharingCubit();
                       await sharingCubit.shareFolderViaAppointment(

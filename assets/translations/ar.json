@@ -248,5 +248,14 @@
   "share_folders_hint": "شارك مجلداتك الطبية مع الطبيب لتسهيل الاستشارة",
   "unshare_folder": "إلغاء مشاركة المجلد",
   "confirm_unshare_folder": "هل أنت متأكد من إلغاء مشاركة هذا المجلد؟",
-  "view_details": "عرض التفاصيل"
+  "view_details": "عرض التفاصيل",
+  "shared_with": "مشارك مع",
+  "no_shared_doctors": "لا يوجد دكاترة مشاركين",
+  "folder_not_shared_with_anyone": "هذا المجلد غير مشارك مع أي دكتور",
+  "error_loading_shared_doctors": "حدث خطأ في تحميل الدكاترة المشاركين",
+  "confirm_unshare": "تأكيد إلغاء المشاركة",
+  "are_you_sure_unshare_with": "هل أنت متأكد من إلغاء المشاركة مع",
+  "unshare": "إلغاء المشاركة",
+  "via_appointment": "عبر الحجز",
+  "direct_share": "مشاركة مباشرة"
 }

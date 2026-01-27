@@ -19,10 +19,10 @@ class FolderSharingCubit extends Cubit<FolderSharingState> {
   FolderSharingCubit() : super(const FolderSharingState.initial());
   AppDatabase db = AppDatabase();
 
-  Future<void> loadDoctors() async {
+  Future<void> loadDoctors(int folderId) async {
     emit(const FolderSharingState.loading());
     try {
-      final doctors = await _getDoctorsFromDb();
+      final doctors = await _getDoctorsFromDb(folderId);
       if (!isClosed) {
         emit(FolderSharingState.doctorsLoaded(doctors: doctors));
       }
@@ -40,10 +40,10 @@ class FolderSharingCubit extends Cubit<FolderSharingState> {
     }
   }
 
-  Future<void> loadFolders() async {
+  Future<void> loadFolders(int appointmentId) async {
     emit(const FolderSharingState.loading());
     try {
-      final folders = await _getFoldersFromDb();
+      final folders = await _getFoldersFromDb(appointmentId);
       if (!isClosed) {
         emit(FolderSharingState.foldersLoaded(folders: folders));
       }
@@ -145,7 +145,6 @@ class FolderSharingCubit extends Cubit<FolderSharingState> {
     return success;
   }
 
-  /// إلغاء مشاركة مجلد
   Future<bool> unshareFolder(int shareId) async {
     bool isConnected = await NetworkHelper.isConnected();
     if (!isConnected) {
@@ -178,11 +177,22 @@ class FolderSharingCubit extends Cubit<FolderSharingState> {
 
   // ******************** Database Operations ********************
 
-  Future<List<DoctorModel>> _getDoctorsFromDb() async {
+  Future<List<DoctorModel>> _getDoctorsFromDb(int folderId) async {
     final result =
         await (db.select(db.doctors).join([
           innerJoin(db.users, db.users.id.equalsExp(db.doctors.userId)),
-        ])).get();
+        ])..where(
+          db.doctors.userId.isNotInQuery(
+            db.selectOnly(db.patientSharedFolders)
+              ..addColumns([db.patientSharedFolders.doctorId])
+              ..where(
+                db.patientSharedFolders.folderId.equals(folderId) &
+                    db.patientSharedFolders.sharingType.equals(
+                      SharingType.DOCTOR.name,
+                    ),
+              ),
+          ),
+        )).get();
 
     final jsonList =
         result.map((row) {
@@ -199,8 +209,49 @@ class FolderSharingCubit extends Cubit<FolderSharingState> {
         .toList();
   }
 
-  Future<List<PatientFolder>> _getFoldersFromDb() async {
-    return await db.select(db.patientFolders).get();
+  Future<List<PatientFolder>> _getFoldersFromDb(int appointmentId) async {
+    final result =
+        await (db.select(db.patientFolders)..where(
+          (folder) => folder.id.isNotInQuery(
+            db.selectOnly(db.patientSharedFolders)
+              ..addColumns([db.patientSharedFolders.folderId])
+              ..where(
+                db.patientSharedFolders.appointmentId.equals(appointmentId) &
+                    db.patientSharedFolders.sharingType.equals(
+                      SharingType.APPOINTMENT.name,
+                    ),
+              ),
+          ),
+        )).get();
+
+    return result;
+  }
+
+  Future<List<Map<String, dynamic>>> getSharedDoctorsForFolder(
+    int folderId,
+  ) async {
+    final result =
+        await (db.select(db.patientSharedFolders).join([
+          innerJoin(
+            db.doctors,
+            db.doctors.userId.equalsExp(db.patientSharedFolders.doctorId),
+          ),
+          innerJoin(db.users, db.users.id.equalsExp(db.doctors.userId)),
+        ])..where(db.patientSharedFolders.folderId.equals(folderId))).get();
+
+    return result.map((row) {
+      final share = row.readTable(db.patientSharedFolders);
+      final doctor = row.readTable(db.doctors).toJson();
+      final user = row.readTable(db.users).toJson();
+      doctor['status'] = DoctorModelStatusConverter().toJson(doctor['status']);
+
+      return {
+        'shareId': share.id,
+        'sharingType': share.sharingType.name,
+        'createdAt': share.createdAt,
+        'doctor': DoctorModel.fromJson({...doctor, ...user}),
+      };
+    }).toList();
   }
 
   Future<void> _insertSharedFolder(Map<String, Object?> data) async {

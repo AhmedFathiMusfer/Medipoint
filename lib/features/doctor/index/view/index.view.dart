@@ -29,6 +29,7 @@ class DoctorsView extends StatelessWidget {
               },
               success: (state) {
                 return SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
