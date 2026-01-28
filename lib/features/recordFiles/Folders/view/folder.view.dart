@@ -4,7 +4,9 @@ import 'package:diagno_bot/core/routing/router.dart';
 import 'package:diagno_bot/core/theming/color.dart';
 import 'package:diagno_bot/core/widgets/noData.dart';
 import 'package:diagno_bot/features/folderSharing/cubit/folder_sharing.cubit.dart';
+import 'package:diagno_bot/features/folderSharing/view/widgets/qr_scanner_dialog.dart';
 import 'package:diagno_bot/features/folderSharing/view/widgets/select_doctor_dialog.dart';
+import 'package:diagno_bot/features/folderSharing/view/widgets/share_method_dialog.dart';
 import 'package:diagno_bot/features/folderSharing/view/widgets/shared_doctors_dialog.dart';
 import 'package:diagno_bot/features/recordFiles/Folders/cubit/folder.cubit.dart';
 import 'package:diagno_bot/features/recordFiles/Folders/cubit/folder.state.dart';
@@ -141,20 +143,40 @@ class PatientFoldersView extends StatelessWidget {
                               );
                             },
                             onShare: (folder) async {
-                              await showSelectDoctorDialog(
+                              final method = await showShareMethodDialog(
                                 context: context,
-                                folderId: folder.id,
-                                shareFolderWithDoctor: ({
-                                  required String doctorId,
-                                }) async {
+                              );
+                              
+                              if (method == null) return;
+                              
+                              if (method == ShareMethod.qrCode) {
+                                // Scan QR code
+                                final doctorId = await showQRScannerDialog(
+                                  context: context,
+                                );
+                                if (doctorId != null && context.mounted) {
                                   final sharingCubit = FolderSharingCubit();
                                   await sharingCubit.shareFolderWithDoctor(
                                     folderId: folder.id,
                                     doctorId: doctorId,
                                   );
-                                },
-                              );
-                              // Optionally, handle selectedDoctor if needed
+                                }
+                              } else {
+                                // Select doctor manually
+                                await showSelectDoctorDialog(
+                                  context: context,
+                                  folderId: folder.id,
+                                  shareFolderWithDoctor: ({
+                                    required String doctorId,
+                                  }) async {
+                                    final sharingCubit = FolderSharingCubit();
+                                    await sharingCubit.shareFolderWithDoctor(
+                                      folderId: folder.id,
+                                      doctorId: doctorId,
+                                    );
+                                  },
+                                );
+                              }
                             },
                             shareWith: (folder) async {
                               await showSharedDoctorsDialog(

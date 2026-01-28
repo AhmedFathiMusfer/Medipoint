@@ -257,5 +257,14 @@
   "are_you_sure_unshare_with": "هل أنت متأكد من إلغاء المشاركة مع",
   "unshare": "إلغاء المشاركة",
   "via_appointment": "عبر الحجز",
-  "direct_share": "مشاركة مباشرة"
+  "direct_share": "مشاركة مباشرة",
+  "choose_share_method": "اختر طريقة المشاركة",
+  "choose_share_method_desc": "كيف تريد مشاركة هذا المجلد مع الدكتور؟",
+  "scan_qr_code": "مسح رمز QR",
+  "scan_qr_code_desc": "امسح رمز QR الخاص بالدكتور للمشاركة الفورية",
+  "select_doctor_desc": "تصفح واختر دكتور من القائمة",
+  "scan_doctor_qr": "امسح رمز QR الخاص بالدكتور",
+  "scan_doctor_qr_hint": "وجه الكاميرا نحو رمز QR الخاص بالدكتور لمشاركة مجلدك",
+  "invalid_qr_code": "رمز QR غير صالح",
+  "qr_scan_error": "تعذر قراءة رمز QR. يرجى المحاولة مرة أخرى."
 }

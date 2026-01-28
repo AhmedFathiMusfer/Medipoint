@@ -78,10 +78,11 @@ class FileCubit extends Cubit<FileState> {
   createNewFile(String name, String filePath) async {
     bool isConnected = await NetworkHelper.isConnected();
     if (isConnected) {
+      final extension = filePath.lastIndexOf('.');
       FormData data = FormData.fromMap({
         'name': name,
         'folder': folderId,
-        'file': await MultipartFile.fromFile(filePath, filename: name),
+        'file': await MultipartFile.fromFile(filePath),
       });
       state.mapOrNull(
         success: (s) {

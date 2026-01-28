@@ -18,6 +18,7 @@ class SpecialtiesView extends StatelessWidget {
     return BaseView(
       title: 'specialties_title'.tr(),
       child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0.w),
           child: Column(

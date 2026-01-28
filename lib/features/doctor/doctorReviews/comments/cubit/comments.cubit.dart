@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:diagno_bot/core/database/tables/comments_tables.dart';
 import 'package:diagno_bot/core/helpers/networkHelper.dart';
 import 'package:diagno_bot/core/networking/errors/errorMesage.dart';
@@ -31,7 +33,9 @@ class CommentsCubit extends Cubit<CommentsState> {
               ..where((t) => t.reviewId.equals(reviewId))
               ..orderBy([(t) => OrderingTerm.asc(t.createdAt)]))
             .get();
-
+    log(
+      'Loaded ${comments.length} comments from local DB for reviewId: $reviewId',
+    );
     emit(CommentsState.success(comments));
   }
 
@@ -92,7 +96,7 @@ class CommentsCubit extends Cubit<CommentsState> {
                 'reviewId': res.data['review'],
                 'userId': res.data['user']['id'],
                 'userName': res.data['user']['full_name'],
-                'userImage': res.data['user']['image'],
+                'userImage': res.data['user']['image'] ?? 'empty',
                 'type': CommentTypeConverter().fromSql(res.data['type']),
 
                 'createdAt': res.data['created_at'],
@@ -133,7 +137,7 @@ class CommentsCubit extends Cubit<CommentsState> {
             'reviewId': c['review'],
             'userId': c['user']['id'],
             'userName': c['user']['full_name'],
-            'userImage': c['user']['image'],
+            'userImage': c['user']['image'] ?? 'empty',
             'type': CommentTypeConverter().fromSql(c['type']),
             'createdAt': c['created_at'],
             'updatedAt': c['updated_at'],

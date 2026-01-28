@@ -255,5 +255,14 @@
   "are_you_sure_unshare_with": "Are you sure you want to unshare with",
   "unshare": "Unshare",
   "via_appointment": "Via Appointment",
-  "direct_share": "Direct Share"
+  "direct_share": "Direct Share",
+  "choose_share_method": "Choose Sharing Method",
+  "choose_share_method_desc": "How would you like to share this folder with a doctor?",
+  "scan_qr_code": "Scan QR Code",
+  "scan_qr_code_desc": "Scan the doctor's QR code to share instantly",
+  "select_doctor_desc": "Browse and select a doctor from the list",
+  "scan_doctor_qr": "Scan Doctor's QR Code",
+  "scan_doctor_qr_hint": "Point your camera at the doctor's QR code to share your folder",
+  "invalid_qr_code": "Invalid QR Code",
+  "qr_scan_error": "Could not read the QR code. Please try again."
 }

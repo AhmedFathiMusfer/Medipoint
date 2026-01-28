@@ -70,6 +70,7 @@ class _AppointmentViewState extends State<AppointmentView>
                   const Divider(height: 1),
                   Expanded(
                     child: TabBarView(
+                      physics: const BouncingScrollPhysics(),
                       controller: controller,
                       children: [
                         _buildUpcoming(
@@ -122,6 +123,7 @@ class _AppointmentViewState extends State<AppointmentView>
 
     return ListView(
       padding: const EdgeInsets.all(16),
+      physics: const BouncingScrollPhysics(),
       children: [
         ...appointments.map(
           (appointment) => AppintmentCard(
