@@ -1,8 +1,12 @@
 class ApiConstants {
+  static const String rootUrl = "https://api.decodaai.com";
+
   static const String baseUrl = "https://api.decodaai.com/api/";
 
   static const String loginEndpoint = "auth/token/";
   static const String registerEndpoint = "auth/register/";
+  static const String verifyCodeEmailEndpoint = "auth/verify-email/";
+
   static const String forgetPasswordEndpoint = "auth/password/reset/";
   static const String verifyCodeEndpoint = "auth/password/reset/verify/";
   static const String resetPasswordEndpoint = "auth/password/reset/confirm/";
@@ -11,7 +15,7 @@ class ApiConstants {
   static const String initEndpoint = "doctors/init/";
   static const String doctorEndpoint = "doctors/";
   static const String specialtyEndpoint = "specialties/";
-  static const String profileEndpoint = "auth/me/";
+  static const String profileEndpoint = "auth/me/patient/";
   static const String chatEndpoint = "chat/";
   static const String appointmentsEndpoint = "appointments/";
   static String createPaymentIntentEndpoint(int appointmentid) =>
@@ -24,5 +28,16 @@ class ApiConstants {
   static const String foldersEndpoint = "patients/me/folders/";
   static const String refreshTokenEndpoint = "${baseUrl}auth/token/refresh/";
   static filesEndpoint(int folderId) => "folders/$folderId/files/";
+  static fileDeleteEndpoint(int fileId) => "files/$fileId/";
+  static fileUpdateEndpoint(int fileId) => "files/$fileId/";
+  static String reviewComments(int reviewid) => 'reviews/$reviewid/comments/';
+  static String reviewComment(int commentId) => 'comments/$commentId/';
+  static String reviewItemEndpoint(int reviewId) => 'reviews/$reviewId/';
+
+  // Folder Sharing endpoints
+  // static const String sharedFoldersEndpoint = "patients/me/shared-folders/";
+  static String shareFolderEndpoint = "patient-folders/shared/bulk/";
+  static String unshareFolderEndpoint = "patient-folders/shared/bulk/";
+
   static const String itemsEndpoint = "items";
 }

@@ -9,11 +9,14 @@ class AppointmentModel {
   @JsonKey(name: 'datetime')
   final String dateTime;
   final AppointmentStatus status;
+  final String? fees;
+
   final DoctorModel doctor;
 
   AppointmentModel({
     required this.id,
     required this.dateTime,
+    required this.fees,
     required this.status,
     required this.doctor,
   });

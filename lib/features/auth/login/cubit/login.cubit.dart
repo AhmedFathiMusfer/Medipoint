@@ -9,24 +9,17 @@ import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/features/auth/login/cubit/login.state.dart';
 import 'package:diagno_bot/features/auth/login/form/login.form.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  LoginCubit() : super(LoginState.initial());
-
+  LoginCubit() : super(const LoginState.initial());
   LoginForm form = LoginForm();
-  inital() {
-    var user = AuthManager().currentUser;
-    log(user.toString());
-    if (user != null) {
-      form.emailController.text = user.email;
-      form.passwordController.text = user.password ?? "";
-    }
-  }
 
   supmit() async {
     if (form.key.currentState!.validate()) {
-      emit(LoginState.initial(loading: true));
+      emit(LoginState.loding(loading: true));
+
       bool isConnected = await NetworkHelper.isConnected();
       if (isConnected) {
         await RemoteProvider().send(
@@ -34,29 +27,35 @@ class LoginCubit extends Cubit<LoginState> {
           method: RemoteMethod.post,
           onSuccess: (res, statsCode) async {
             log(res.toString());
+            if (res.data["message"] != null &&
+                res.data["message"].toString().contains(
+                  "Verification OTP resent. Please verify your email",
+                )) {
+              emit(LoginState.verifyEmail());
+              return;
+            }
             await AuthManager().setToken(res.data);
             emit(LoginState.loginSuccess());
           },
           onError: (_, statsCode) {
             if (statsCode == 400) {
-              AppSnackBar.error('the data entry is inValid');
-              emit(LoginState.initial(loading: false));
+              AppSnackBar.error('error_invalid_data_entry'.tr());
+              emit(LoginState.loding(loading: false));
             } else if (statsCode == 401) {
-              AppSnackBar.error('Incorrect email or password.');
-              emit(LoginState.initial(loading: false));
+              AppSnackBar.error('error_incorrect_email_password'.tr());
+              emit(LoginState.loding(loading: false));
             } else {
               AppSnackBar.error(
                 ErrorMessages.instance.fromExceptionType(
                   ExceptionTypes.unexpected,
                 ),
               );
-              emit(LoginState.initial(loading: false));
+              emit(LoginState.loding(loading: false));
             }
           },
         );
       } else {
-        emit(LoginState.initial(loading: false));
-
+        emit(LoginState.loding(loading: false));
         AppSnackBar.error(
           ErrorMessages.instance.fromExceptionType(ExceptionTypes.connection),
         );

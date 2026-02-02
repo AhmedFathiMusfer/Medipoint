@@ -3,10 +3,16 @@ import 'package:diagno_bot/core/helpers/extensions.dart';
 import 'package:diagno_bot/core/routing/router.dart';
 import 'package:diagno_bot/core/theming/color.dart';
 import 'package:diagno_bot/core/widgets/noData.dart';
+import 'package:diagno_bot/features/folderSharing/cubit/folder_sharing.cubit.dart';
+import 'package:diagno_bot/features/folderSharing/view/widgets/qr_scanner_dialog.dart';
+import 'package:diagno_bot/features/folderSharing/view/widgets/select_doctor_dialog.dart';
+import 'package:diagno_bot/features/folderSharing/view/widgets/share_method_dialog.dart';
+import 'package:diagno_bot/features/folderSharing/view/widgets/shared_doctors_dialog.dart';
 import 'package:diagno_bot/features/recordFiles/Folders/cubit/folder.cubit.dart';
 import 'package:diagno_bot/features/recordFiles/Folders/cubit/folder.state.dart';
 import 'package:diagno_bot/features/recordFiles/Folders/view/widegts/folder_card.dart';
 import 'package:diagno_bot/features/recordFiles/Folders/view/widegts/show_create_folder_dialog.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,7 +25,7 @@ class PatientFoldersView extends StatelessWidget {
   Widget build(BuildContext context) {
     var folderCubit = context.read<FolderCubit>();
     return BaseView(
-      title: "folders",
+      title: "folders".tr(),
       floatingActionButton: BlocBuilder<FolderCubit, FolderState>(
         builder: (context, state) {
           return state.maybeWhen(
@@ -28,10 +34,19 @@ class PatientFoldersView extends StatelessWidget {
               return FloatingActionButton.extended(
                 backgroundColor: ColorManager.primaryColor,
                 onPressed: () {
-                  showCreateFolderDialog(
+                  // showCreateFolderDialog(
+                  //   context: context,
+                  //   onCreate: (name, description) async {
+                  //     await folderCubit.createNewFolder(name, description);
+                  //     return true;
+                  //   },
+                  // );
+                  showFolderDialog(
                     context: context,
-                    onCreate: (name, description) async {
-                      await folderCubit.createNewFolder(name, description);
+                    title: 'create_new_folder'.tr(),
+                    confirmText: 'create'.tr(),
+                    onSubmit: (name, desc) async {
+                      await folderCubit.createNewFolder(name, desc);
                       return true;
                     },
                   );
@@ -40,7 +55,7 @@ class PatientFoldersView extends StatelessWidget {
                   Icons.create_new_folder_rounded,
                   color: Colors.white,
                 ),
-                label: const Text("New", style: TextStyle(color: Colors.white)),
+                label: Text("new".tr(), style: TextStyle(color: Colors.white)),
               );
             },
           );
@@ -73,7 +88,7 @@ class PatientFoldersView extends StatelessWidget {
                             vertical: 12.h,
                             horizontal: 12.w,
                           ),
-                          hintText: 'Search folder...',
+                          hintText: 'search_folder'.tr(),
                           hintStyle: const TextStyle(color: Colors.grey),
                           border: InputBorder.none,
                           prefixIcon: const Icon(
@@ -87,11 +102,13 @@ class PatientFoldersView extends StatelessWidget {
                       ),
                     ),
                   ),
+
                   if (folders.isEmpty) Nodata(),
                   Expanded(
                     child: AnimationLimiter(
                       child: ListView.separated(
                         padding: const EdgeInsets.all(20),
+                        physics: const BouncingScrollPhysics(),
                         separatorBuilder: (_, __) => const SizedBox(height: 15),
                         itemCount: folders.length,
                         itemBuilder: (context, index) {
@@ -103,6 +120,69 @@ class PatientFoldersView extends StatelessWidget {
                               context.pushNamed(
                                 Routers.fileView,
                                 arguments: id,
+                              );
+                            },
+                            onDelete: (id) async {
+                              await folderCubit.deleteFolder(id);
+                            },
+                            onRename: (folder) {
+                              showFolderDialog(
+                                context: context,
+                                title: 'edit_folder'.tr(),
+                                initialName: folder.name,
+                                initialDesc: folder.description,
+                                confirmText: 'save'.tr(),
+                                onSubmit: (name, desc) async {
+                                  await folderCubit.renameFolder(
+                                    id: folder.id,
+                                    name: name,
+                                    description: desc,
+                                  );
+                                  return true;
+                                },
+                              );
+                            },
+                            onShare: (folder) async {
+                              final method = await showShareMethodDialog(
+                                context: context,
+                              );
+                              
+                              if (method == null) return;
+                              
+                              if (method == ShareMethod.qrCode) {
+                                // Scan QR code
+                                final doctorId = await showQRScannerDialog(
+                                  context: context,
+                                );
+                                if (doctorId != null && context.mounted) {
+                                  final sharingCubit = FolderSharingCubit();
+                                  await sharingCubit.shareFolderWithDoctor(
+                                    folderId: folder.id,
+                                    doctorId: doctorId,
+                                  );
+                                }
+                              } else {
+                                // Select doctor manually
+                                await showSelectDoctorDialog(
+                                  context: context,
+                                  folderId: folder.id,
+                                  shareFolderWithDoctor: ({
+                                    required String doctorId,
+                                  }) async {
+                                    final sharingCubit = FolderSharingCubit();
+                                    await sharingCubit.shareFolderWithDoctor(
+                                      folderId: folder.id,
+                                      doctorId: doctorId,
+                                    );
+                                  },
+                                );
+                              }
+                            },
+                            shareWith: (folder) async {
+                              await showSharedDoctorsDialog(
+                                context: context,
+                                folderId: folder.id,
+                                folderName: folder.name,
                               );
                             },
                           );

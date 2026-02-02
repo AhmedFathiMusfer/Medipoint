@@ -5,6 +5,7 @@ import 'package:diagno_bot/core/database/tables/doctor_tables.dart';
 import 'package:diagno_bot/core/database/tables/news_tables.dart';
 import 'package:diagno_bot/core/database/tables/patient_files_tables.dart';
 import 'package:diagno_bot/core/database/tables/patient_folders_tables.dart';
+import 'package:diagno_bot/core/database/tables/patient_shared_folders_tables.dart';
 import 'package:diagno_bot/core/database/tables/patients_tables.dart';
 import 'package:diagno_bot/core/database/tables/reviews_tables.dart';
 import 'package:diagno_bot/core/database/tables/specialties_tables.dart';
@@ -30,6 +31,7 @@ part 'drift_db.g.dart';
     Appointments,
     PatientFolders,
     PatientFiles,
+    PatientSharedFolders,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -82,6 +84,7 @@ extension AppDatabaseClear on AppDatabase {
         batch.deleteAll(appointments);
         batch.deleteAll(patientFolders);
         batch.deleteAll(patientFiles);
+        batch.deleteAll(patientSharedFolders);
       });
     });
   }

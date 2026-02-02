@@ -1,5 +1,8 @@
+import 'dart:developer';
+
+import 'package:diagno_bot/core/auth/authManager.dart';
 import 'package:diagno_bot/core/database/drift_db.dart';
-import 'package:diagno_bot/core/database/tables/doctor_tables.dart';
+import 'package:diagno_bot/core/database/tables/patient_shared_folders_tables.dart';
 import 'package:diagno_bot/core/helpers/networkHelper.dart';
 import 'package:diagno_bot/core/model/doctor.model.dart';
 import 'package:diagno_bot/core/networking/errors/errorMesage.dart';
@@ -10,6 +13,7 @@ import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/features/home/cubit/home.state.dart';
 import 'package:drift/drift.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeCubit extends Cubit<HomeState> {
@@ -19,20 +23,23 @@ class HomeCubit extends Cubit<HomeState> {
     New(
       id: 0,
       date: DateTime.now(),
-      title: 'Looking for\nSpecialist Doctors?',
-      image: 'assets/image/final_on_obourding_image.png',
+      title: 'meet_doctors_online'.tr(),
+      image: 'assets/image/first_on_obourding_image.png',
+      description: 'onboarding_description_1'.tr(),
     ),
     New(
       id: 0,
       date: DateTime.now(),
-      title: 'Looking for\nSpecialist Doctors?',
-      image: 'assets/image/final_on_obourding_image.png',
+      title: 'connect_with_specialists'.tr(),
+      image: 'assets/image/sconde_on_obourding_image.png',
+      description: 'onboarding_description_2'.tr(),
     ),
     New(
       id: 0,
       date: DateTime.now(),
-      title: 'Looking for\nSpecialist Doctors?',
+      title: 'thousands_of_online_specialists'.tr(),
       image: 'assets/image/final_on_obourding_image.png',
+      description: 'onboarding_description_3'.tr(),
     ),
   ];
 
@@ -52,7 +59,7 @@ class HomeCubit extends Cubit<HomeState> {
       if (!isClosed) {
         emit(
           HomeState.success(
-            specialties: specialties,
+            specialties: specialties.take(6).toList(),
             doctors: doctors,
             filteredDoctors: doctors,
           ),
@@ -87,7 +94,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<void> fetchSpecialties() async {
     await RemoteProvider().send(
-      request: Request(url: ApiConstants.specialtyEndpoint),
+      request: Request(url: ApiConstants.specialtyEndpoint + '?page_size=100'),
       method: RemoteMethod.get,
       onSuccess: (res, statsCode) async {
         try {
@@ -114,9 +121,16 @@ class HomeCubit extends Cubit<HomeState> {
         request: Request(url: ApiConstants.initEndpoint),
         method: RemoteMethod.get,
         onSuccess: (res, statsCode) async {
+          log(res.data.toString());
           try {
+            // if (res.data['specialties'].isNotEmpty) {
+            //   await insertSpecialties(res.data['specialties']);
+            // }
             if (res.data['doctors'].isNotEmpty) {
               await insertDoctorWithUser(res.data['doctors']);
+            }
+            if (res.data['shared_folders'].isNotEmpty) {
+              await insertSharedFolder(res.data['shared_folders']);
             }
           } catch (ex) {
             AppSnackBar.error(
@@ -168,6 +182,10 @@ class HomeCubit extends Cubit<HomeState> {
 
   insertDoctorWithUser(data) async {
     await db.batch((batch) {
+      batch.deleteAll(db.workingHours);
+      batch.deleteAll(db.reviews);
+      batch.deleteAll(db.doctors);
+      batch.deleteAll(db.users);
       for (final doctorJson in data) {
         final userJson = doctorJson['user'];
         final workingHours = doctorJson['working_hours'];
@@ -195,6 +213,7 @@ class HomeCubit extends Cubit<HomeState> {
             experience: Value(doctorJson['experience']),
             education: Value(doctorJson['education']),
             specialty: Value(doctorJson['specialty']),
+            specialtyAr: Value(doctorJson['specialty_ar']),
             about: Value(doctorJson['about']),
             addressLine1: Value(doctorJson['address_line1']),
             addressLine2: Value(doctorJson['address_line2']),
@@ -225,11 +244,49 @@ class HomeCubit extends Cubit<HomeState> {
             return Review.fromJson({
               ...review,
               'doctorId': review['doctor'],
-              'patientId': review['patient'],
+              'patientId': review['patient']['user']['id'],
+              'patientName': review['patient']['user']['full_name'],
+              'patientImage': review['patient']['user']['image'],
               'createdAt': review['created_at'],
               'updatedAt': review['updated_at'],
             });
           }),
+        );
+      }
+    });
+  }
+
+  Future<void> insertSharedFolder(dynamic sharedFolders) async {
+    await db.batch((batch) {
+      for (var data in sharedFolders) {
+        data['createdAt'] =
+            data['created_at'] ?? DateTime.now().toIso8601String();
+        data['sharingType'] = data['sharing_type'];
+        data['doctorId'] = data['doctor'];
+        data['folderId'] = data['folder'] != null ? data['folder']['id'] : null;
+        data['appointmentId'] = data['appointment'];
+        log(data.toString());
+        batch.insert(
+          db.patientSharedFolders,
+          PatientSharedFoldersCompanion(
+            id: Value(data['id'] as int),
+            patientId: Value(AuthManager().currentUser!.id),
+            doctorId: Value(data['doctorId'] as String),
+            folderId: Value(data['folderId'] as int),
+            appointmentId:
+                data['appointmentId'] == null
+                    ? const Value.absent()
+                    : Value(data['appointmentId'] as int),
+            sharingType: Value(
+              const SharingTypeConverter().fromSql(
+                data['sharingType'] as String,
+              ),
+            ),
+            createdAt: Value(
+              data['createdAt'] as String? ?? DateTime.now().toIso8601String(),
+            ),
+          ),
+          mode: InsertMode.insertOrReplace,
         );
       }
     });

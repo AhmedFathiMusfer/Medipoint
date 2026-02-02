@@ -5,6 +5,7 @@ import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/features/auth/forgetPassword/cubit/forgetPassword.state.dart';
 import 'package:diagno_bot/features/auth/forgetPassword/form/forgetPassword.form.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ForgetPasswordCubit extends Cubit<ForgetPasswordState> {
@@ -25,20 +26,20 @@ class ForgetPasswordCubit extends Cubit<ForgetPasswordState> {
           method: RemoteMethod.post,
           onSuccess: (res, statsCode) {
             AppSnackBar.success(
-              'Password reset email has been sent. Please check your inbox.',
+              'success_password_reset_email_sent'.tr(),
             );
             emit(ForgetPasswordState.success(email: form.emailController.text));
           },
           onError: (_, statsCode) {
             if (statsCode == 400) {
-              AppSnackBar.error('Invalid email address.');
+              AppSnackBar.error('error_invalid_email'.tr());
               emit(const ForgetPasswordState.initial(loading: false));
             } else if (statsCode == 404) {
-              AppSnackBar.error('Email not found. Please check and try again.');
+              AppSnackBar.error('error_email_not_found'.tr());
               emit(const ForgetPasswordState.initial(loading: false));
             } else {
               AppSnackBar.error(
-                'An error occurred. Please try again later.',
+                'error_occurred_try_later'.tr(),
               );
               emit(const ForgetPasswordState.initial(loading: false));
             }
@@ -46,7 +47,7 @@ class ForgetPasswordCubit extends Cubit<ForgetPasswordState> {
         );
       } else {
         emit(const ForgetPasswordState.initial(loading: false));
-        AppSnackBar.error('Please check your internet connection.');
+        AppSnackBar.error('error_check_internet_connection'.tr());
       }
     }
   }

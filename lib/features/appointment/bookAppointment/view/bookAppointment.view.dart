@@ -1,12 +1,10 @@
 import 'package:diagno_bot/core/baseView/base.view.dart';
-import 'package:diagno_bot/core/helpers/extensions.dart';
-import 'package:diagno_bot/core/routing/router.dart';
 import 'package:diagno_bot/core/theming/color.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
-import 'package:diagno_bot/core/widgets/payment.dart';
 import 'package:diagno_bot/core/widgets/simpleButton.dart';
 import 'package:diagno_bot/features/appointment/bookAppointment/cubit/bookAppointment.cubit.dart';
 import 'package:diagno_bot/features/appointment/bookAppointment/cubit/bookAppointment.state.dart';
+import 'package:diagno_bot/features/appointment/bookAppointment/view/widgets/show_payment_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +18,7 @@ class BookAppointmentView extends StatelessWidget {
   Widget build(BuildContext context) {
     var bookAppointmentCubit = context.read<BookAppointmentCubit>();
     return BaseView(
-      title: 'Book Appointment',
+      title: 'book_appointment'.tr(),
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: BlocConsumer<BookAppointmentCubit, BookAppointmentState>(
@@ -29,7 +27,7 @@ class BookAppointmentView extends StatelessWidget {
               orElse: () => {},
               success: (value) {
                 if (value.isSuccessBooking) {
-                  _showPaymentDialog(context, value.appointmentId ?? 0);
+                  showPaymentDialog(context, value.appointmentId ?? 0);
                 }
               },
             );
@@ -42,7 +40,7 @@ class BookAppointmentView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Select Date",
+                      "select_date".tr(),
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -63,6 +61,7 @@ class BookAppointmentView extends StatelessWidget {
                         ],
                       ),
                       child: TableCalendar(
+                        locale: context.locale.languageCode,
                         firstDay: DateTime.utc(2020),
                         lastDay: DateTime.utc(2030),
                         focusedDay: value.selectedDate ?? DateTime.now(),
@@ -71,22 +70,25 @@ class BookAppointmentView extends StatelessWidget {
                           formatButtonVisible: false,
                         ),
                         daysOfWeekVisible: true,
+
                         selectedDayPredicate:
                             (day) => isSameDay(day, value.selectedDate),
+
                         enabledDayPredicate: (day) {
                           return value.allowedWeekdays.any(
                             (allowDay) =>
-                                (allowDay.year == day.year &&
-                                    allowDay.month == day.month &&
-                                    allowDay.day == day.day),
+                                allowDay.year == day.year &&
+                                allowDay.month == day.month &&
+                                allowDay.day == day.day,
                           );
                         },
+
                         onDaySelected: (selectedDay, focusedDay) {
                           if (!value.allowedWeekdays.any(
                             (allowDay) =>
-                                (allowDay.year == selectedDay.year &&
-                                    allowDay.month == selectedDay.month &&
-                                    allowDay.day == selectedDay.day),
+                                allowDay.year == selectedDay.year &&
+                                allowDay.month == selectedDay.month &&
+                                allowDay.day == selectedDay.day,
                           )) {
                             return;
                           }
@@ -96,21 +98,101 @@ class BookAppointmentView extends StatelessWidget {
 
                         calendarStyle: CalendarStyle(
                           todayTextStyle: TextStyle(color: Colors.black12),
-                          todayDecoration: BoxDecoration(
+                          todayDecoration: const BoxDecoration(
                             color: Colors.transparent,
                             shape: BoxShape.circle,
                           ),
-                          selectedDecoration: BoxDecoration(
+                          selectedDecoration: const BoxDecoration(
                             color: Color(0xff0D1B2A),
                             shape: BoxShape.circle,
                           ),
                           disabledTextStyle: TextStyle(color: Colors.black12),
                         ),
+
+                        calendarBuilders: CalendarBuilders(
+                          defaultBuilder: (context, day, focusedDay) {
+                            final isAllowed = value.allowedWeekdays.any(
+                              (allowDay) =>
+                                  allowDay.year == day.year &&
+                                  allowDay.month == day.month &&
+                                  allowDay.day == day.day,
+                            );
+
+                            if (!isAllowed) return null;
+
+                            return Container(
+                              margin: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: ColorManager.primaryColor,
+                                  width: 1.5,
+                                ),
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                '${day.day}',
+                                style: TextStyle(
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            );
+                          },
+                          selectedBuilder: (context, day, focusedDay) {
+                            return Container(
+                              margin: const EdgeInsets.all(6),
+                              decoration: const BoxDecoration(
+                                color: Color(0xff0D1B2A),
+                                shape: BoxShape.circle,
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                '${day.day}',
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            );
+                          },
+
+                          todayBuilder: (context, day, focusedDay) {
+                            final isAllowed = value.allowedWeekdays.any(
+                              (allowDay) =>
+                                  allowDay.year == day.year &&
+                                  allowDay.month == day.month &&
+                                  allowDay.day == day.day,
+                            );
+
+                            return Container(
+                              margin: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border:
+                                    isAllowed
+                                        ? Border.all(
+                                          color: ColorManager.primaryColor,
+                                          width: 1.5,
+                                        )
+                                        : null,
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                '${day.day}',
+                                style: TextStyle(
+                                  color:
+                                      isAllowed
+                                          ? Colors.black87
+                                          : Colors.black12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
                     25.verticalSpace,
                     Text(
-                      "Select Hour",
+                      "select_hour".tr(),
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -126,9 +208,11 @@ class BookAppointmentView extends StatelessWidget {
                             final isSelected = value.selectedHour == t;
                             final firstHour = DateFormat(
                               'hh:mm a',
+                              context.locale.languageCode,
                             ).format(DateTime.parse(t.startTime));
                             final endHour = DateFormat(
                               'hh:mm a',
+                              context.locale.languageCode,
                             ).format(DateTime.parse(t.endTime));
                             return GestureDetector(
                               onTap: () {
@@ -147,13 +231,13 @@ class BookAppointmentView extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: Text(
-                                  "$firstHour–$endHour",
+                                  "$firstHour – $endHour",
                                   style: TextStyle(
                                     color:
                                         isSelected
                                             ? Colors.white
                                             : Colors.black87,
-                                    fontWeight: FontWeight.w500,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ),
@@ -163,11 +247,11 @@ class BookAppointmentView extends StatelessWidget {
                     30.verticalSpace,
                     SimpleButton(
                       isLoading: value.isBookingInProgress,
-                      text: 'Book',
+                      text: 'book'.tr(),
                       onPressed: () async {
                         if (value.selectedHour == null ||
                             value.selectedDate == null) {
-                          AppSnackBar.error("pleace select the date and time ");
+                          AppSnackBar.error("please_select_date_time".tr());
                           return;
                         }
                         await bookAppointmentCubit.addBooking(
@@ -184,63 +268,4 @@ class BookAppointmentView extends StatelessWidget {
       ),
     );
   }
-}
-
-void _showPaymentDialog(BuildContext context, int bookingId) {
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (_) {
-      return AlertDialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text("Complete Payment"),
-        content: const Text(
-          "Your appointment is booked successfully.\n"
-          "Would you like to pay now?",
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              context.pushNamedAndRemoveUntil(
-                Routers.appointmentView,
-                predicate: (route) => false,
-              );
-            },
-            child: const Text(
-              "Pay Later",
-              style: TextStyle(color: ColorManager.primaryColor),
-            ),
-          ),
-          ElevatedButton(
-            style: ButtonStyle(
-              backgroundColor: WidgetStatePropertyAll(
-                ColorManager.primaryColor,
-              ),
-            ),
-            onPressed: () async {
-              Navigator.pop(context);
-              await makePayment(
-                appointmentId: bookingId,
-                onSuccess: () {
-                  context.pushNamedAndRemoveUntil(
-                    Routers.appointmentView,
-                    predicate: (root) => false,
-                  );
-                },
-                onError: () {
-                  context.pushNamedAndRemoveUntil(
-                    Routers.appointmentView,
-                    predicate: (root) => false,
-                  );
-                },
-              );
-            },
-            child: const Text("Pay Now", style: TextStyle(color: Colors.white)),
-          ),
-        ],
-      );
-    },
-  );
 }

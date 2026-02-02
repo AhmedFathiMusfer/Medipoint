@@ -3,6 +3,7 @@ import 'package:diagno_bot/core/widgets/TextField.dart';
 import 'package:diagno_bot/core/widgets/simpleButton.dart';
 import 'package:diagno_bot/features/profile/changePassword/cubit/changePassword.cubit.dart';
 import 'package:diagno_bot/features/profile/changePassword/cubit/changePassword.state.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,8 +22,8 @@ class ChangePasswordView extends StatelessWidget {
           icon: const Icon(Icons.arrow_back, color: ColorManager.primaryColor),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const Text(
-          "Change Password",
+        title: Text(
+          "change_password".tr(),
           style: TextStyle(
             color: ColorManager.primaryColor,
             fontWeight: FontWeight.w600,
@@ -48,28 +49,28 @@ class ChangePasswordView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 30.verticalSpace,
-                const Text(
-                  'Enter your current password and new password',
+                Text(
+                  'enter_current_new_password'.tr(),
                   style: TextStyle(fontSize: 14, color: Colors.grey),
                   textAlign: TextAlign.center,
                 ),
                 30.verticalSpace,
                 CustomTextField(
-                  hint: 'Current Password',
+                  hint: 'current_password'.tr(),
                   controller: changePasswordCubit.form.oldPasswordController,
                   isPassword: true,
                   icon: Icons.lock_outline,
                 ),
                 15.verticalSpace,
                 CustomTextField(
-                  hint: 'New Password',
+                  hint: 'new_password'.tr(),
                   controller: changePasswordCubit.form.newPasswordController,
                   isPassword: true,
                   icon: Icons.lock_outline,
                 ),
                 15.verticalSpace,
                 CustomTextField(
-                  hint: 'Confirm New Password',
+                  hint: 'confirm_new_password'.tr(),
                   controller:
                       changePasswordCubit.form.confirmPasswordController,
                   isPassword: true,
@@ -88,7 +89,7 @@ class ChangePasswordView extends StatelessWidget {
                       onPressed: () {
                         changePasswordCubit.changePassword();
                       },
-                      text: 'Change Password',
+                      text: 'change_password'.tr(),
                       isLoading: isLoading,
                     );
                   },

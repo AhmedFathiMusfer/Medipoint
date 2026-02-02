@@ -21,7 +21,7 @@ class RemoteProvider {
   Future<dynamic> send({
     required Request request,
     required RemoteMethod method,
-    List<int> successStates = const [200, 201, 202],
+    List<int> successStates = const [200, 201, 202, 204],
     Function(Response, int)? onSuccess,
     Function(Response, int)? onError,
     Function(int, int)? onSendProgress,
@@ -89,7 +89,7 @@ class RemoteProvider {
 
       return response;
     } catch (exception) {
-      log(exception.toString());
+      log(exception.toString() + "kkkkkkkkkkk");
       if (onError != null) {
         onError(response, statusCode);
       } else {

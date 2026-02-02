@@ -5,6 +5,7 @@ import 'package:diagno_bot/core/networking/remote/apiConstants.dart';
 import 'package:diagno_bot/core/networking/remote/remoteProvider.dart';
 import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
@@ -31,7 +32,7 @@ Future<void> makePayment({
           final clientSecret = response.data['client_secret'];
 
           if (clientSecret == null) {
-            AppSnackBar.error('لم يتم استلام رمز الدفع من الخادم');
+            AppSnackBar.error('payment_secret_not_received'.tr());
             return;
           }
           await Stripe.instance.initPaymentSheet(
@@ -43,7 +44,7 @@ Future<void> makePayment({
           );
           await Stripe.instance.presentPaymentSheet();
           onSuccess();
-          AppSnackBar.success('تم الدفع بنجاح!');
+          AppSnackBar.success('payment_success'.tr());
         } catch (e) {
           onError();
         }

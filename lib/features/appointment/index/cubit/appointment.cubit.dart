@@ -1,7 +1,9 @@
 import 'dart:developer';
 
+import 'package:diagno_bot/core/auth/authManager.dart';
 import 'package:diagno_bot/core/database/drift_db.dart';
 import 'package:diagno_bot/core/database/tables/appointments_tables.dart';
+import 'package:diagno_bot/core/database/tables/patient_shared_folders_tables.dart';
 import 'package:diagno_bot/core/helpers/networkHelper.dart';
 import 'package:diagno_bot/core/model/appointment.model.dart';
 import 'package:diagno_bot/core/model/doctor.model.dart';
@@ -12,6 +14,7 @@ import 'package:diagno_bot/core/networking/remote/remoteProvider.dart';
 import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/features/appointment/index/cubit/appointment.state.dart';
+import 'package:diagno_bot/core/notifaction/notifaction.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,12 +23,13 @@ class AppointmentCubit extends Cubit<AppointmentState> {
   AppDatabase db = AppDatabase();
   Future<void> loadAll() async {
     emit(AppointmentState.loading());
-    if (await getAppointmentsLength() == 0) {
-      await loadOnlineData();
-    } else {
-      await loadLocalData();
-      await loadOnlineData();
-    }
+    await loadOnlineData();
+    // if (await getAppointmentsLength() == 0) {
+
+    // } else {
+    //   await loadLocalData();
+    //   await loadOnlineData();
+    // }
   }
 
   Future<void> loadLocalData() async {
@@ -34,12 +38,15 @@ class AppointmentCubit extends Cubit<AppointmentState> {
 
       final appointments = results[0];
       if (!isClosed) {
-        emit(AppointmentState.success(appointments: appointments));
+        emit(
+          AppointmentState.success(
+            appointments: appointments.reversed.toList(),
+          ),
+        );
       }
     } catch (e) {
       AppSnackBar.error(
-        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected) +
-            e.toString(),
+        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
       );
     }
   }
@@ -57,8 +64,7 @@ class AppointmentCubit extends Cubit<AppointmentState> {
       await loadLocalData();
     } catch (e) {
       AppSnackBar.error(
-        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected) +
-            e.toString(),
+        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
       );
     }
   }
@@ -80,9 +86,8 @@ class AppointmentCubit extends Cubit<AppointmentState> {
           } catch (ex) {
             AppSnackBar.error(
               ErrorMessages.instance.fromExceptionType(
-                    ExceptionTypes.unexpected,
-                  ) +
-                  ex.toString(),
+                ExceptionTypes.unexpected,
+              ),
             );
           }
         },
@@ -105,6 +110,7 @@ class AppointmentCubit extends Cubit<AppointmentState> {
         onSuccess: (res, statsCode) async {
           try {
             await loadOnlineData();
+            await NotificationService.cancelNotification(appointmentId);
           } catch (ex) {
             AppSnackBar.error(
               ErrorMessages.instance.fromExceptionType(
@@ -171,7 +177,10 @@ class AppointmentCubit extends Cubit<AppointmentState> {
             additionalInfo: Value(appointment['additional_info']),
             datetime: Value(appointment['datetime']),
             doctorId: Value(appointment['doctor']['user']['id']),
-            patientId: Value(appointment['patient']),
+            fees: Value(appointment['fees']),
+            patientId: Value(
+              appointment['patient'] ?? AuthManager().currentUser!.id,
+            ),
             status: Value(
               const AppointmentStatusConverter().fromJson(
                 appointment['status'],
@@ -181,6 +190,31 @@ class AppointmentCubit extends Cubit<AppointmentState> {
           ),
           mode: InsertMode.insertOrReplace,
         );
+        for (var sharedFolder in appointment['shared_folders']) {
+          await db
+              .into(db.patientSharedFolders)
+              .insert(
+                PatientSharedFoldersCompanion(
+                  id: Value(sharedFolder['id']),
+                  appointmentId: Value(appointment['id']),
+                  doctorId: Value(appointment['doctor']['user']['id']),
+                  patientId: Value(
+                    appointment['patient'] ?? AuthManager().currentUser!.id,
+                  ),
+                  sharingType: Value(
+                    const SharingTypeConverter().fromSql(
+                      sharedFolder['sharing_type'],
+                    ),
+                  ),
+                  folderId: Value(sharedFolder['folder']['id']),
+                  createdAt: Value(
+                    sharedFolder['created_at'] ??
+                        DateTime.now().toIso8601String(),
+                  ),
+                ),
+                mode: InsertMode.insertOrReplace,
+              );
+        }
       }
     });
   }

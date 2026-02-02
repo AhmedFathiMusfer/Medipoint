@@ -7,12 +7,19 @@ import 'package:diagno_bot/core/routing/router.dart';
 import 'package:diagno_bot/core/theming/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 
 class SpecialtyItem extends StatelessWidget {
   final String icon;
   final String title;
+  final String specialty;
 
-  const SpecialtyItem({super.key, required this.icon, required this.title});
+  const SpecialtyItem({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.specialty,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +27,7 @@ class SpecialtyItem extends StatelessWidget {
       onTap: () {
         context.pushNamedAndRemoveUntil(
           Routers.doctorsView,
-          arguments: title,
+          arguments: specialty,
           predicate: (root) => false,
         );
       },
@@ -28,7 +35,13 @@ class SpecialtyItem extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
-            child: CachedNetworkSVGImage(icon, height: 50, width: 50),
+            child: CachedNetworkSVGImage(
+              icon,
+              height: 50,
+              width: 50,
+
+              // color: ColorManager.primaryColor,
+            ),
           ),
           5.verticalSpace,
           Text(

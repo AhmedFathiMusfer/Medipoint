@@ -5,6 +5,7 @@ import 'package:diagno_bot/core/widgets/TextField.dart';
 import 'package:diagno_bot/core/widgets/simpleButton.dart';
 import 'package:diagno_bot/features/auth/forgetPassword/cubit/forgetPassword.cubit.dart';
 import 'package:diagno_bot/features/auth/forgetPassword/cubit/forgetPassword.state.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,10 +28,7 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: ColorManager.primaryColor,
-          ),
+          icon: Icon(Icons.arrow_back, color: ColorManager.primaryColor),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -43,7 +41,7 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
                 if (mounted) {
                   context.pushNamed(
                     Routers.verifyCodeView,
-                    arguments: email,
+                    arguments: {"email": email, "isResetPassword": true},
                   );
                 }
               });
@@ -67,7 +65,7 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
                   ),
                   10.verticalSpace,
                   Text(
-                    "HealthPal",
+                    "healthpal".tr(),
                     style: GoogleFonts.poppins(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w400,
@@ -76,7 +74,7 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
                   ),
                   30.verticalSpace,
                   Text(
-                    "Forgot Password?",
+                    "forgot_password_question".tr(),
                     style: GoogleFonts.poppins(
                       fontSize: 24.sp,
                       fontWeight: FontWeight.w600,
@@ -85,7 +83,7 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
                   ),
                   10.verticalSpace,
                   Text(
-                    "Don't worry! Enter your email address and we'll send you a link to reset your password.",
+                    "dont_worry_reset".tr(),
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
                       color: ColorManager.secondaryColor,
@@ -99,13 +97,13 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
                       children: [
                         CustomTextField(
                           controller: forgetPasswordCubit.form.emailController,
-                          hint: "Your Email",
+                          hint: "your_email".tr(),
                           icon: Icons.email_outlined,
                           isEmail: true,
                         ),
                         30.verticalSpace,
                         SimpleButton(
-                          text: "Send Reset Link",
+                          text: "send".tr(),
                           isLoading: state.maybeWhen(
                             initial: (loading) => loading,
                             orElse: () => false,
@@ -122,7 +120,7 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Remember your password?",
+                        "remember_password".tr(),
                         style: GoogleFonts.poppins(color: Colors.grey.shade600),
                       ),
                       TextButton(
@@ -130,7 +128,7 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
                           Navigator.of(context).pop();
                         },
                         child: Text(
-                          "Sign In",
+                          "sign_in".tr(),
                           style: TextStyle(
                             color: ColorManager.blueColor,
                             fontSize: 14.sp,

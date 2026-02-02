@@ -7,7 +7,10 @@ import 'package:diagno_bot/core/model/user.model.dart';
 import 'package:diagno_bot/core/routing/app_router.dart';
 import 'package:diagno_bot/core/routing/router.dart';
 import 'package:diagno_bot/core/stror/appStore.dart';
+import 'package:diagno_bot/features/auth/login/cubit/login.cubit.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthManager {
@@ -54,7 +57,6 @@ class AuthManager {
     return accessToken != null;
   }
 
-  // ✅ الخروج
   Future<void> logout() async {
     accessToken = null;
     refreshToken = null;

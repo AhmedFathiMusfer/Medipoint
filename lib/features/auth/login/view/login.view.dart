@@ -2,15 +2,14 @@ import 'package:diagno_bot/core/helpers/extensions.dart';
 import 'package:diagno_bot/core/routing/router.dart';
 import 'package:diagno_bot/core/theming/color.dart';
 import 'package:diagno_bot/core/widgets/TextField.dart';
-import 'package:diagno_bot/core/widgets/outlineButton.dart';
 import 'package:diagno_bot/core/widgets/simpleButton.dart';
 import 'package:diagno_bot/features/auth/login/cubit/login.cubit.dart';
 import 'package:diagno_bot/features/auth/login/cubit/login.state.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LoginView extends StatefulWidget {
@@ -28,9 +27,19 @@ class _LoginViewState extends State<LoginView> {
       backgroundColor: Colors.white,
       body: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
-          state.maybeWhen(
+          state.maybeMap(
+            verifyEmail:
+                (_) => {
+                  context.pushNamed(
+                    Routers.verifyCodeView,
+                    arguments: {
+                      "email": loginCubit.form.emailController.text,
+                      "isResetPassword": false,
+                    },
+                  ),
+                },
             loginSuccess:
-                () => {
+                (_) => {
                   context.pushNamedAndRemoveUntil(
                     Routers.homeView,
                     predicate: (root) => false,
@@ -55,7 +64,7 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   10.verticalSpace,
                   Text(
-                    "HealthPal ",
+                    "healthpal".tr(),
                     style: GoogleFonts.poppins(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w400,
@@ -64,7 +73,7 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   20.verticalSpace,
                   Text(
-                    "Create Account",
+                    "login".tr(),
                     style: GoogleFonts.poppins(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w600,
@@ -73,7 +82,7 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   5.verticalSpace,
                   Text(
-                    "We are here to help you!",
+                    "we_are_here_to_help".tr(),
                     style: GoogleFonts.poppins(
                       color: ColorManager.secondaryColor,
                       fontSize: 14.sp,
@@ -86,22 +95,22 @@ class _LoginViewState extends State<LoginView> {
                       children: [
                         CustomTextField(
                           controller: loginCubit.form.emailController,
-                          hint: "Your Email",
+                          hint: "your_email".tr(),
                           icon: Icons.email_outlined,
                           isEmail: true,
                         ),
                         15.verticalSpace,
                         CustomTextField(
                           controller: loginCubit.form.passwordController,
-                          hint: "Password",
+                          hint: "password".tr(),
                           icon: Icons.lock_outline,
                           isPassword: true,
                         ),
                         20.verticalSpace,
                         SimpleButton(
-                          text: "login",
+                          text: "login".tr(),
                           isLoading: state.maybeWhen(
-                            initial: (loding) => loding,
+                            loding: (loding) => loding,
                             orElse: () => false,
                           ),
                           onPressed: () async {
@@ -112,44 +121,28 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   ),
 
-                  20.verticalSpace,
-                  // Row(
-                  //   children: [
-                  //     Expanded(
-                  //       child: Divider(
-                  //         color: Colors.grey.shade400,
-                  //         thickness: 1,
-                  //       ),
-                  //     ),
-                  //     Text(
-                  //       " or ",
-                  //       style: GoogleFonts.poppins(color: Colors.grey.shade600),
-                  //     ),
-                  //     Expanded(
-                  //       child: Divider(
-                  //         color: Colors.grey.shade400,
-                  //         thickness: 1,
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-
-                  // 20.verticalSpace,
-                  // OutlineButton(
-                  //   icon: "assets/icons/google.png",
-                  //   text: "Continue with Google",
-                  // ),
-                  // const SizedBox(height: 15),
-                  // OutlineButton(
-                  //   icon: "assets/icons/facebook.png",
-                  //   text: "Continue with Facebook",
-                  // ),
-                  // 10.verticalSpace,
+                  5.verticalSpace,
+                  Align(
+                    alignment: Alignment.center,
+                    child: TextButton(
+                      onPressed: () {
+                        context.pushNamed(Routers.forgetPasswordView);
+                      },
+                      child: Text(
+                        "forgot_password".tr(),
+                        style: TextStyle(
+                          color: ColorManager.blueColor,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Create new  account?",
+                        "create_new_account".tr(),
                         style: GoogleFonts.poppins(color: Colors.grey.shade600),
                       ),
                       TextButton(
@@ -160,10 +153,10 @@ class _LoginViewState extends State<LoginView> {
                           );
                         },
                         child: Text(
-                          "Sign On",
+                          "sign_on".tr(),
                           style: TextStyle(
                             color: ColorManager.blueColor,
-                            fontSize: 14.sp,
+                            fontSize: 12.sp,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
@@ -176,20 +169,6 @@ class _LoginViewState extends State<LoginView> {
           );
         },
       ),
-    );
-  }
-
-  Widget _socialButton({required IconData icon, required String text}) {
-    return OutlinedButton.icon(
-      icon: Icon(icon, size: 18),
-      label: Text(text),
-      style: OutlinedButton.styleFrom(
-        minimumSize: const Size(double.infinity, 50),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-      ),
-      onPressed: () {
-        context.pushReplacementNamed(Routers.homeView);
-      },
     );
   }
 }

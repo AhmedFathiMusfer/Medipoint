@@ -76,6 +76,11 @@ dependencies:
   photo_view: ^0.15.0
   mime: ^1.0.4
   freezed_annotation: ^3.1.0
+  share_plus: ^7.2.1
+  flutter_local_notifications: ^19.5.0
+  timezone: ^0.10.1
+  mobile_scanner: ^7.1.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -110,6 +115,12 @@ flutter:
   assets:
     - assets/image/
     - assets/icons/
+    - assets/translations/
+  fonts:
+    - family: ArbFONTS
+      fonts:
+        - asset: assets/fonts/ArbFonts/ArbFONTS-t2216.otf
+        - asset: assets/fonts/ArbFonts/ArbFONTS-IBMPlexArabic-Text.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

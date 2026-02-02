@@ -17,6 +17,8 @@ class DoctorModel {
   final String experience;
   final String education;
   final String specialty;
+  final String? specialtyAr;
+
   final String? about;
   final int? reviews;
   final double? rating;
@@ -44,6 +46,8 @@ class DoctorModel {
     required this.experience,
     required this.education,
     required this.specialty,
+    required this.specialtyAr,
+
     this.about,
     this.rating,
     this.reviews,

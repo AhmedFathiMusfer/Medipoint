@@ -1,6 +1,6 @@
 import 'package:diagno_bot/core/networking/remote/apiConstants.dart';
 
-enum RemoteMethod { get, post, put, delete }
+enum RemoteMethod { get, post, put, delete, patch }
 
 class Request {
   String url;

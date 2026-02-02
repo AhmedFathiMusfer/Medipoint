@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:diagno_bot/core/database/drift_db.dart';
 import 'package:diagno_bot/core/helpers/networkHelper.dart';
 import 'package:diagno_bot/core/networking/errors/errorMesage.dart';
@@ -9,6 +7,7 @@ import 'package:diagno_bot/core/networking/remote/remoteProvider.dart';
 import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/features/doctor/doctorReviews/cubit/doctorReviews.state.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -84,7 +83,56 @@ class DoctorReviewsCubit extends Cubit<DoctorReviewsState> {
         onSuccess: (reponse, statusCode) async {
           await insertreview(reponse.data);
           await loadLocalData();
-          AppSnackBar.success("Review added successfully");
+          AppSnackBar.success("success_review_added".tr());
+        },
+        onError: (_, statusCode) {
+          AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statusCode));
+        },
+      );
+    } catch (_) {
+      AppSnackBar.error(
+        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+      );
+    }
+  }
+
+  Future<void> updateReview({
+    required int reviewId,
+    required int rating,
+    String? content,
+  }) async {
+    try {
+      await RemoteProvider().send(
+        request: Request(
+          url: ApiConstants.reviewItemEndpoint(reviewId),
+          body: {"rating": rating, "content": content},
+        ),
+        method: RemoteMethod.put,
+        onSuccess: (reponse, statusCode) async {
+          await insertreview(reponse.data);
+          await loadLocalData();
+          AppSnackBar.success("review_updated_successfully".tr());
+        },
+        onError: (_, statusCode) {
+          AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statusCode));
+        },
+      );
+    } catch (_) {
+      AppSnackBar.error(
+        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+      );
+    }
+  }
+
+  Future<void> deleteReview(int reviewId) async {
+    try {
+      await RemoteProvider().send(
+        request: Request(url: ApiConstants.reviewItemEndpoint(reviewId)),
+        method: RemoteMethod.delete,
+        onSuccess: (reponse, statusCode) async {
+          await deleteLocalReview(reviewId);
+          await loadLocalData();
+          AppSnackBar.success("review_deleted_successfully".tr());
         },
         onError: (_, statusCode) {
           AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statusCode));
@@ -108,14 +156,15 @@ class DoctorReviewsCubit extends Cubit<DoctorReviewsState> {
   }
 
   insertreview(review) async {
-    log(review.toString() + "-----------------");
     return await db
         .into(db.reviews)
         .insert(
           Review.fromJson({
             ...review,
             'doctorId': review['doctor'],
-            'patientId': review['patient'],
+            'patientId': review['patient']['user']['id'],
+            'patientName': review['patient']['user']['full_name'],
+            'patientImage': review['patient']['user']['image'],
             'createdAt': review['created_at'],
             'updatedAt': review['updated_at'],
           }),
@@ -131,12 +180,18 @@ class DoctorReviewsCubit extends Cubit<DoctorReviewsState> {
           return Review.fromJson({
             ...review,
             'doctorId': review['doctor'],
-            'patientId': review['patient'],
+            'patientId': review['patient']['user']['id'],
+            'patientName': review['patient']['user']['full_name'],
+            'patientImage': review['patient']['user']['image'],
             'createdAt': review['created_at'],
             'updatedAt': review['updated_at'],
           });
         }),
       );
     });
+  }
+
+  deleteLocalReview(int id) async {
+    return await (db.delete(db.reviews)..where((t) => t.id.equals(id))).go();
   }
 }

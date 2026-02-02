@@ -1,12 +1,15 @@
 import 'dart:io';
-import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:diagno_bot/core/helpers/extensions.dart';
+import 'package:diagno_bot/core/networking/remote/apiConstants.dart';
+import 'package:diagno_bot/core/routing/router.dart';
 import 'package:diagno_bot/core/theming/color.dart';
 import 'package:diagno_bot/core/widgets/TextField.dart';
 import 'package:diagno_bot/core/widgets/bottomSheet/ImagePickerBottomSheet.dart';
 import 'package:diagno_bot/core/widgets/simpleButton.dart';
 import 'package:diagno_bot/features/profile/editProfile/cubit/editProfile.cubit.dart';
 import 'package:diagno_bot/features/profile/editProfile/cubit/editProfile.state.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,18 +27,24 @@ class _FillProfilePageState extends State<EditProfilePage> {
       '/mnt/data/73b1213f-dfe0-477c-b9fc-2d68d0aa9488.png';
 
   DateTime? selectedDate;
-  String gender = "Gender";
+  String gender = "";
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     var editProfileCubit = context.read<EditProfileCubit>();
+    //  var profileCubit = BlocProvider.of<ProfileCubit>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: const Icon(Icons.arrow_back, color: ColorManager.primaryColor),
-        title: const Text(
-          "Fill Your Profile",
+        title: Text(
+          "fill_your_profile".tr(),
           style: TextStyle(
             color: ColorManager.primaryColor,
             fontWeight: FontWeight.w600,
@@ -52,11 +61,24 @@ class _FillProfilePageState extends State<EditProfilePage> {
           child: Column(
             children: [
               const SizedBox(height: 20),
+              BlocListener<EditProfileCubit, EditProfileState>(
+                listener: (context, state) {
+                  state.maybeMap(
+                    success: (value) {
+                      context.pushNamed(Routers.profileView);
+                    },
+                    orElse: () {},
+                  );
+                },
+                child: const SizedBox.shrink(),
+              ),
+
               BlocSelector<EditProfileCubit, EditProfileState, String?>(
                 selector:
                     (state) => state.maybeMap(
-                      success: (s) => s.changeProfileImage,
-                      orElse: () => null,
+                      changeProfileImage: (s) => s.imagePath,
+
+                      orElse: () {},
                     ),
                 builder: (context, filePath) {
                   return Stack(
@@ -68,18 +90,16 @@ class _FillProfilePageState extends State<EditProfilePage> {
                           radius: 60,
                           backgroundColor: Colors.grey[200],
                           backgroundImage:
-                              editProfileCubit.newImagePath == null
-                                  ? (editProfileCubit.form.imagePath.isNotEmpty
+                              filePath != null
+                                  ? FileImage(File(filePath))
+                                  : (editProfileCubit.form.imagePath.isNotEmpty
                                       ? CachedNetworkImageProvider(
-                                        editProfileCubit.form.imagePath,
+                                        '${ApiConstants.rootUrl}${editProfileCubit.form.imagePath}',
                                       )
                                       : AssetImage(
-                                            'assets/avatar_placeholder.png',
+                                            'assets/image/avatar_placeholder.jpg',
                                           )
-                                          as ImageProvider)
-                                  : FileImage(
-                                    File(editProfileCubit.newImagePath!),
-                                  ),
+                                          as ImageProvider),
                         ),
                       ),
                       Positioned(
@@ -126,12 +146,12 @@ class _FillProfilePageState extends State<EditProfilePage> {
 
               20.verticalSpace,
               CustomTextField(
-                hint: 'Name',
+                hint: 'name'.tr(),
                 controller: editProfileCubit.form.nameController,
               ),
               15.verticalSpace,
               CustomTextField(
-                hint: 'Email',
+                hint: 'email'.tr(),
                 isEmail: true,
                 controller: editProfileCubit.form.emailController,
               ),
@@ -144,14 +164,14 @@ class _FillProfilePageState extends State<EditProfilePage> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    value: gender,
+                  child: DropdownButton<Map>(
+                    value: editProfileCubit.form.gender,
                     isExpanded: true,
                     dropdownColor: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(12), // 🔥 مهم
+                    borderRadius: BorderRadius.circular(12),
                     icon: const Icon(Icons.keyboard_arrow_down),
                     items:
-                        const ["Gender", "Male", "Female"]
+                        editProfileCubit.form.genders
                             .map(
                               (e) => DropdownMenuItem(
                                 value: e,
@@ -160,24 +180,36 @@ class _FillProfilePageState extends State<EditProfilePage> {
                                     vertical: 8,
                                   ),
                                   child: Text(
-                                    e,
+                                    e['name'].toString(),
                                     style: const TextStyle(fontSize: 13),
                                   ),
                                 ),
                               ),
                             )
                             .toList(),
-                    onChanged: (v) => setState(() => gender = v!),
+                    onChanged:
+                        (v) =>
+                            setState(() => editProfileCubit.form.gender = v!),
                   ),
                 ),
               ),
 
               20.verticalSpace,
-              SimpleButton(
-                onPressed: () async {
-                  await editProfileCubit.save();
+              BlocSelector<EditProfileCubit, EditProfileState, bool>(
+                selector:
+                    (state) => state.maybeMap(
+                      loading: (s) => s.loading,
+                      orElse: () => false,
+                    ),
+                builder: (context, isloading) {
+                  return SimpleButton(
+                    isLoading: isloading,
+                    onPressed: () async {
+                      await editProfileCubit.save();
+                    },
+                    text: 'save'.tr(),
+                  );
                 },
-                text: 'Save',
               ),
             ],
           ),

@@ -1,7 +1,8 @@
 import 'package:diagno_bot/core/theming/color.dart';
 import 'package:diagno_bot/features/recordFiles/files/cubit/file.cubit.dart';
 import 'package:diagno_bot/features/recordFiles/files/cubit/file.state.dart'
-    show FileState;
+    show FileState, FileStatePatterns;
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -43,8 +44,8 @@ void showCreateFileDialog({
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text(
-                          "Create New File",
+                        Text(
+                          "create_new_file".tr(),
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -56,14 +57,14 @@ void showCreateFileDialog({
                         TextFormField(
                           controller: nameController,
                           decoration: InputDecoration(
-                            labelText: "Name",
+                            labelText: "name".tr(),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return "Name cannot be empty";
+                              return "name_cannot_be_empty".tr();
                             }
                             return null;
                           },
@@ -72,7 +73,7 @@ void showCreateFileDialog({
                         Row(
                           children: [
                             _smallRadioButton(
-                              label: "Image",
+                              label: "image".tr(),
                               value: "image",
                               groupValue: selectedType,
                               onChanged: (val) {
@@ -84,7 +85,7 @@ void showCreateFileDialog({
                             ),
                             const SizedBox(width: 20),
                             _smallRadioButton(
-                              label: "File",
+                              label: "file".tr(),
                               value: "file",
                               groupValue: selectedType,
                               onChanged: (val) {
@@ -117,8 +118,8 @@ void showCreateFileDialog({
                               Icons.insert_drive_file,
                               color: ColorManager.blueColor,
                             ),
-                            label: const Text(
-                              "Choose File",
+                            label: Text(
+                              "choose_file".tr(),
                               style: TextStyle(color: Colors.black),
                             ),
                           ),
@@ -148,8 +149,8 @@ void showCreateFileDialog({
                                     Icons.camera_alt,
                                     color: ColorManager.blueColor,
                                   ),
-                                  label: const Text(
-                                    "Camera",
+                                  label: Text(
+                                    "camera".tr(),
                                     style: TextStyle(color: Colors.black),
                                   ),
                                 ),
@@ -177,8 +178,8 @@ void showCreateFileDialog({
                                     Icons.photo_library,
                                     color: ColorManager.blueColor,
                                   ),
-                                  label: const Text(
-                                    "Gallery",
+                                  label: Text(
+                                    "gallery".tr(),
                                     style: TextStyle(color: Colors.black),
                                   ),
                                 ),
@@ -243,8 +244,8 @@ void showCreateFileDialog({
                               );
 
                               if (progress == null) {
-                                return const Text(
-                                  "Upload",
+                                return Text(
+                                  "upload".tr(),
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.white,

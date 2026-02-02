@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:diagno_bot/core/auth/authManager.dart';
 import 'package:diagno_bot/core/database/drift_db.dart';
 import 'package:diagno_bot/core/helpers/networkHelper.dart';
 import 'package:diagno_bot/core/model/doctor.model.dart';
@@ -23,13 +22,16 @@ class DoctorsCubit extends Cubit<DoctorsState> {
     if (!isClosed) {
       emit(DoctorsState.loading());
     }
+
     await loadLocalData();
+    if (isClosed) return;
     await loadOnlineData();
     specialty = null;
   }
 
   Future<void> loadLocalData() async {
     try {
+      if (isClosed) return;
       final results = await Future.wait([
         db.select(db.specialties).get(),
         getDoctors(specialty: specialty),
@@ -39,21 +41,22 @@ class DoctorsCubit extends Cubit<DoctorsState> {
       if (!isClosed) {
         emit(
           DoctorsState.success(
-            doctors: doctors,
+            doctors: doctors.reversed.toList(),
             specialities: specialties,
             specialtySelected: specialty ?? "All",
           ),
         );
       }
     } catch (e) {
-      AppSnackBar.error(
-        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
-      );
+      // AppSnackBar.error(
+      //   ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+      // );
     }
   }
 
   Future<void> loadOnlineData() async {
     try {
+      if (isClosed) return;
       bool isConnected = await NetworkHelper.isConnected();
       if (isConnected) {
         await Future.wait([fetchDoctors()]);
@@ -62,28 +65,32 @@ class DoctorsCubit extends Cubit<DoctorsState> {
           ErrorMessages.instance.fromExceptionType(ExceptionTypes.connection),
         );
       }
+      if (isClosed) return;
       await loadLocalData();
     } catch (e) {
-      AppSnackBar.error(
-        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
-      );
+      // AppSnackBar.error(
+      //   ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+      // );
     }
   }
 
   fillterDoctorBySpecialtyOrName(String? specialty, String? name) async {
+    if (isClosed) return;
     final filteredDoctors = await getDoctors(specialty: specialty, name: name);
-    state.mapOrNull(
-      success: (state) {
-        if (!isClosed) {
-          emit(
-            state.copyWith(
-              doctors: filteredDoctors,
-              specialtySelected: specialty ?? 'All',
-            ),
-          );
-        }
-      },
-    );
+    if (!isClosed) {
+      state.mapOrNull(
+        success: (state) {
+          if (!isClosed) {
+            emit(
+              state.copyWith(
+                doctors: filteredDoctors,
+                specialtySelected: specialty ?? 'All',
+              ),
+            );
+          }
+        },
+      );
+    }
   }
   // ******************************************Api************************************************************
 
@@ -97,12 +104,13 @@ class DoctorsCubit extends Cubit<DoctorsState> {
             await insertSpecialties(res.data['results']);
           }
         } catch (ex) {
-          AppSnackBar.error(
-            ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
-          );
+          // AppSnackBar.error(
+          //   ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+          // );
         }
       },
       onError: (_, statsCode) {
+        log(statsCode.toString());
         AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statsCode));
       },
     );
@@ -118,9 +126,9 @@ class DoctorsCubit extends Cubit<DoctorsState> {
             await insertDoctorWithUser(res.data['results']);
           }
         } catch (ex) {
-          AppSnackBar.error(
-            ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
-          );
+          // AppSnackBar.error(
+          //   ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+          // );
         }
       },
       onError: (_, statsCode) {
@@ -141,6 +149,31 @@ class DoctorsCubit extends Cubit<DoctorsState> {
     });
   }
 
+  Future<double> getDoctorAverageRating(String doctorId) async {
+    final avgExpr = db.reviews.rating.avg();
+
+    final row =
+        await (db.selectOnly(db.reviews)
+              ..addColumns([avgExpr])
+              ..where(db.reviews.doctorId.equals(doctorId)))
+            .getSingleOrNull();
+
+    double avg = row?.read(avgExpr) ?? 0;
+    return avg.clamp(0, 5);
+  }
+
+  Future<int> getDoctorReviewsCount(String doctorId) async {
+    final countExpr = db.reviews.id.count();
+
+    final row =
+        await (db.selectOnly(db.reviews)
+              ..addColumns([countExpr])
+              ..where(db.reviews.doctorId.equals(doctorId)))
+            .getSingleOrNull();
+
+    return row?.read(countExpr) ?? 0;
+  }
+
   Future<List<DoctorModel>> getDoctors({
     String? specialty,
     String? name,
@@ -155,20 +188,25 @@ class DoctorsCubit extends Cubit<DoctorsState> {
       temp = temp..where(db.users.fullName.contains(name));
     }
     final result = await temp.get();
+
     final jsonList =
-        result.map((row) {
+        result.map((row) async {
           var doctor = row.readTable(db.doctors).toJson();
           final user = row.readTable(db.users).toJson();
+          final reviews = await getDoctorReviewsCount(user['id']);
+          final rating = await getDoctorAverageRating(user['id']);
           doctor['status'] = DoctorModelStatusConverter().toJson(
             doctor['status'],
           );
-          return {...user, ...doctor};
+          return {...user, ...doctor, 'reviews': reviews, 'rating': rating};
         }).toList();
-    var doctors =
-        jsonList
-            .map<DoctorModel>((doctor) => DoctorModel.fromJson(doctor))
-            .toList();
-    log(doctors.toString());
+    var doctors = await Future.wait(jsonList).then(
+      (jsonList) =>
+          jsonList
+              .map<DoctorModel>((doctor) => DoctorModel.fromJson(doctor))
+              .toList(),
+    );
+    //   log(doctors.toString());
     return doctors;
   }
 
@@ -197,6 +235,7 @@ class DoctorsCubit extends Cubit<DoctorsState> {
             experience: Value(doctorJson['experience']),
             education: Value(doctorJson['education']),
             specialty: Value(doctorJson['specialty']),
+            specialtyAr: Value(doctorJson['specialty_ar']),
             about: Value(doctorJson['about']),
             addressLine1: Value(doctorJson['address_line1']),
             addressLine2: Value(doctorJson['address_line2']),

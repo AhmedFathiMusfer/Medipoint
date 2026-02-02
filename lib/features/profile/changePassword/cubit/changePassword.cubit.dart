@@ -8,6 +8,7 @@ import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/features/profile/changePassword/cubit/changePassword.state.dart';
 import 'package:diagno_bot/features/profile/changePassword/form/changePassword.form.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChangePasswordCubit extends Cubit<ChangePasswordState> {
@@ -28,17 +29,17 @@ class ChangePasswordCubit extends Cubit<ChangePasswordState> {
           method: RemoteMethod.put,
           onSuccess: (res, statsCode) {
             log(res.toString());
-            AppSnackBar.success('Password changed successfully.');
+            AppSnackBar.success('success_password_changed'.tr());
             form.clear();
             emit(const ChangePasswordState.success());
           },
           onError: (error, statsCode) {
             log(error.toString());
             if (statsCode == 400) {
-              AppSnackBar.error('Invalid old password. Please try again.');
+              AppSnackBar.error('error_invalid_old_password'.tr());
               emit(const ChangePasswordState.initial(loading: false));
             } else if (statsCode == 401) {
-              AppSnackBar.error('Unauthorized. Please login again.');
+              AppSnackBar.error('error_unauthorized'.tr());
               emit(const ChangePasswordState.initial(loading: false));
             } else {
               AppSnackBar.error(

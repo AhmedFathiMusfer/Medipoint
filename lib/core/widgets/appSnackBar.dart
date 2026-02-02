@@ -32,6 +32,7 @@ class AppSnackBar {
   }
 
   static void error(String message) {
+    if (message.isEmpty) return;
     show(
       message: message,
       backgroundColor: const Color.fromARGB(255, 255, 17, 0).withOpacity(0.8),

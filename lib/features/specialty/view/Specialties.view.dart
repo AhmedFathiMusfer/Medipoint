@@ -3,8 +3,8 @@ import 'package:diagno_bot/core/database/drift_db.dart';
 import 'package:diagno_bot/features/home/view/widgets/specialtie_shimmer.dart';
 import 'package:diagno_bot/features/home/view/widgets/specialty_item.dart';
 import 'package:diagno_bot/features/specialty/cubit/specialties.cubit.dart';
-
 import 'package:diagno_bot/features/specialty/cubit/specialties.state.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,8 +16,9 @@ class SpecialtiesView extends StatelessWidget {
   Widget build(BuildContext context) {
     var specialtiesCubit = context.read<SpecialtiesCubit>();
     return BaseView(
-      title: 'Specialties',
+      title: 'specialties_title'.tr(),
       child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0.w),
           child: Column(
@@ -51,7 +52,11 @@ class SpecialtiesView extends StatelessWidget {
                       children: [
                         ...specialties.map(
                           (specialty) => SpecialtyItem(
-                            title: specialty.name,
+                            specialty: specialty.name,
+                            title:
+                                context.locale.languageCode == 'ar'
+                                    ? specialty.name_ar
+                                    : specialty.name,
 
                             icon: specialty.icon ?? '',
                           ),

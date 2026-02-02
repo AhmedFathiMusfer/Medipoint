@@ -1,4 +1,5 @@
 import 'package:diagno_bot/core/theming/color.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 void bottomSheet({
@@ -56,8 +57,8 @@ void bottomSheet({
                         ),
                       ),
                       onPressed: () => Navigator.of(context).pop(),
-                      child: const Text(
-                        'Cancel',
+                      child: Text(
+                        'cancel'.tr(),
                         style: TextStyle(color: ColorManager.primaryColor),
                       ),
                     ),

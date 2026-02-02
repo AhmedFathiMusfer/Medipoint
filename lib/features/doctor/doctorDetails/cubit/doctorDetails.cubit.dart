@@ -11,36 +11,41 @@ import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/features/doctor/doctorDetails/cubit/doctorDetails.state.dart';
 import 'package:drift/drift.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DoctorDetailsCubit extends Cubit<DoctorDetailsState> {
   var db = AppDatabase();
   final String doctorId;
-  DoctorDetailsCubit(super.initialState, {required this.doctorId});
+  DoctorDetailsCubit({required this.doctorId})
+    : super(const DoctorDetailsState.initial());
 
   Future<void> loadAll() async {
     if (!isClosed) {
       emit(DoctorDetailsState.loading());
     }
     await loadLocalData();
+    if (isClosed) return;
     await loadOnlineData();
   }
 
   Future<void> loadLocalData() async {
     try {
+      if (isClosed) return;
       final doctor = await getDoctorById(doctorId);
       if (!isClosed) {
         emit(DoctorDetailsState.success(doctor: doctor));
       }
     } catch (e) {
-      AppSnackBar.error(
-        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
-      );
+      // AppSnackBar.error(
+      //   ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+      // );
     }
   }
 
   Future<void> loadOnlineData() async {
     try {
+      if (isClosed) return;
       bool isConnected = await NetworkHelper.isConnected();
       if (isConnected) {
         await Future.wait([fetchDoctorById(doctorId)]);
@@ -49,14 +54,16 @@ class DoctorDetailsCubit extends Cubit<DoctorDetailsState> {
           ErrorMessages.instance.fromExceptionType(ExceptionTypes.connection),
         );
       }
+
       await loadLocalData();
+      if (isClosed) return;
     } catch (e) {
-      AppSnackBar.error(
-        ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
-      );
-      if (!isClosed) {
-        emit(DoctorDetailsState.error(e.toString()));
-      }
+      // AppSnackBar.error(
+      //   ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+      // );
+      // if (!isClosed) {
+      //   emit(DoctorDetailsState.error(e.toString()));
+      // }
     }
   }
 
@@ -71,10 +78,9 @@ class DoctorDetailsCubit extends Cubit<DoctorDetailsState> {
             await insertDoctorWithUser(res.data);
           }
         } catch (ex) {
-          log(ex.toString());
-          AppSnackBar.error(
-            ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
-          );
+          // AppSnackBar.error(
+          //   ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+          // );
         }
       },
       onError: (_, statsCode) {
@@ -83,6 +89,78 @@ class DoctorDetailsCubit extends Cubit<DoctorDetailsState> {
     );
   }
 
+  Future<void> addReview({required int rating, String? content}) async {
+    try {
+      await RemoteProvider().send(
+        request: Request(
+          url: ApiConstants.reviewEndpoint(doctorId),
+          body: {"doctor": doctorId, "rating": rating, "content": content},
+        ),
+        method: RemoteMethod.post,
+        onSuccess: (reponse, statusCode) async {
+          await insertreview(reponse.data);
+          await loadLocalData();
+          AppSnackBar.success("success_review_added".tr());
+        },
+        onError: (_, statusCode) {
+          AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statusCode));
+        },
+      );
+    } catch (_) {
+      // AppSnackBar.error(
+      //   ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+      // );
+    }
+  }
+
+  Future<void> updateReview({
+    required int reviewId,
+    required int rating,
+    String? content,
+  }) async {
+    try {
+      await RemoteProvider().send(
+        request: Request(
+          url: ApiConstants.reviewItemEndpoint(reviewId),
+          body: {"rating": rating, "content": content},
+        ),
+        method: RemoteMethod.put,
+        onSuccess: (reponse, statusCode) async {
+          await insertreview(reponse.data);
+          await loadLocalData();
+          AppSnackBar.success("review_updated_successfully".tr());
+        },
+        onError: (_, statusCode) {
+          AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statusCode));
+        },
+      );
+    } catch (_) {
+      // AppSnackBar.error(
+      //   ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+      // );
+    }
+  }
+
+  Future<void> deleteReview(int reviewId) async {
+    try {
+      await RemoteProvider().send(
+        request: Request(url: ApiConstants.reviewItemEndpoint(reviewId)),
+        method: RemoteMethod.delete,
+        onSuccess: (reponse, statusCode) async {
+          await deleteLocalReview(reviewId);
+          await loadLocalData();
+          AppSnackBar.success("review_deleted_successfully".tr());
+        },
+        onError: (_, statusCode) {
+          AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statusCode));
+        },
+      );
+    } catch (_) {
+      // AppSnackBar.error(
+      //   ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+      // );
+    }
+  }
   // ******************************************db************************************************************
 
   Future<double> getDoctorAverageRating(String doctorId) async {
@@ -164,6 +242,7 @@ class DoctorDetailsCubit extends Cubit<DoctorDetailsState> {
           experience: Value(doctorJson['experience']),
           education: Value(doctorJson['education']),
           specialty: Value(doctorJson['specialty']),
+          specialtyAr: Value(doctorJson['specialty_ar']),
           about: Value(doctorJson['about']),
           addressLine1: Value(doctorJson['address_line1']),
           addressLine2: Value(doctorJson['address_line2']),
@@ -173,6 +252,10 @@ class DoctorDetailsCubit extends Cubit<DoctorDetailsState> {
           isVerified: Value(doctorJson['is_verified'] ?? false),
         ),
         mode: InsertMode.insertOrReplace,
+      );
+      batch.deleteWhere(
+        db.workingHours,
+        (tbl) => tbl.doctorId.equals(doctorId),
       );
       for (var workingHour in workingHours) {
         batch.insert(
@@ -206,5 +289,26 @@ class DoctorDetailsCubit extends Cubit<DoctorDetailsState> {
           (t) => t.doctorId.equals(doctorId) & t.patientId.equals(userId),
         )).getSingleOrNull();
     return review != null;
+  }
+
+  insertreview(review) async {
+    return await db
+        .into(db.reviews)
+        .insert(
+          Review.fromJson({
+            ...review,
+            'doctorId': review['doctor'],
+            'patientId': review['patient']['user']['id'],
+            'patientName': review['patient']['user']['full_name'],
+            'patientImage': review['patient']['user']['image'],
+            'createdAt': review['created_at'],
+            'updatedAt': review['updated_at'],
+          }),
+          mode: InsertMode.insertOrReplace,
+        );
+  }
+
+  deleteLocalReview(int id) async {
+    return await (db.delete(db.reviews)..where((t) => t.id.equals(id))).go();
   }
 }

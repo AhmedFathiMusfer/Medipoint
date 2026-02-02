@@ -9,6 +9,7 @@ import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/features/recordFiles/Folders/cubit/folder.state.dart';
 import 'package:drift/drift.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FolderCubit extends Cubit<FolderState> {
@@ -31,7 +32,7 @@ class FolderCubit extends Cubit<FolderState> {
     try {
       final results = await Future.wait([getFolder()]);
 
-      final folders = results[0];
+      final folders = results[0].reversed.toList();
       if (!isClosed) {
         emit(FolderState.success(folders: folders));
       }
@@ -85,6 +86,7 @@ class FolderCubit extends Cubit<FolderState> {
           try {
             if (res.data != null) {
               await insertFolder(res.data);
+              AppSnackBar.success("foder_Created".tr());
             }
             await loadLocalData();
           } catch (ex) {
@@ -128,6 +130,63 @@ class FolderCubit extends Cubit<FolderState> {
     );
   }
 
+  Future<void> renameFolder({
+    required int id,
+    required String name,
+    required String description,
+  }) async {
+    bool isConnected = await NetworkHelper.isConnected();
+
+    if (!isConnected) {
+      AppSnackBar.error(
+        ErrorMessages.instance.fromExceptionType(ExceptionTypes.connection),
+      );
+      return;
+    }
+
+    await RemoteProvider().send(
+      request: Request(
+        url: "${ApiConstants.foldersEndpoint}$id/",
+        body: {"name": name, "description": description},
+      ),
+      method: RemoteMethod.put,
+      onSuccess: (res, statusCode) async {
+        if (res.data != null) {
+          await updateFolderInDb(res.data);
+          AppSnackBar.success("folder_updated".tr());
+        }
+        await loadLocalData();
+      },
+      onError: (_, statusCode) {
+        AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statusCode));
+      },
+    );
+  }
+
+  Future<void> deleteFolder(int id) async {
+    bool isConnected = await NetworkHelper.isConnected();
+
+    if (!isConnected) {
+      AppSnackBar.error(
+        ErrorMessages.instance.fromExceptionType(ExceptionTypes.connection),
+      );
+      return;
+    }
+
+    await RemoteProvider().send(
+      request: Request(url: "${ApiConstants.foldersEndpoint}$id/"),
+      method: RemoteMethod.delete,
+      onSuccess: (_, statusCode) async {
+        await deleteFolderFromDb(id);
+        AppSnackBar.success("folder_deleted".tr());
+        await loadLocalData();
+      },
+      onError: (_, statusCode) {
+        AppSnackBar.error(ErrorMessages.instance.fromStatusCode(statusCode));
+      },
+    );
+  }
+
   // ******************************************db************************************************************
   Future<List<PatientFolder>> getFolder({String? name}) async {
     if (name == null || name.isEmpty) {
@@ -160,5 +219,21 @@ class FolderCubit extends Cubit<FolderState> {
         }).toList(),
       );
     });
+  }
+
+  Future<void> updateFolderInDb(Map<String, dynamic> folder) async {
+    folder['createdAt'] = folder['created_at'];
+    folder['updatedAt'] = folder['updated_at'];
+
+    await db
+        .into(db.patientFolders)
+        .insertOnConflictUpdate(PatientFolder.fromJson(folder));
+  }
+
+  Future<void> deleteFolderFromDb(int id) async {
+    await (db.delete(db.patientFolders)
+      ..where((tbl) => tbl.id.equals(id))).go();
+    await (db.delete(db.patientFiles)
+      ..where((f) => f.folderId.equals(id))).go();
   }
 }

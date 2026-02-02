@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:diagno_bot/core/helpers/extensions.dart';
 import 'package:diagno_bot/core/model/doctor.model.dart';
 import 'package:diagno_bot/core/routing/router.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -80,7 +81,12 @@ class DoctorCard extends StatelessWidget {
                   ),
 
                   5.verticalSpace,
-                  Text(speciality, style: const TextStyle(color: Colors.grey)),
+                  Text(
+                    context.locale.languageCode == 'ar'
+                        ? doctor.specialtyAr ?? doctor.specialty
+                        : doctor.specialty,
+                    style: const TextStyle(color: Colors.grey),
+                  ),
 
                   5.verticalSpace,
                   Text(
@@ -95,7 +101,7 @@ class DoctorCard extends StatelessWidget {
                       Icon(Icons.star, size: 16.r, color: Colors.orange),
                       Text(" $rating"),
                       Text(
-                        "  |  $reviews Reviews",
+                        "  |  $reviews ${"reviews".tr()}",
                         style: TextStyle(fontSize: 10.sp, color: Colors.grey),
                       ),
                     ],

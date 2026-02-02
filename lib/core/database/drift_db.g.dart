@@ -520,6 +520,17 @@ class $DoctorsTable extends Doctors with TableInfo<$DoctorsTable, Doctor> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _specialtyArMeta = const VerificationMeta(
+    'specialtyAr',
+  );
+  @override
+  late final GeneratedColumn<String> specialtyAr = GeneratedColumn<String>(
+    'specialty_ar',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _aboutMeta = const VerificationMeta('about');
   @override
   late final GeneratedColumn<String> about = GeneratedColumn<String>(
@@ -595,6 +606,7 @@ class $DoctorsTable extends Doctors with TableInfo<$DoctorsTable, Doctor> {
     experience,
     education,
     specialty,
+    specialtyAr,
     about,
     addressLine1,
     addressLine2,
@@ -653,6 +665,15 @@ class $DoctorsTable extends Doctors with TableInfo<$DoctorsTable, Doctor> {
       );
     } else if (isInserting) {
       context.missing(_specialtyMeta);
+    }
+    if (data.containsKey('specialty_ar')) {
+      context.handle(
+        _specialtyArMeta,
+        specialtyAr.isAcceptableOrUnknown(
+          data['specialty_ar']!,
+          _specialtyArMeta,
+        ),
+      );
     }
     if (data.containsKey('about')) {
       context.handle(
@@ -727,6 +748,10 @@ class $DoctorsTable extends Doctors with TableInfo<$DoctorsTable, Doctor> {
             DriftSqlType.string,
             data['${effectivePrefix}specialty'],
           )!,
+      specialtyAr: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}specialty_ar'],
+      ),
       about: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}about'],
@@ -772,6 +797,7 @@ class Doctor extends DataClass implements Insertable<Doctor> {
   final String experience;
   final String education;
   final String specialty;
+  final String? specialtyAr;
   final String? about;
   final String? addressLine1;
   final String? addressLine2;
@@ -784,6 +810,7 @@ class Doctor extends DataClass implements Insertable<Doctor> {
     required this.experience,
     required this.education,
     required this.specialty,
+    this.specialtyAr,
     this.about,
     this.addressLine1,
     this.addressLine2,
@@ -799,6 +826,9 @@ class Doctor extends DataClass implements Insertable<Doctor> {
     map['experience'] = Variable<String>(experience);
     map['education'] = Variable<String>(education);
     map['specialty'] = Variable<String>(specialty);
+    if (!nullToAbsent || specialtyAr != null) {
+      map['specialty_ar'] = Variable<String>(specialtyAr);
+    }
     if (!nullToAbsent || about != null) {
       map['about'] = Variable<String>(about);
     }
@@ -827,6 +857,10 @@ class Doctor extends DataClass implements Insertable<Doctor> {
       experience: Value(experience),
       education: Value(education),
       specialty: Value(specialty),
+      specialtyAr:
+          specialtyAr == null && nullToAbsent
+              ? const Value.absent()
+              : Value(specialtyAr),
       about:
           about == null && nullToAbsent ? const Value.absent() : Value(about),
       addressLine1:
@@ -857,6 +891,7 @@ class Doctor extends DataClass implements Insertable<Doctor> {
       experience: serializer.fromJson<String>(json['experience']),
       education: serializer.fromJson<String>(json['education']),
       specialty: serializer.fromJson<String>(json['specialty']),
+      specialtyAr: serializer.fromJson<String?>(json['specialtyAr']),
       about: serializer.fromJson<String?>(json['about']),
       addressLine1: serializer.fromJson<String?>(json['addressLine1']),
       addressLine2: serializer.fromJson<String?>(json['addressLine2']),
@@ -874,6 +909,7 @@ class Doctor extends DataClass implements Insertable<Doctor> {
       'experience': serializer.toJson<String>(experience),
       'education': serializer.toJson<String>(education),
       'specialty': serializer.toJson<String>(specialty),
+      'specialtyAr': serializer.toJson<String?>(specialtyAr),
       'about': serializer.toJson<String?>(about),
       'addressLine1': serializer.toJson<String?>(addressLine1),
       'addressLine2': serializer.toJson<String?>(addressLine2),
@@ -889,6 +925,7 @@ class Doctor extends DataClass implements Insertable<Doctor> {
     String? experience,
     String? education,
     String? specialty,
+    Value<String?> specialtyAr = const Value.absent(),
     Value<String?> about = const Value.absent(),
     Value<String?> addressLine1 = const Value.absent(),
     Value<String?> addressLine2 = const Value.absent(),
@@ -901,6 +938,7 @@ class Doctor extends DataClass implements Insertable<Doctor> {
     experience: experience ?? this.experience,
     education: education ?? this.education,
     specialty: specialty ?? this.specialty,
+    specialtyAr: specialtyAr.present ? specialtyAr.value : this.specialtyAr,
     about: about.present ? about.value : this.about,
     addressLine1: addressLine1.present ? addressLine1.value : this.addressLine1,
     addressLine2: addressLine2.present ? addressLine2.value : this.addressLine2,
@@ -917,6 +955,8 @@ class Doctor extends DataClass implements Insertable<Doctor> {
           data.experience.present ? data.experience.value : this.experience,
       education: data.education.present ? data.education.value : this.education,
       specialty: data.specialty.present ? data.specialty.value : this.specialty,
+      specialtyAr:
+          data.specialtyAr.present ? data.specialtyAr.value : this.specialtyAr,
       about: data.about.present ? data.about.value : this.about,
       addressLine1:
           data.addressLine1.present
@@ -944,6 +984,7 @@ class Doctor extends DataClass implements Insertable<Doctor> {
           ..write('experience: $experience, ')
           ..write('education: $education, ')
           ..write('specialty: $specialty, ')
+          ..write('specialtyAr: $specialtyAr, ')
           ..write('about: $about, ')
           ..write('addressLine1: $addressLine1, ')
           ..write('addressLine2: $addressLine2, ')
@@ -961,6 +1002,7 @@ class Doctor extends DataClass implements Insertable<Doctor> {
     experience,
     education,
     specialty,
+    specialtyAr,
     about,
     addressLine1,
     addressLine2,
@@ -977,6 +1019,7 @@ class Doctor extends DataClass implements Insertable<Doctor> {
           other.experience == this.experience &&
           other.education == this.education &&
           other.specialty == this.specialty &&
+          other.specialtyAr == this.specialtyAr &&
           other.about == this.about &&
           other.addressLine1 == this.addressLine1 &&
           other.addressLine2 == this.addressLine2 &&
@@ -991,6 +1034,7 @@ class DoctorsCompanion extends UpdateCompanion<Doctor> {
   final Value<String> experience;
   final Value<String> education;
   final Value<String> specialty;
+  final Value<String?> specialtyAr;
   final Value<String?> about;
   final Value<String?> addressLine1;
   final Value<String?> addressLine2;
@@ -1004,6 +1048,7 @@ class DoctorsCompanion extends UpdateCompanion<Doctor> {
     this.experience = const Value.absent(),
     this.education = const Value.absent(),
     this.specialty = const Value.absent(),
+    this.specialtyAr = const Value.absent(),
     this.about = const Value.absent(),
     this.addressLine1 = const Value.absent(),
     this.addressLine2 = const Value.absent(),
@@ -1018,6 +1063,7 @@ class DoctorsCompanion extends UpdateCompanion<Doctor> {
     required String experience,
     required String education,
     required String specialty,
+    this.specialtyAr = const Value.absent(),
     this.about = const Value.absent(),
     this.addressLine1 = const Value.absent(),
     this.addressLine2 = const Value.absent(),
@@ -1037,6 +1083,7 @@ class DoctorsCompanion extends UpdateCompanion<Doctor> {
     Expression<String>? experience,
     Expression<String>? education,
     Expression<String>? specialty,
+    Expression<String>? specialtyAr,
     Expression<String>? about,
     Expression<String>? addressLine1,
     Expression<String>? addressLine2,
@@ -1051,6 +1098,7 @@ class DoctorsCompanion extends UpdateCompanion<Doctor> {
       if (experience != null) 'experience': experience,
       if (education != null) 'education': education,
       if (specialty != null) 'specialty': specialty,
+      if (specialtyAr != null) 'specialty_ar': specialtyAr,
       if (about != null) 'about': about,
       if (addressLine1 != null) 'address_line1': addressLine1,
       if (addressLine2 != null) 'address_line2': addressLine2,
@@ -1067,6 +1115,7 @@ class DoctorsCompanion extends UpdateCompanion<Doctor> {
     Value<String>? experience,
     Value<String>? education,
     Value<String>? specialty,
+    Value<String?>? specialtyAr,
     Value<String?>? about,
     Value<String?>? addressLine1,
     Value<String?>? addressLine2,
@@ -1081,6 +1130,7 @@ class DoctorsCompanion extends UpdateCompanion<Doctor> {
       experience: experience ?? this.experience,
       education: education ?? this.education,
       specialty: specialty ?? this.specialty,
+      specialtyAr: specialtyAr ?? this.specialtyAr,
       about: about ?? this.about,
       addressLine1: addressLine1 ?? this.addressLine1,
       addressLine2: addressLine2 ?? this.addressLine2,
@@ -1108,6 +1158,9 @@ class DoctorsCompanion extends UpdateCompanion<Doctor> {
     }
     if (specialty.present) {
       map['specialty'] = Variable<String>(specialty.value);
+    }
+    if (specialtyAr.present) {
+      map['specialty_ar'] = Variable<String>(specialtyAr.value);
     }
     if (about.present) {
       map['about'] = Variable<String>(about.value);
@@ -1143,6 +1196,7 @@ class DoctorsCompanion extends UpdateCompanion<Doctor> {
           ..write('experience: $experience, ')
           ..write('education: $education, ')
           ..write('specialty: $specialty, ')
+          ..write('specialtyAr: $specialtyAr, ')
           ..write('about: $about, ')
           ..write('addressLine1: $addressLine1, ')
           ..write('addressLine2: $addressLine2, ')
@@ -1191,6 +1245,17 @@ class $NewsTable extends News with TableInfo<$NewsTable, New> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _dateMeta = const VerificationMeta('date');
   @override
   late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
@@ -1201,7 +1266,7 @@ class $NewsTable extends News with TableInfo<$NewsTable, New> {
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, title, image, date];
+  List<GeneratedColumn> get $columns => [id, title, image, description, date];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1232,6 +1297,17 @@ class $NewsTable extends News with TableInfo<$NewsTable, New> {
       );
     } else if (isInserting) {
       context.missing(_imageMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
     }
     if (data.containsKey('date')) {
       context.handle(
@@ -1265,6 +1341,11 @@ class $NewsTable extends News with TableInfo<$NewsTable, New> {
             DriftSqlType.string,
             data['${effectivePrefix}image'],
           )!,
+      description:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}description'],
+          )!,
       date:
           attachedDatabase.typeMapping.read(
             DriftSqlType.dateTime,
@@ -1283,11 +1364,13 @@ class New extends DataClass implements Insertable<New> {
   final int id;
   final String title;
   final String image;
+  final String description;
   final DateTime date;
   const New({
     required this.id,
     required this.title,
     required this.image,
+    required this.description,
     required this.date,
   });
   @override
@@ -1296,6 +1379,7 @@ class New extends DataClass implements Insertable<New> {
     map['id'] = Variable<int>(id);
     map['title'] = Variable<String>(title);
     map['image'] = Variable<String>(image);
+    map['description'] = Variable<String>(description);
     map['date'] = Variable<DateTime>(date);
     return map;
   }
@@ -1305,6 +1389,7 @@ class New extends DataClass implements Insertable<New> {
       id: Value(id),
       title: Value(title),
       image: Value(image),
+      description: Value(description),
       date: Value(date),
     );
   }
@@ -1318,6 +1403,7 @@ class New extends DataClass implements Insertable<New> {
       id: serializer.fromJson<int>(json['id']),
       title: serializer.fromJson<String>(json['title']),
       image: serializer.fromJson<String>(json['image']),
+      description: serializer.fromJson<String>(json['description']),
       date: serializer.fromJson<DateTime>(json['date']),
     );
   }
@@ -1328,14 +1414,22 @@ class New extends DataClass implements Insertable<New> {
       'id': serializer.toJson<int>(id),
       'title': serializer.toJson<String>(title),
       'image': serializer.toJson<String>(image),
+      'description': serializer.toJson<String>(description),
       'date': serializer.toJson<DateTime>(date),
     };
   }
 
-  New copyWith({int? id, String? title, String? image, DateTime? date}) => New(
+  New copyWith({
+    int? id,
+    String? title,
+    String? image,
+    String? description,
+    DateTime? date,
+  }) => New(
     id: id ?? this.id,
     title: title ?? this.title,
     image: image ?? this.image,
+    description: description ?? this.description,
     date: date ?? this.date,
   );
   New copyWithCompanion(NewsCompanion data) {
@@ -1343,6 +1437,8 @@ class New extends DataClass implements Insertable<New> {
       id: data.id.present ? data.id.value : this.id,
       title: data.title.present ? data.title.value : this.title,
       image: data.image.present ? data.image.value : this.image,
+      description:
+          data.description.present ? data.description.value : this.description,
       date: data.date.present ? data.date.value : this.date,
     );
   }
@@ -1353,13 +1449,14 @@ class New extends DataClass implements Insertable<New> {
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('image: $image, ')
+          ..write('description: $description, ')
           ..write('date: $date')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, title, image, date);
+  int get hashCode => Object.hash(id, title, image, description, date);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1367,6 +1464,7 @@ class New extends DataClass implements Insertable<New> {
           other.id == this.id &&
           other.title == this.title &&
           other.image == this.image &&
+          other.description == this.description &&
           other.date == this.date);
 }
 
@@ -1374,31 +1472,37 @@ class NewsCompanion extends UpdateCompanion<New> {
   final Value<int> id;
   final Value<String> title;
   final Value<String> image;
+  final Value<String> description;
   final Value<DateTime> date;
   const NewsCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
     this.image = const Value.absent(),
+    this.description = const Value.absent(),
     this.date = const Value.absent(),
   });
   NewsCompanion.insert({
     this.id = const Value.absent(),
     required String title,
     required String image,
+    required String description,
     required DateTime date,
   }) : title = Value(title),
        image = Value(image),
+       description = Value(description),
        date = Value(date);
   static Insertable<New> custom({
     Expression<int>? id,
     Expression<String>? title,
     Expression<String>? image,
+    Expression<String>? description,
     Expression<DateTime>? date,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (title != null) 'title': title,
       if (image != null) 'image': image,
+      if (description != null) 'description': description,
       if (date != null) 'date': date,
     });
   }
@@ -1407,12 +1511,14 @@ class NewsCompanion extends UpdateCompanion<New> {
     Value<int>? id,
     Value<String>? title,
     Value<String>? image,
+    Value<String>? description,
     Value<DateTime>? date,
   }) {
     return NewsCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
       image: image ?? this.image,
+      description: description ?? this.description,
       date: date ?? this.date,
     );
   }
@@ -1429,6 +1535,9 @@ class NewsCompanion extends UpdateCompanion<New> {
     if (image.present) {
       map['image'] = Variable<String>(image.value);
     }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
     if (date.present) {
       map['date'] = Variable<DateTime>(date.value);
     }
@@ -1441,6 +1550,7 @@ class NewsCompanion extends UpdateCompanion<New> {
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('image: $image, ')
+          ..write('description: $description, ')
           ..write('date: $date')
           ..write(')'))
         .toString();
@@ -1489,6 +1599,21 @@ class $SpecialtiesTable extends Specialties
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _name_arMeta = const VerificationMeta(
+    'name_ar',
+  );
+  @override
+  late final GeneratedColumn<String> name_ar = GeneratedColumn<String>(
+    'name_ar',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 100,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _iconMeta = const VerificationMeta('icon');
   @override
   late final GeneratedColumn<String> icon = GeneratedColumn<String>(
@@ -1499,7 +1624,7 @@ class $SpecialtiesTable extends Specialties
     requiredDuringInsert: false,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, slug, name, icon];
+  List<GeneratedColumn> get $columns => [id, slug, name, name_ar, icon];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1531,6 +1656,14 @@ class $SpecialtiesTable extends Specialties
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
+    if (data.containsKey('name_ar')) {
+      context.handle(
+        _name_arMeta,
+        name_ar.isAcceptableOrUnknown(data['name_ar']!, _name_arMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_name_arMeta);
+    }
     if (data.containsKey('icon')) {
       context.handle(
         _iconMeta,
@@ -1561,6 +1694,11 @@ class $SpecialtiesTable extends Specialties
             DriftSqlType.string,
             data['${effectivePrefix}name'],
           )!,
+      name_ar:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}name_ar'],
+          )!,
       icon: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}icon'],
@@ -1578,11 +1716,13 @@ class Specialty extends DataClass implements Insertable<Specialty> {
   final int id;
   final String slug;
   final String name;
+  final String name_ar;
   final String? icon;
   const Specialty({
     required this.id,
     required this.slug,
     required this.name,
+    required this.name_ar,
     this.icon,
   });
   @override
@@ -1591,6 +1731,7 @@ class Specialty extends DataClass implements Insertable<Specialty> {
     map['id'] = Variable<int>(id);
     map['slug'] = Variable<String>(slug);
     map['name'] = Variable<String>(name);
+    map['name_ar'] = Variable<String>(name_ar);
     if (!nullToAbsent || icon != null) {
       map['icon'] = Variable<String>(icon);
     }
@@ -1602,6 +1743,7 @@ class Specialty extends DataClass implements Insertable<Specialty> {
       id: Value(id),
       slug: Value(slug),
       name: Value(name),
+      name_ar: Value(name_ar),
       icon: icon == null && nullToAbsent ? const Value.absent() : Value(icon),
     );
   }
@@ -1615,6 +1757,7 @@ class Specialty extends DataClass implements Insertable<Specialty> {
       id: serializer.fromJson<int>(json['id']),
       slug: serializer.fromJson<String>(json['slug']),
       name: serializer.fromJson<String>(json['name']),
+      name_ar: serializer.fromJson<String>(json['name_ar']),
       icon: serializer.fromJson<String?>(json['icon']),
     );
   }
@@ -1625,6 +1768,7 @@ class Specialty extends DataClass implements Insertable<Specialty> {
       'id': serializer.toJson<int>(id),
       'slug': serializer.toJson<String>(slug),
       'name': serializer.toJson<String>(name),
+      'name_ar': serializer.toJson<String>(name_ar),
       'icon': serializer.toJson<String?>(icon),
     };
   }
@@ -1633,11 +1777,13 @@ class Specialty extends DataClass implements Insertable<Specialty> {
     int? id,
     String? slug,
     String? name,
+    String? name_ar,
     Value<String?> icon = const Value.absent(),
   }) => Specialty(
     id: id ?? this.id,
     slug: slug ?? this.slug,
     name: name ?? this.name,
+    name_ar: name_ar ?? this.name_ar,
     icon: icon.present ? icon.value : this.icon,
   );
   Specialty copyWithCompanion(SpecialtiesCompanion data) {
@@ -1645,6 +1791,7 @@ class Specialty extends DataClass implements Insertable<Specialty> {
       id: data.id.present ? data.id.value : this.id,
       slug: data.slug.present ? data.slug.value : this.slug,
       name: data.name.present ? data.name.value : this.name,
+      name_ar: data.name_ar.present ? data.name_ar.value : this.name_ar,
       icon: data.icon.present ? data.icon.value : this.icon,
     );
   }
@@ -1655,13 +1802,14 @@ class Specialty extends DataClass implements Insertable<Specialty> {
           ..write('id: $id, ')
           ..write('slug: $slug, ')
           ..write('name: $name, ')
+          ..write('name_ar: $name_ar, ')
           ..write('icon: $icon')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, slug, name, icon);
+  int get hashCode => Object.hash(id, slug, name, name_ar, icon);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1669,6 +1817,7 @@ class Specialty extends DataClass implements Insertable<Specialty> {
           other.id == this.id &&
           other.slug == this.slug &&
           other.name == this.name &&
+          other.name_ar == this.name_ar &&
           other.icon == this.icon);
 }
 
@@ -1676,30 +1825,36 @@ class SpecialtiesCompanion extends UpdateCompanion<Specialty> {
   final Value<int> id;
   final Value<String> slug;
   final Value<String> name;
+  final Value<String> name_ar;
   final Value<String?> icon;
   const SpecialtiesCompanion({
     this.id = const Value.absent(),
     this.slug = const Value.absent(),
     this.name = const Value.absent(),
+    this.name_ar = const Value.absent(),
     this.icon = const Value.absent(),
   });
   SpecialtiesCompanion.insert({
     this.id = const Value.absent(),
     required String slug,
     required String name,
+    required String name_ar,
     this.icon = const Value.absent(),
   }) : slug = Value(slug),
-       name = Value(name);
+       name = Value(name),
+       name_ar = Value(name_ar);
   static Insertable<Specialty> custom({
     Expression<int>? id,
     Expression<String>? slug,
     Expression<String>? name,
+    Expression<String>? name_ar,
     Expression<String>? icon,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (slug != null) 'slug': slug,
       if (name != null) 'name': name,
+      if (name_ar != null) 'name_ar': name_ar,
       if (icon != null) 'icon': icon,
     });
   }
@@ -1708,12 +1863,14 @@ class SpecialtiesCompanion extends UpdateCompanion<Specialty> {
     Value<int>? id,
     Value<String>? slug,
     Value<String>? name,
+    Value<String>? name_ar,
     Value<String?>? icon,
   }) {
     return SpecialtiesCompanion(
       id: id ?? this.id,
       slug: slug ?? this.slug,
       name: name ?? this.name,
+      name_ar: name_ar ?? this.name_ar,
       icon: icon ?? this.icon,
     );
   }
@@ -1730,6 +1887,9 @@ class SpecialtiesCompanion extends UpdateCompanion<Specialty> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
+    if (name_ar.present) {
+      map['name_ar'] = Variable<String>(name_ar.value);
+    }
     if (icon.present) {
       map['icon'] = Variable<String>(icon.value);
     }
@@ -1742,6 +1902,7 @@ class SpecialtiesCompanion extends UpdateCompanion<Specialty> {
           ..write('id: $id, ')
           ..write('slug: $slug, ')
           ..write('name: $name, ')
+          ..write('name_ar: $name_ar, ')
           ..write('icon: $icon')
           ..write(')'))
         .toString();
@@ -2308,6 +2469,28 @@ class $ReviewsTable extends Reviews with TableInfo<$ReviewsTable, Review> {
       'REFERENCES patients (user_id)',
     ),
   );
+  static const VerificationMeta _patientNameMeta = const VerificationMeta(
+    'patientName',
+  );
+  @override
+  late final GeneratedColumn<String> patientName = GeneratedColumn<String>(
+    'patient_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _patientImageMeta = const VerificationMeta(
+    'patientImage',
+  );
+  @override
+  late final GeneratedColumn<String> patientImage = GeneratedColumn<String>(
+    'patient_image',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _ratingMeta = const VerificationMeta('rating');
   @override
   late final GeneratedColumn<int> rating = GeneratedColumn<int>(
@@ -2368,6 +2551,8 @@ class $ReviewsTable extends Reviews with TableInfo<$ReviewsTable, Review> {
   List<GeneratedColumn> get $columns => [
     id,
     patientId,
+    patientName,
+    patientImage,
     rating,
     content,
     doctorId,
@@ -2396,6 +2581,26 @@ class $ReviewsTable extends Reviews with TableInfo<$ReviewsTable, Review> {
       );
     } else if (isInserting) {
       context.missing(_patientIdMeta);
+    }
+    if (data.containsKey('patient_name')) {
+      context.handle(
+        _patientNameMeta,
+        patientName.isAcceptableOrUnknown(
+          data['patient_name']!,
+          _patientNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_patientNameMeta);
+    }
+    if (data.containsKey('patient_image')) {
+      context.handle(
+        _patientImageMeta,
+        patientImage.isAcceptableOrUnknown(
+          data['patient_image']!,
+          _patientImageMeta,
+        ),
+      );
     }
     if (data.containsKey('rating')) {
       context.handle(
@@ -2452,6 +2657,15 @@ class $ReviewsTable extends Reviews with TableInfo<$ReviewsTable, Review> {
             DriftSqlType.string,
             data['${effectivePrefix}patient_id'],
           )!,
+      patientName:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}patient_name'],
+          )!,
+      patientImage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}patient_image'],
+      ),
       rating:
           attachedDatabase.typeMapping.read(
             DriftSqlType.int,
@@ -2487,6 +2701,8 @@ class $ReviewsTable extends Reviews with TableInfo<$ReviewsTable, Review> {
 class Review extends DataClass implements Insertable<Review> {
   final int id;
   final String patientId;
+  final String patientName;
+  final String? patientImage;
   final int rating;
   final String? content;
   final String? doctorId;
@@ -2495,6 +2711,8 @@ class Review extends DataClass implements Insertable<Review> {
   const Review({
     required this.id,
     required this.patientId,
+    required this.patientName,
+    this.patientImage,
     required this.rating,
     this.content,
     this.doctorId,
@@ -2506,6 +2724,10 @@ class Review extends DataClass implements Insertable<Review> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['patient_id'] = Variable<String>(patientId);
+    map['patient_name'] = Variable<String>(patientName);
+    if (!nullToAbsent || patientImage != null) {
+      map['patient_image'] = Variable<String>(patientImage);
+    }
     map['rating'] = Variable<int>(rating);
     if (!nullToAbsent || content != null) {
       map['content'] = Variable<String>(content);
@@ -2522,6 +2744,11 @@ class Review extends DataClass implements Insertable<Review> {
     return ReviewsCompanion(
       id: Value(id),
       patientId: Value(patientId),
+      patientName: Value(patientName),
+      patientImage:
+          patientImage == null && nullToAbsent
+              ? const Value.absent()
+              : Value(patientImage),
       rating: Value(rating),
       content:
           content == null && nullToAbsent
@@ -2544,6 +2771,8 @@ class Review extends DataClass implements Insertable<Review> {
     return Review(
       id: serializer.fromJson<int>(json['id']),
       patientId: serializer.fromJson<String>(json['patientId']),
+      patientName: serializer.fromJson<String>(json['patientName']),
+      patientImage: serializer.fromJson<String?>(json['patientImage']),
       rating: serializer.fromJson<int>(json['rating']),
       content: serializer.fromJson<String?>(json['content']),
       doctorId: serializer.fromJson<String?>(json['doctorId']),
@@ -2557,6 +2786,8 @@ class Review extends DataClass implements Insertable<Review> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'patientId': serializer.toJson<String>(patientId),
+      'patientName': serializer.toJson<String>(patientName),
+      'patientImage': serializer.toJson<String?>(patientImage),
       'rating': serializer.toJson<int>(rating),
       'content': serializer.toJson<String?>(content),
       'doctorId': serializer.toJson<String?>(doctorId),
@@ -2568,6 +2799,8 @@ class Review extends DataClass implements Insertable<Review> {
   Review copyWith({
     int? id,
     String? patientId,
+    String? patientName,
+    Value<String?> patientImage = const Value.absent(),
     int? rating,
     Value<String?> content = const Value.absent(),
     Value<String?> doctorId = const Value.absent(),
@@ -2576,6 +2809,8 @@ class Review extends DataClass implements Insertable<Review> {
   }) => Review(
     id: id ?? this.id,
     patientId: patientId ?? this.patientId,
+    patientName: patientName ?? this.patientName,
+    patientImage: patientImage.present ? patientImage.value : this.patientImage,
     rating: rating ?? this.rating,
     content: content.present ? content.value : this.content,
     doctorId: doctorId.present ? doctorId.value : this.doctorId,
@@ -2586,6 +2821,12 @@ class Review extends DataClass implements Insertable<Review> {
     return Review(
       id: data.id.present ? data.id.value : this.id,
       patientId: data.patientId.present ? data.patientId.value : this.patientId,
+      patientName:
+          data.patientName.present ? data.patientName.value : this.patientName,
+      patientImage:
+          data.patientImage.present
+              ? data.patientImage.value
+              : this.patientImage,
       rating: data.rating.present ? data.rating.value : this.rating,
       content: data.content.present ? data.content.value : this.content,
       doctorId: data.doctorId.present ? data.doctorId.value : this.doctorId,
@@ -2599,6 +2840,8 @@ class Review extends DataClass implements Insertable<Review> {
     return (StringBuffer('Review(')
           ..write('id: $id, ')
           ..write('patientId: $patientId, ')
+          ..write('patientName: $patientName, ')
+          ..write('patientImage: $patientImage, ')
           ..write('rating: $rating, ')
           ..write('content: $content, ')
           ..write('doctorId: $doctorId, ')
@@ -2612,6 +2855,8 @@ class Review extends DataClass implements Insertable<Review> {
   int get hashCode => Object.hash(
     id,
     patientId,
+    patientName,
+    patientImage,
     rating,
     content,
     doctorId,
@@ -2624,6 +2869,8 @@ class Review extends DataClass implements Insertable<Review> {
       (other is Review &&
           other.id == this.id &&
           other.patientId == this.patientId &&
+          other.patientName == this.patientName &&
+          other.patientImage == this.patientImage &&
           other.rating == this.rating &&
           other.content == this.content &&
           other.doctorId == this.doctorId &&
@@ -2634,6 +2881,8 @@ class Review extends DataClass implements Insertable<Review> {
 class ReviewsCompanion extends UpdateCompanion<Review> {
   final Value<int> id;
   final Value<String> patientId;
+  final Value<String> patientName;
+  final Value<String?> patientImage;
   final Value<int> rating;
   final Value<String?> content;
   final Value<String?> doctorId;
@@ -2642,6 +2891,8 @@ class ReviewsCompanion extends UpdateCompanion<Review> {
   const ReviewsCompanion({
     this.id = const Value.absent(),
     this.patientId = const Value.absent(),
+    this.patientName = const Value.absent(),
+    this.patientImage = const Value.absent(),
     this.rating = const Value.absent(),
     this.content = const Value.absent(),
     this.doctorId = const Value.absent(),
@@ -2651,18 +2902,23 @@ class ReviewsCompanion extends UpdateCompanion<Review> {
   ReviewsCompanion.insert({
     this.id = const Value.absent(),
     required String patientId,
+    required String patientName,
+    this.patientImage = const Value.absent(),
     required int rating,
     this.content = const Value.absent(),
     this.doctorId = const Value.absent(),
     required String createdAt,
     required String updatedAt,
   }) : patientId = Value(patientId),
+       patientName = Value(patientName),
        rating = Value(rating),
        createdAt = Value(createdAt),
        updatedAt = Value(updatedAt);
   static Insertable<Review> custom({
     Expression<int>? id,
     Expression<String>? patientId,
+    Expression<String>? patientName,
+    Expression<String>? patientImage,
     Expression<int>? rating,
     Expression<String>? content,
     Expression<String>? doctorId,
@@ -2672,6 +2928,8 @@ class ReviewsCompanion extends UpdateCompanion<Review> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (patientId != null) 'patient_id': patientId,
+      if (patientName != null) 'patient_name': patientName,
+      if (patientImage != null) 'patient_image': patientImage,
       if (rating != null) 'rating': rating,
       if (content != null) 'content': content,
       if (doctorId != null) 'doctor_id': doctorId,
@@ -2683,6 +2941,8 @@ class ReviewsCompanion extends UpdateCompanion<Review> {
   ReviewsCompanion copyWith({
     Value<int>? id,
     Value<String>? patientId,
+    Value<String>? patientName,
+    Value<String?>? patientImage,
     Value<int>? rating,
     Value<String?>? content,
     Value<String?>? doctorId,
@@ -2692,6 +2952,8 @@ class ReviewsCompanion extends UpdateCompanion<Review> {
     return ReviewsCompanion(
       id: id ?? this.id,
       patientId: patientId ?? this.patientId,
+      patientName: patientName ?? this.patientName,
+      patientImage: patientImage ?? this.patientImage,
       rating: rating ?? this.rating,
       content: content ?? this.content,
       doctorId: doctorId ?? this.doctorId,
@@ -2708,6 +2970,12 @@ class ReviewsCompanion extends UpdateCompanion<Review> {
     }
     if (patientId.present) {
       map['patient_id'] = Variable<String>(patientId.value);
+    }
+    if (patientName.present) {
+      map['patient_name'] = Variable<String>(patientName.value);
+    }
+    if (patientImage.present) {
+      map['patient_image'] = Variable<String>(patientImage.value);
     }
     if (rating.present) {
       map['rating'] = Variable<int>(rating.value);
@@ -2732,6 +3000,8 @@ class ReviewsCompanion extends UpdateCompanion<Review> {
     return (StringBuffer('ReviewsCompanion(')
           ..write('id: $id, ')
           ..write('patientId: $patientId, ')
+          ..write('patientName: $patientName, ')
+          ..write('patientImage: $patientImage, ')
           ..write('rating: $rating, ')
           ..write('content: $content, ')
           ..write('doctorId: $doctorId, ')
@@ -2753,8 +3023,12 @@ class $CommentsTable extends Comments with TableInfo<$CommentsTable, Comment> {
     'id',
     aliasedName,
     false,
+    hasAutoIncrement: true,
     type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
   );
   static const VerificationMeta _reviewIdMeta = const VerificationMeta(
     'reviewId',
@@ -2783,6 +3057,34 @@ class $CommentsTable extends Comments with TableInfo<$CommentsTable, Comment> {
   @override
   late final GeneratedColumn<String> userId = GeneratedColumn<String>(
     'user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES users (id)',
+    ),
+  );
+  static const VerificationMeta _userNameMeta = const VerificationMeta(
+    'userName',
+  );
+  @override
+  late final GeneratedColumn<String> userName = GeneratedColumn<String>(
+    'user_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES users (id)',
+    ),
+  );
+  static const VerificationMeta _userImageMeta = const VerificationMeta(
+    'userImage',
+  );
+  @override
+  late final GeneratedColumn<String> userImage = GeneratedColumn<String>(
+    'user_image',
     aliasedName,
     false,
     type: DriftSqlType.string,
@@ -2831,6 +3133,8 @@ class $CommentsTable extends Comments with TableInfo<$CommentsTable, Comment> {
     reviewId,
     type,
     userId,
+    userName,
+    userImage,
     content,
     createdAt,
     updatedAt,
@@ -2849,8 +3153,6 @@ class $CommentsTable extends Comments with TableInfo<$CommentsTable, Comment> {
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
     }
     if (data.containsKey('review_id')) {
       context.handle(
@@ -2867,6 +3169,22 @@ class $CommentsTable extends Comments with TableInfo<$CommentsTable, Comment> {
       );
     } else if (isInserting) {
       context.missing(_userIdMeta);
+    }
+    if (data.containsKey('user_name')) {
+      context.handle(
+        _userNameMeta,
+        userName.isAcceptableOrUnknown(data['user_name']!, _userNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_userNameMeta);
+    }
+    if (data.containsKey('user_image')) {
+      context.handle(
+        _userImageMeta,
+        userImage.isAcceptableOrUnknown(data['user_image']!, _userImageMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_userImageMeta);
     }
     if (data.containsKey('content')) {
       context.handle(
@@ -2896,7 +3214,7 @@ class $CommentsTable extends Comments with TableInfo<$CommentsTable, Comment> {
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => const {};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   Comment map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -2921,6 +3239,16 @@ class $CommentsTable extends Comments with TableInfo<$CommentsTable, Comment> {
           attachedDatabase.typeMapping.read(
             DriftSqlType.string,
             data['${effectivePrefix}user_id'],
+          )!,
+      userName:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}user_name'],
+          )!,
+      userImage:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}user_image'],
           )!,
       content:
           attachedDatabase.typeMapping.read(
@@ -2954,6 +3282,8 @@ class Comment extends DataClass implements Insertable<Comment> {
   final int reviewId;
   final CommentType type;
   final String userId;
+  final String userName;
+  final String userImage;
   final String content;
   final String createdAt;
   final String updatedAt;
@@ -2962,6 +3292,8 @@ class Comment extends DataClass implements Insertable<Comment> {
     required this.reviewId,
     required this.type,
     required this.userId,
+    required this.userName,
+    required this.userImage,
     required this.content,
     required this.createdAt,
     required this.updatedAt,
@@ -2975,6 +3307,8 @@ class Comment extends DataClass implements Insertable<Comment> {
       map['type'] = Variable<String>($CommentsTable.$convertertype.toSql(type));
     }
     map['user_id'] = Variable<String>(userId);
+    map['user_name'] = Variable<String>(userName);
+    map['user_image'] = Variable<String>(userImage);
     map['content'] = Variable<String>(content);
     map['created_at'] = Variable<String>(createdAt);
     map['updated_at'] = Variable<String>(updatedAt);
@@ -2987,6 +3321,8 @@ class Comment extends DataClass implements Insertable<Comment> {
       reviewId: Value(reviewId),
       type: Value(type),
       userId: Value(userId),
+      userName: Value(userName),
+      userImage: Value(userImage),
       content: Value(content),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
@@ -3003,6 +3339,8 @@ class Comment extends DataClass implements Insertable<Comment> {
       reviewId: serializer.fromJson<int>(json['reviewId']),
       type: serializer.fromJson<CommentType>(json['type']),
       userId: serializer.fromJson<String>(json['userId']),
+      userName: serializer.fromJson<String>(json['userName']),
+      userImage: serializer.fromJson<String>(json['userImage']),
       content: serializer.fromJson<String>(json['content']),
       createdAt: serializer.fromJson<String>(json['createdAt']),
       updatedAt: serializer.fromJson<String>(json['updatedAt']),
@@ -3016,6 +3354,8 @@ class Comment extends DataClass implements Insertable<Comment> {
       'reviewId': serializer.toJson<int>(reviewId),
       'type': serializer.toJson<CommentType>(type),
       'userId': serializer.toJson<String>(userId),
+      'userName': serializer.toJson<String>(userName),
+      'userImage': serializer.toJson<String>(userImage),
       'content': serializer.toJson<String>(content),
       'createdAt': serializer.toJson<String>(createdAt),
       'updatedAt': serializer.toJson<String>(updatedAt),
@@ -3027,6 +3367,8 @@ class Comment extends DataClass implements Insertable<Comment> {
     int? reviewId,
     CommentType? type,
     String? userId,
+    String? userName,
+    String? userImage,
     String? content,
     String? createdAt,
     String? updatedAt,
@@ -3035,6 +3377,8 @@ class Comment extends DataClass implements Insertable<Comment> {
     reviewId: reviewId ?? this.reviewId,
     type: type ?? this.type,
     userId: userId ?? this.userId,
+    userName: userName ?? this.userName,
+    userImage: userImage ?? this.userImage,
     content: content ?? this.content,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -3045,6 +3389,8 @@ class Comment extends DataClass implements Insertable<Comment> {
       reviewId: data.reviewId.present ? data.reviewId.value : this.reviewId,
       type: data.type.present ? data.type.value : this.type,
       userId: data.userId.present ? data.userId.value : this.userId,
+      userName: data.userName.present ? data.userName.value : this.userName,
+      userImage: data.userImage.present ? data.userImage.value : this.userImage,
       content: data.content.present ? data.content.value : this.content,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
@@ -3058,6 +3404,8 @@ class Comment extends DataClass implements Insertable<Comment> {
           ..write('reviewId: $reviewId, ')
           ..write('type: $type, ')
           ..write('userId: $userId, ')
+          ..write('userName: $userName, ')
+          ..write('userImage: $userImage, ')
           ..write('content: $content, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -3066,8 +3414,17 @@ class Comment extends DataClass implements Insertable<Comment> {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, reviewId, type, userId, content, createdAt, updatedAt);
+  int get hashCode => Object.hash(
+    id,
+    reviewId,
+    type,
+    userId,
+    userName,
+    userImage,
+    content,
+    createdAt,
+    updatedAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3076,6 +3433,8 @@ class Comment extends DataClass implements Insertable<Comment> {
           other.reviewId == this.reviewId &&
           other.type == this.type &&
           other.userId == this.userId &&
+          other.userName == this.userName &&
+          other.userImage == this.userImage &&
           other.content == this.content &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -3086,33 +3445,37 @@ class CommentsCompanion extends UpdateCompanion<Comment> {
   final Value<int> reviewId;
   final Value<CommentType> type;
   final Value<String> userId;
+  final Value<String> userName;
+  final Value<String> userImage;
   final Value<String> content;
   final Value<String> createdAt;
   final Value<String> updatedAt;
-  final Value<int> rowid;
   const CommentsCompanion({
     this.id = const Value.absent(),
     this.reviewId = const Value.absent(),
     this.type = const Value.absent(),
     this.userId = const Value.absent(),
+    this.userName = const Value.absent(),
+    this.userImage = const Value.absent(),
     this.content = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
-    this.rowid = const Value.absent(),
   });
   CommentsCompanion.insert({
-    required int id,
+    this.id = const Value.absent(),
     required int reviewId,
     required CommentType type,
     required String userId,
+    required String userName,
+    required String userImage,
     required String content,
     required String createdAt,
     required String updatedAt,
-    this.rowid = const Value.absent(),
-  }) : id = Value(id),
-       reviewId = Value(reviewId),
+  }) : reviewId = Value(reviewId),
        type = Value(type),
        userId = Value(userId),
+       userName = Value(userName),
+       userImage = Value(userImage),
        content = Value(content),
        createdAt = Value(createdAt),
        updatedAt = Value(updatedAt);
@@ -3121,20 +3484,22 @@ class CommentsCompanion extends UpdateCompanion<Comment> {
     Expression<int>? reviewId,
     Expression<String>? type,
     Expression<String>? userId,
+    Expression<String>? userName,
+    Expression<String>? userImage,
     Expression<String>? content,
     Expression<String>? createdAt,
     Expression<String>? updatedAt,
-    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (reviewId != null) 'review_id': reviewId,
       if (type != null) 'type': type,
       if (userId != null) 'user_id': userId,
+      if (userName != null) 'user_name': userName,
+      if (userImage != null) 'user_image': userImage,
       if (content != null) 'content': content,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
-      if (rowid != null) 'rowid': rowid,
     });
   }
 
@@ -3143,20 +3508,22 @@ class CommentsCompanion extends UpdateCompanion<Comment> {
     Value<int>? reviewId,
     Value<CommentType>? type,
     Value<String>? userId,
+    Value<String>? userName,
+    Value<String>? userImage,
     Value<String>? content,
     Value<String>? createdAt,
     Value<String>? updatedAt,
-    Value<int>? rowid,
   }) {
     return CommentsCompanion(
       id: id ?? this.id,
       reviewId: reviewId ?? this.reviewId,
       type: type ?? this.type,
       userId: userId ?? this.userId,
+      userName: userName ?? this.userName,
+      userImage: userImage ?? this.userImage,
       content: content ?? this.content,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      rowid: rowid ?? this.rowid,
     );
   }
 
@@ -3177,6 +3544,12 @@ class CommentsCompanion extends UpdateCompanion<Comment> {
     if (userId.present) {
       map['user_id'] = Variable<String>(userId.value);
     }
+    if (userName.present) {
+      map['user_name'] = Variable<String>(userName.value);
+    }
+    if (userImage.present) {
+      map['user_image'] = Variable<String>(userImage.value);
+    }
     if (content.present) {
       map['content'] = Variable<String>(content.value);
     }
@@ -3185,9 +3558,6 @@ class CommentsCompanion extends UpdateCompanion<Comment> {
     }
     if (updatedAt.present) {
       map['updated_at'] = Variable<String>(updatedAt.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
     }
     return map;
   }
@@ -3199,10 +3569,11 @@ class CommentsCompanion extends UpdateCompanion<Comment> {
           ..write('reviewId: $reviewId, ')
           ..write('type: $type, ')
           ..write('userId: $userId, ')
+          ..write('userName: $userName, ')
+          ..write('userImage: $userImage, ')
           ..write('content: $content, ')
           ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt, ')
-          ..write('rowid: $rowid')
+          ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
@@ -4609,6 +4980,494 @@ class PatientFilesCompanion extends UpdateCompanion<PatientFile> {
   }
 }
 
+class $PatientSharedFoldersTable extends PatientSharedFolders
+    with TableInfo<$PatientSharedFoldersTable, PatientSharedFolder> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PatientSharedFoldersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _patientIdMeta = const VerificationMeta(
+    'patientId',
+  );
+  @override
+  late final GeneratedColumn<String> patientId = GeneratedColumn<String>(
+    'patient_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES patients (user_id)',
+    ),
+  );
+  static const VerificationMeta _doctorIdMeta = const VerificationMeta(
+    'doctorId',
+  );
+  @override
+  late final GeneratedColumn<String> doctorId = GeneratedColumn<String>(
+    'doctor_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES doctors (user_id)',
+    ),
+  );
+  static const VerificationMeta _folderIdMeta = const VerificationMeta(
+    'folderId',
+  );
+  @override
+  late final GeneratedColumn<int> folderId = GeneratedColumn<int>(
+    'folder_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES patient_folders (id)',
+    ),
+  );
+  static const VerificationMeta _appointmentIdMeta = const VerificationMeta(
+    'appointmentId',
+  );
+  @override
+  late final GeneratedColumn<int> appointmentId = GeneratedColumn<int>(
+    'appointment_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES appointments (id)',
+    ),
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<SharingType, String> sharingType =
+      GeneratedColumn<String>(
+        'sharing_type',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<SharingType>(
+        $PatientSharedFoldersTable.$convertersharingType,
+      );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<String> createdAt = GeneratedColumn<String>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    patientId,
+    doctorId,
+    folderId,
+    appointmentId,
+    sharingType,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'patient_shared_folders';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PatientSharedFolder> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('patient_id')) {
+      context.handle(
+        _patientIdMeta,
+        patientId.isAcceptableOrUnknown(data['patient_id']!, _patientIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_patientIdMeta);
+    }
+    if (data.containsKey('doctor_id')) {
+      context.handle(
+        _doctorIdMeta,
+        doctorId.isAcceptableOrUnknown(data['doctor_id']!, _doctorIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_doctorIdMeta);
+    }
+    if (data.containsKey('folder_id')) {
+      context.handle(
+        _folderIdMeta,
+        folderId.isAcceptableOrUnknown(data['folder_id']!, _folderIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_folderIdMeta);
+    }
+    if (data.containsKey('appointment_id')) {
+      context.handle(
+        _appointmentIdMeta,
+        appointmentId.isAcceptableOrUnknown(
+          data['appointment_id']!,
+          _appointmentIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PatientSharedFolder map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PatientSharedFolder(
+      id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}id'],
+          )!,
+      patientId:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}patient_id'],
+          )!,
+      doctorId:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}doctor_id'],
+          )!,
+      folderId:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}folder_id'],
+          )!,
+      appointmentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}appointment_id'],
+      ),
+      sharingType: $PatientSharedFoldersTable.$convertersharingType.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}sharing_type'],
+        )!,
+      ),
+      createdAt:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}created_at'],
+          )!,
+    );
+  }
+
+  @override
+  $PatientSharedFoldersTable createAlias(String alias) {
+    return $PatientSharedFoldersTable(attachedDatabase, alias);
+  }
+
+  static TypeConverter<SharingType, String> $convertersharingType =
+      const SharingTypeConverter();
+}
+
+class PatientSharedFolder extends DataClass
+    implements Insertable<PatientSharedFolder> {
+  final int id;
+  final String patientId;
+  final String doctorId;
+  final int folderId;
+  final int? appointmentId;
+  final SharingType sharingType;
+  final String createdAt;
+  const PatientSharedFolder({
+    required this.id,
+    required this.patientId,
+    required this.doctorId,
+    required this.folderId,
+    this.appointmentId,
+    required this.sharingType,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['patient_id'] = Variable<String>(patientId);
+    map['doctor_id'] = Variable<String>(doctorId);
+    map['folder_id'] = Variable<int>(folderId);
+    if (!nullToAbsent || appointmentId != null) {
+      map['appointment_id'] = Variable<int>(appointmentId);
+    }
+    {
+      map['sharing_type'] = Variable<String>(
+        $PatientSharedFoldersTable.$convertersharingType.toSql(sharingType),
+      );
+    }
+    map['created_at'] = Variable<String>(createdAt);
+    return map;
+  }
+
+  PatientSharedFoldersCompanion toCompanion(bool nullToAbsent) {
+    return PatientSharedFoldersCompanion(
+      id: Value(id),
+      patientId: Value(patientId),
+      doctorId: Value(doctorId),
+      folderId: Value(folderId),
+      appointmentId:
+          appointmentId == null && nullToAbsent
+              ? const Value.absent()
+              : Value(appointmentId),
+      sharingType: Value(sharingType),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory PatientSharedFolder.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PatientSharedFolder(
+      id: serializer.fromJson<int>(json['id']),
+      patientId: serializer.fromJson<String>(json['patientId']),
+      doctorId: serializer.fromJson<String>(json['doctorId']),
+      folderId: serializer.fromJson<int>(json['folderId']),
+      appointmentId: serializer.fromJson<int?>(json['appointmentId']),
+      sharingType: serializer.fromJson<SharingType>(json['sharingType']),
+      createdAt: serializer.fromJson<String>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'patientId': serializer.toJson<String>(patientId),
+      'doctorId': serializer.toJson<String>(doctorId),
+      'folderId': serializer.toJson<int>(folderId),
+      'appointmentId': serializer.toJson<int?>(appointmentId),
+      'sharingType': serializer.toJson<SharingType>(sharingType),
+      'createdAt': serializer.toJson<String>(createdAt),
+    };
+  }
+
+  PatientSharedFolder copyWith({
+    int? id,
+    String? patientId,
+    String? doctorId,
+    int? folderId,
+    Value<int?> appointmentId = const Value.absent(),
+    SharingType? sharingType,
+    String? createdAt,
+  }) => PatientSharedFolder(
+    id: id ?? this.id,
+    patientId: patientId ?? this.patientId,
+    doctorId: doctorId ?? this.doctorId,
+    folderId: folderId ?? this.folderId,
+    appointmentId:
+        appointmentId.present ? appointmentId.value : this.appointmentId,
+    sharingType: sharingType ?? this.sharingType,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  PatientSharedFolder copyWithCompanion(PatientSharedFoldersCompanion data) {
+    return PatientSharedFolder(
+      id: data.id.present ? data.id.value : this.id,
+      patientId: data.patientId.present ? data.patientId.value : this.patientId,
+      doctorId: data.doctorId.present ? data.doctorId.value : this.doctorId,
+      folderId: data.folderId.present ? data.folderId.value : this.folderId,
+      appointmentId:
+          data.appointmentId.present
+              ? data.appointmentId.value
+              : this.appointmentId,
+      sharingType:
+          data.sharingType.present ? data.sharingType.value : this.sharingType,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PatientSharedFolder(')
+          ..write('id: $id, ')
+          ..write('patientId: $patientId, ')
+          ..write('doctorId: $doctorId, ')
+          ..write('folderId: $folderId, ')
+          ..write('appointmentId: $appointmentId, ')
+          ..write('sharingType: $sharingType, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    patientId,
+    doctorId,
+    folderId,
+    appointmentId,
+    sharingType,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PatientSharedFolder &&
+          other.id == this.id &&
+          other.patientId == this.patientId &&
+          other.doctorId == this.doctorId &&
+          other.folderId == this.folderId &&
+          other.appointmentId == this.appointmentId &&
+          other.sharingType == this.sharingType &&
+          other.createdAt == this.createdAt);
+}
+
+class PatientSharedFoldersCompanion
+    extends UpdateCompanion<PatientSharedFolder> {
+  final Value<int> id;
+  final Value<String> patientId;
+  final Value<String> doctorId;
+  final Value<int> folderId;
+  final Value<int?> appointmentId;
+  final Value<SharingType> sharingType;
+  final Value<String> createdAt;
+  const PatientSharedFoldersCompanion({
+    this.id = const Value.absent(),
+    this.patientId = const Value.absent(),
+    this.doctorId = const Value.absent(),
+    this.folderId = const Value.absent(),
+    this.appointmentId = const Value.absent(),
+    this.sharingType = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  PatientSharedFoldersCompanion.insert({
+    this.id = const Value.absent(),
+    required String patientId,
+    required String doctorId,
+    required int folderId,
+    this.appointmentId = const Value.absent(),
+    required SharingType sharingType,
+    required String createdAt,
+  }) : patientId = Value(patientId),
+       doctorId = Value(doctorId),
+       folderId = Value(folderId),
+       sharingType = Value(sharingType),
+       createdAt = Value(createdAt);
+  static Insertable<PatientSharedFolder> custom({
+    Expression<int>? id,
+    Expression<String>? patientId,
+    Expression<String>? doctorId,
+    Expression<int>? folderId,
+    Expression<int>? appointmentId,
+    Expression<String>? sharingType,
+    Expression<String>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (patientId != null) 'patient_id': patientId,
+      if (doctorId != null) 'doctor_id': doctorId,
+      if (folderId != null) 'folder_id': folderId,
+      if (appointmentId != null) 'appointment_id': appointmentId,
+      if (sharingType != null) 'sharing_type': sharingType,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  PatientSharedFoldersCompanion copyWith({
+    Value<int>? id,
+    Value<String>? patientId,
+    Value<String>? doctorId,
+    Value<int>? folderId,
+    Value<int?>? appointmentId,
+    Value<SharingType>? sharingType,
+    Value<String>? createdAt,
+  }) {
+    return PatientSharedFoldersCompanion(
+      id: id ?? this.id,
+      patientId: patientId ?? this.patientId,
+      doctorId: doctorId ?? this.doctorId,
+      folderId: folderId ?? this.folderId,
+      appointmentId: appointmentId ?? this.appointmentId,
+      sharingType: sharingType ?? this.sharingType,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (patientId.present) {
+      map['patient_id'] = Variable<String>(patientId.value);
+    }
+    if (doctorId.present) {
+      map['doctor_id'] = Variable<String>(doctorId.value);
+    }
+    if (folderId.present) {
+      map['folder_id'] = Variable<int>(folderId.value);
+    }
+    if (appointmentId.present) {
+      map['appointment_id'] = Variable<int>(appointmentId.value);
+    }
+    if (sharingType.present) {
+      map['sharing_type'] = Variable<String>(
+        $PatientSharedFoldersTable.$convertersharingType.toSql(
+          sharingType.value,
+        ),
+      );
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<String>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PatientSharedFoldersCompanion(')
+          ..write('id: $id, ')
+          ..write('patientId: $patientId, ')
+          ..write('doctorId: $doctorId, ')
+          ..write('folderId: $folderId, ')
+          ..write('appointmentId: $appointmentId, ')
+          ..write('sharingType: $sharingType, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -4623,6 +5482,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $AppointmentsTable appointments = $AppointmentsTable(this);
   late final $PatientFoldersTable patientFolders = $PatientFoldersTable(this);
   late final $PatientFilesTable patientFiles = $PatientFilesTable(this);
+  late final $PatientSharedFoldersTable patientSharedFolders =
+      $PatientSharedFoldersTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4639,6 +5500,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     appointments,
     patientFolders,
     patientFiles,
+    patientSharedFolders,
   ];
 }
 
@@ -4702,25 +5564,6 @@ final class $$UsersTableReferences
     ).filter((f) => f.userId.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_patientsRefsTable($_db));
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-
-  static MultiTypedResultKey<$CommentsTable, List<Comment>> _commentsRefsTable(
-    _$AppDatabase db,
-  ) => MultiTypedResultKey.fromTable(
-    db.comments,
-    aliasName: $_aliasNameGenerator(db.users.id, db.comments.userId),
-  );
-
-  $$CommentsTableProcessedTableManager get commentsRefs {
-    final manager = $$CommentsTableTableManager(
-      $_db,
-      $_db.comments,
-    ).filter((f) => f.userId.id.sqlEquals($_itemColumn<String>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_commentsRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -4811,31 +5654,6 @@ class $$UsersTableFilterComposer extends Composer<_$AppDatabase, $UsersTable> {
           }) => $$PatientsTableFilterComposer(
             $db: $db,
             $table: $db.patients,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
-  Expression<bool> commentsRefs(
-    Expression<bool> Function($$CommentsTableFilterComposer f) f,
-  ) {
-    final $$CommentsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.comments,
-      getReferencedColumn: (t) => t.userId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$CommentsTableFilterComposer(
-            $db: $db,
-            $table: $db.comments,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -4970,31 +5788,6 @@ class $$UsersTableAnnotationComposer
     );
     return f(composer);
   }
-
-  Expression<T> commentsRefs<T extends Object>(
-    Expression<T> Function($$CommentsTableAnnotationComposer a) f,
-  ) {
-    final $$CommentsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.comments,
-      getReferencedColumn: (t) => t.userId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$CommentsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.comments,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
 }
 
 class $$UsersTableTableManager
@@ -5010,11 +5803,7 @@ class $$UsersTableTableManager
           $$UsersTableUpdateCompanionBuilder,
           (User, $$UsersTableReferences),
           User,
-          PrefetchHooks Function({
-            bool doctorsRefs,
-            bool patientsRefs,
-            bool commentsRefs,
-          })
+          PrefetchHooks Function({bool doctorsRefs, bool patientsRefs})
         > {
   $$UsersTableTableManager(_$AppDatabase db, $UsersTable table)
     : super(
@@ -5077,17 +5866,12 @@ class $$UsersTableTableManager
                         ),
                       )
                       .toList(),
-          prefetchHooksCallback: ({
-            doctorsRefs = false,
-            patientsRefs = false,
-            commentsRefs = false,
-          }) {
+          prefetchHooksCallback: ({doctorsRefs = false, patientsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
                 if (doctorsRefs) db.doctors,
                 if (patientsRefs) db.patients,
-                if (commentsRefs) db.comments,
               ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
@@ -5123,23 +5907,6 @@ class $$UsersTableTableManager
                               referencedItems.where((e) => e.userId == item.id),
                       typedResults: items,
                     ),
-                  if (commentsRefs)
-                    await $_getPrefetchedData<User, $UsersTable, Comment>(
-                      currentTable: table,
-                      referencedTable: $$UsersTableReferences
-                          ._commentsRefsTable(db),
-                      managerFromTypedResult:
-                          (p0) =>
-                              $$UsersTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).commentsRefs,
-                      referencedItemsForCurrentItem:
-                          (item, referencedItems) =>
-                              referencedItems.where((e) => e.userId == item.id),
-                      typedResults: items,
-                    ),
                 ];
               },
             );
@@ -5160,11 +5927,7 @@ typedef $$UsersTableProcessedTableManager =
       $$UsersTableUpdateCompanionBuilder,
       (User, $$UsersTableReferences),
       User,
-      PrefetchHooks Function({
-        bool doctorsRefs,
-        bool patientsRefs,
-        bool commentsRefs,
-      })
+      PrefetchHooks Function({bool doctorsRefs, bool patientsRefs})
     >;
 typedef $$DoctorsTableCreateCompanionBuilder =
     DoctorsCompanion Function({
@@ -5173,6 +5936,7 @@ typedef $$DoctorsTableCreateCompanionBuilder =
       required String experience,
       required String education,
       required String specialty,
+      Value<String?> specialtyAr,
       Value<String?> about,
       Value<String?> addressLine1,
       Value<String?> addressLine2,
@@ -5188,6 +5952,7 @@ typedef $$DoctorsTableUpdateCompanionBuilder =
       Value<String> experience,
       Value<String> education,
       Value<String> specialty,
+      Value<String?> specialtyAr,
       Value<String?> about,
       Value<String?> addressLine1,
       Value<String?> addressLine2,
@@ -5246,6 +6011,11 @@ class $$DoctorsTableFilterComposer
 
   ColumnFilters<String> get specialty => $composableBuilder(
     column: $table.specialty,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get specialtyAr => $composableBuilder(
+    column: $table.specialtyAr,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -5333,6 +6103,11 @@ class $$DoctorsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get specialtyAr => $composableBuilder(
+    column: $table.specialtyAr,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get about => $composableBuilder(
     column: $table.about,
     builder: (column) => ColumnOrderings(column),
@@ -5409,6 +6184,11 @@ class $$DoctorsTableAnnotationComposer
 
   GeneratedColumn<String> get specialty =>
       $composableBuilder(column: $table.specialty, builder: (column) => column);
+
+  GeneratedColumn<String> get specialtyAr => $composableBuilder(
+    column: $table.specialtyAr,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get about =>
       $composableBuilder(column: $table.about, builder: (column) => column);
@@ -5493,6 +6273,7 @@ class $$DoctorsTableTableManager
                 Value<String> experience = const Value.absent(),
                 Value<String> education = const Value.absent(),
                 Value<String> specialty = const Value.absent(),
+                Value<String?> specialtyAr = const Value.absent(),
                 Value<String?> about = const Value.absent(),
                 Value<String?> addressLine1 = const Value.absent(),
                 Value<String?> addressLine2 = const Value.absent(),
@@ -5506,6 +6287,7 @@ class $$DoctorsTableTableManager
                 experience: experience,
                 education: education,
                 specialty: specialty,
+                specialtyAr: specialtyAr,
                 about: about,
                 addressLine1: addressLine1,
                 addressLine2: addressLine2,
@@ -5521,6 +6303,7 @@ class $$DoctorsTableTableManager
                 required String experience,
                 required String education,
                 required String specialty,
+                Value<String?> specialtyAr = const Value.absent(),
                 Value<String?> about = const Value.absent(),
                 Value<String?> addressLine1 = const Value.absent(),
                 Value<String?> addressLine2 = const Value.absent(),
@@ -5534,6 +6317,7 @@ class $$DoctorsTableTableManager
                 experience: experience,
                 education: education,
                 specialty: specialty,
+                specialtyAr: specialtyAr,
                 about: about,
                 addressLine1: addressLine1,
                 addressLine2: addressLine2,
@@ -5614,6 +6398,7 @@ typedef $$NewsTableCreateCompanionBuilder =
       Value<int> id,
       required String title,
       required String image,
+      required String description,
       required DateTime date,
     });
 typedef $$NewsTableUpdateCompanionBuilder =
@@ -5621,6 +6406,7 @@ typedef $$NewsTableUpdateCompanionBuilder =
       Value<int> id,
       Value<String> title,
       Value<String> image,
+      Value<String> description,
       Value<DateTime> date,
     });
 
@@ -5644,6 +6430,11 @@ class $$NewsTableFilterComposer extends Composer<_$AppDatabase, $NewsTable> {
 
   ColumnFilters<String> get image => $composableBuilder(
     column: $table.image,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -5676,6 +6467,11 @@ class $$NewsTableOrderingComposer extends Composer<_$AppDatabase, $NewsTable> {
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get date => $composableBuilder(
     column: $table.date,
     builder: (column) => ColumnOrderings(column),
@@ -5699,6 +6495,11 @@ class $$NewsTableAnnotationComposer
 
   GeneratedColumn<String> get image =>
       $composableBuilder(column: $table.image, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<DateTime> get date =>
       $composableBuilder(column: $table.date, builder: (column) => column);
@@ -5735,19 +6536,27 @@ class $$NewsTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> title = const Value.absent(),
                 Value<String> image = const Value.absent(),
+                Value<String> description = const Value.absent(),
                 Value<DateTime> date = const Value.absent(),
-              }) =>
-                  NewsCompanion(id: id, title: title, image: image, date: date),
+              }) => NewsCompanion(
+                id: id,
+                title: title,
+                image: image,
+                description: description,
+                date: date,
+              ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
                 required String title,
                 required String image,
+                required String description,
                 required DateTime date,
               }) => NewsCompanion.insert(
                 id: id,
                 title: title,
                 image: image,
+                description: description,
                 date: date,
               ),
           withReferenceMapper:
@@ -5784,6 +6593,7 @@ typedef $$SpecialtiesTableCreateCompanionBuilder =
       Value<int> id,
       required String slug,
       required String name,
+      required String name_ar,
       Value<String?> icon,
     });
 typedef $$SpecialtiesTableUpdateCompanionBuilder =
@@ -5791,6 +6601,7 @@ typedef $$SpecialtiesTableUpdateCompanionBuilder =
       Value<int> id,
       Value<String> slug,
       Value<String> name,
+      Value<String> name_ar,
       Value<String?> icon,
     });
 
@@ -5815,6 +6626,11 @@ class $$SpecialtiesTableFilterComposer
 
   ColumnFilters<String> get name => $composableBuilder(
     column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name_ar => $composableBuilder(
+    column: $table.name_ar,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -5848,6 +6664,11 @@ class $$SpecialtiesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get name_ar => $composableBuilder(
+    column: $table.name_ar,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get icon => $composableBuilder(
     column: $table.icon,
     builder: (column) => ColumnOrderings(column),
@@ -5871,6 +6692,9 @@ class $$SpecialtiesTableAnnotationComposer
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get name_ar =>
+      $composableBuilder(column: $table.name_ar, builder: (column) => column);
 
   GeneratedColumn<String> get icon =>
       $composableBuilder(column: $table.icon, builder: (column) => column);
@@ -5911,11 +6735,13 @@ class $$SpecialtiesTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> slug = const Value.absent(),
                 Value<String> name = const Value.absent(),
+                Value<String> name_ar = const Value.absent(),
                 Value<String?> icon = const Value.absent(),
               }) => SpecialtiesCompanion(
                 id: id,
                 slug: slug,
                 name: name,
+                name_ar: name_ar,
                 icon: icon,
               ),
           createCompanionCallback:
@@ -5923,11 +6749,13 @@ class $$SpecialtiesTableTableManager
                 Value<int> id = const Value.absent(),
                 required String slug,
                 required String name,
+                required String name_ar,
                 Value<String?> icon = const Value.absent(),
               }) => SpecialtiesCompanion.insert(
                 id: id,
                 slug: slug,
                 name: name,
+                name_ar: name_ar,
                 icon: icon,
               ),
           withReferenceMapper:
@@ -6486,6 +7314,8 @@ typedef $$ReviewsTableCreateCompanionBuilder =
     ReviewsCompanion Function({
       Value<int> id,
       required String patientId,
+      required String patientName,
+      Value<String?> patientImage,
       required int rating,
       Value<String?> content,
       Value<String?> doctorId,
@@ -6496,6 +7326,8 @@ typedef $$ReviewsTableUpdateCompanionBuilder =
     ReviewsCompanion Function({
       Value<int> id,
       Value<String> patientId,
+      Value<String> patientName,
+      Value<String?> patientImage,
       Value<int> rating,
       Value<String?> content,
       Value<String?> doctorId,
@@ -6538,6 +7370,16 @@ class $$ReviewsTableFilterComposer
   });
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get patientName => $composableBuilder(
+    column: $table.patientName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get patientImage => $composableBuilder(
+    column: $table.patientImage,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -6601,6 +7443,16 @@ class $$ReviewsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get patientName => $composableBuilder(
+    column: $table.patientName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get patientImage => $composableBuilder(
+    column: $table.patientImage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get rating => $composableBuilder(
     column: $table.rating,
     builder: (column) => ColumnOrderings(column),
@@ -6633,6 +7485,16 @@ class $$ReviewsTableAnnotationComposer
   });
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get patientName => $composableBuilder(
+    column: $table.patientName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get patientImage => $composableBuilder(
+    column: $table.patientImage,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get rating =>
       $composableBuilder(column: $table.rating, builder: (column) => column);
@@ -6702,6 +7564,8 @@ class $$ReviewsTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<String> patientId = const Value.absent(),
+                Value<String> patientName = const Value.absent(),
+                Value<String?> patientImage = const Value.absent(),
                 Value<int> rating = const Value.absent(),
                 Value<String?> content = const Value.absent(),
                 Value<String?> doctorId = const Value.absent(),
@@ -6710,6 +7574,8 @@ class $$ReviewsTableTableManager
               }) => ReviewsCompanion(
                 id: id,
                 patientId: patientId,
+                patientName: patientName,
+                patientImage: patientImage,
                 rating: rating,
                 content: content,
                 doctorId: doctorId,
@@ -6720,6 +7586,8 @@ class $$ReviewsTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 required String patientId,
+                required String patientName,
+                Value<String?> patientImage = const Value.absent(),
                 required int rating,
                 Value<String?> content = const Value.absent(),
                 Value<String?> doctorId = const Value.absent(),
@@ -6728,6 +7596,8 @@ class $$ReviewsTableTableManager
               }) => ReviewsCompanion.insert(
                 id: id,
                 patientId: patientId,
+                patientName: patientName,
+                patientImage: patientImage,
                 rating: rating,
                 content: content,
                 doctorId: doctorId,
@@ -6793,14 +7663,15 @@ typedef $$ReviewsTableProcessedTableManager =
     >;
 typedef $$CommentsTableCreateCompanionBuilder =
     CommentsCompanion Function({
-      required int id,
+      Value<int> id,
       required int reviewId,
       required CommentType type,
       required String userId,
+      required String userName,
+      required String userImage,
       required String content,
       required String createdAt,
       required String updatedAt,
-      Value<int> rowid,
     });
 typedef $$CommentsTableUpdateCompanionBuilder =
     CommentsCompanion Function({
@@ -6808,10 +7679,11 @@ typedef $$CommentsTableUpdateCompanionBuilder =
       Value<int> reviewId,
       Value<CommentType> type,
       Value<String> userId,
+      Value<String> userName,
+      Value<String> userImage,
       Value<String> content,
       Value<String> createdAt,
       Value<String> updatedAt,
-      Value<int> rowid,
     });
 
 final class $$CommentsTableReferences
@@ -6847,6 +7719,42 @@ final class $$CommentsTableReferences
       $_db.users,
     ).filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_userIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $UsersTable _userNameTable(_$AppDatabase db) => db.users.createAlias(
+    $_aliasNameGenerator(db.comments.userName, db.users.id),
+  );
+
+  $$UsersTableProcessedTableManager get userName {
+    final $_column = $_itemColumn<String>('user_name')!;
+
+    final manager = $$UsersTableTableManager(
+      $_db,
+      $_db.users,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_userNameTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $UsersTable _userImageTable(_$AppDatabase db) => db.users.createAlias(
+    $_aliasNameGenerator(db.comments.userImage, db.users.id),
+  );
+
+  $$UsersTableProcessedTableManager get userImage {
+    final $_column = $_itemColumn<String>('user_image')!;
+
+    final manager = $$UsersTableTableManager(
+      $_db,
+      $_db.users,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_userImageTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: [item]),
@@ -6916,6 +7824,52 @@ class $$CommentsTableFilterComposer
     final $$UsersTableFilterComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.userId,
+      referencedTable: $db.users,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UsersTableFilterComposer(
+            $db: $db,
+            $table: $db.users,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$UsersTableFilterComposer get userName {
+    final $$UsersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.userName,
+      referencedTable: $db.users,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UsersTableFilterComposer(
+            $db: $db,
+            $table: $db.users,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$UsersTableFilterComposer get userImage {
+    final $$UsersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.userImage,
       referencedTable: $db.users,
       getReferencedColumn: (t) => t.id,
       builder:
@@ -7015,6 +7969,52 @@ class $$CommentsTableOrderingComposer
     );
     return composer;
   }
+
+  $$UsersTableOrderingComposer get userName {
+    final $$UsersTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.userName,
+      referencedTable: $db.users,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UsersTableOrderingComposer(
+            $db: $db,
+            $table: $db.users,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$UsersTableOrderingComposer get userImage {
+    final $$UsersTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.userImage,
+      referencedTable: $db.users,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UsersTableOrderingComposer(
+            $db: $db,
+            $table: $db.users,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$CommentsTableAnnotationComposer
@@ -7086,6 +8086,52 @@ class $$CommentsTableAnnotationComposer
     );
     return composer;
   }
+
+  $$UsersTableAnnotationComposer get userName {
+    final $$UsersTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.userName,
+      referencedTable: $db.users,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UsersTableAnnotationComposer(
+            $db: $db,
+            $table: $db.users,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$UsersTableAnnotationComposer get userImage {
+    final $$UsersTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.userImage,
+      referencedTable: $db.users,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UsersTableAnnotationComposer(
+            $db: $db,
+            $table: $db.users,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$CommentsTableTableManager
@@ -7101,7 +8147,12 @@ class $$CommentsTableTableManager
           $$CommentsTableUpdateCompanionBuilder,
           (Comment, $$CommentsTableReferences),
           Comment,
-          PrefetchHooks Function({bool reviewId, bool userId})
+          PrefetchHooks Function({
+            bool reviewId,
+            bool userId,
+            bool userName,
+            bool userImage,
+          })
         > {
   $$CommentsTableTableManager(_$AppDatabase db, $CommentsTable table)
     : super(
@@ -7120,39 +8171,43 @@ class $$CommentsTableTableManager
                 Value<int> reviewId = const Value.absent(),
                 Value<CommentType> type = const Value.absent(),
                 Value<String> userId = const Value.absent(),
+                Value<String> userName = const Value.absent(),
+                Value<String> userImage = const Value.absent(),
                 Value<String> content = const Value.absent(),
                 Value<String> createdAt = const Value.absent(),
                 Value<String> updatedAt = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
               }) => CommentsCompanion(
                 id: id,
                 reviewId: reviewId,
                 type: type,
                 userId: userId,
+                userName: userName,
+                userImage: userImage,
                 content: content,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
-                rowid: rowid,
               ),
           createCompanionCallback:
               ({
-                required int id,
+                Value<int> id = const Value.absent(),
                 required int reviewId,
                 required CommentType type,
                 required String userId,
+                required String userName,
+                required String userImage,
                 required String content,
                 required String createdAt,
                 required String updatedAt,
-                Value<int> rowid = const Value.absent(),
               }) => CommentsCompanion.insert(
                 id: id,
                 reviewId: reviewId,
                 type: type,
                 userId: userId,
+                userName: userName,
+                userImage: userImage,
                 content: content,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
-                rowid: rowid,
               ),
           withReferenceMapper:
               (p0) =>
@@ -7164,7 +8219,12 @@ class $$CommentsTableTableManager
                         ),
                       )
                       .toList(),
-          prefetchHooksCallback: ({reviewId = false, userId = false}) {
+          prefetchHooksCallback: ({
+            reviewId = false,
+            userId = false,
+            userName = false,
+            userImage = false,
+          }) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
@@ -7207,6 +8267,32 @@ class $$CommentsTableTableManager
                           )
                           as T;
                 }
+                if (userName) {
+                  state =
+                      state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.userName,
+                            referencedTable: $$CommentsTableReferences
+                                ._userNameTable(db),
+                            referencedColumn:
+                                $$CommentsTableReferences._userNameTable(db).id,
+                          )
+                          as T;
+                }
+                if (userImage) {
+                  state =
+                      state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.userImage,
+                            referencedTable: $$CommentsTableReferences
+                                ._userImageTable(db),
+                            referencedColumn:
+                                $$CommentsTableReferences
+                                    ._userImageTable(db)
+                                    .id,
+                          )
+                          as T;
+                }
 
                 return state;
               },
@@ -7231,7 +8317,12 @@ typedef $$CommentsTableProcessedTableManager =
       $$CommentsTableUpdateCompanionBuilder,
       (Comment, $$CommentsTableReferences),
       Comment,
-      PrefetchHooks Function({bool reviewId, bool userId})
+      PrefetchHooks Function({
+        bool reviewId,
+        bool userId,
+        bool userName,
+        bool userImage,
+      })
     >;
 typedef $$AppointmentsTableCreateCompanionBuilder =
     AppointmentsCompanion Function({
@@ -7279,6 +8370,34 @@ final class $$AppointmentsTableReferences
     if (item == null) return manager;
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $PatientSharedFoldersTable,
+    List<PatientSharedFolder>
+  >
+  _patientSharedFoldersRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.patientSharedFolders,
+        aliasName: $_aliasNameGenerator(
+          db.appointments.id,
+          db.patientSharedFolders.appointmentId,
+        ),
+      );
+
+  $$PatientSharedFoldersTableProcessedTableManager
+  get patientSharedFoldersRefs {
+    final manager = $$PatientSharedFoldersTableTableManager(
+      $_db,
+      $_db.patientSharedFolders,
+    ).filter((f) => f.appointmentId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _patientSharedFoldersRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
     );
   }
 }
@@ -7339,6 +8458,31 @@ class $$AppointmentsTableFilterComposer
           ),
     );
     return composer;
+  }
+
+  Expression<bool> patientSharedFoldersRefs(
+    Expression<bool> Function($$PatientSharedFoldersTableFilterComposer f) f,
+  ) {
+    final $$PatientSharedFoldersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.patientSharedFolders,
+      getReferencedColumn: (t) => t.appointmentId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatientSharedFoldersTableFilterComposer(
+            $db: $db,
+            $table: $db.patientSharedFolders,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
   }
 }
 
@@ -7448,6 +8592,32 @@ class $$AppointmentsTableAnnotationComposer
     );
     return composer;
   }
+
+  Expression<T> patientSharedFoldersRefs<T extends Object>(
+    Expression<T> Function($$PatientSharedFoldersTableAnnotationComposer a) f,
+  ) {
+    final $$PatientSharedFoldersTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.patientSharedFolders,
+          getReferencedColumn: (t) => t.appointmentId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$PatientSharedFoldersTableAnnotationComposer(
+                $db: $db,
+                $table: $db.patientSharedFolders,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$AppointmentsTableTableManager
@@ -7463,7 +8633,10 @@ class $$AppointmentsTableTableManager
           $$AppointmentsTableUpdateCompanionBuilder,
           (Appointment, $$AppointmentsTableReferences),
           Appointment,
-          PrefetchHooks Function({bool workingHoursId})
+          PrefetchHooks Function({
+            bool workingHoursId,
+            bool patientSharedFoldersRefs,
+          })
         > {
   $$AppointmentsTableTableManager(_$AppDatabase db, $AppointmentsTable table)
     : super(
@@ -7527,10 +8700,15 @@ class $$AppointmentsTableTableManager
                         ),
                       )
                       .toList(),
-          prefetchHooksCallback: ({workingHoursId = false}) {
+          prefetchHooksCallback: ({
+            workingHoursId = false,
+            patientSharedFoldersRefs = false,
+          }) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [],
+              explicitlyWatchedTables: [
+                if (patientSharedFoldersRefs) db.patientSharedFolders,
+              ],
               addJoins: <
                 T extends TableManagerState<
                   dynamic,
@@ -7564,7 +8742,30 @@ class $$AppointmentsTableTableManager
                 return state;
               },
               getPrefetchedDataCallback: (items) async {
-                return [];
+                return [
+                  if (patientSharedFoldersRefs)
+                    await $_getPrefetchedData<
+                      Appointment,
+                      $AppointmentsTable,
+                      PatientSharedFolder
+                    >(
+                      currentTable: table,
+                      referencedTable: $$AppointmentsTableReferences
+                          ._patientSharedFoldersRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$AppointmentsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).patientSharedFoldersRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) => referencedItems.where(
+                            (e) => e.appointmentId == item.id,
+                          ),
+                      typedResults: items,
+                    ),
+                ];
               },
             );
           },
@@ -7584,7 +8785,10 @@ typedef $$AppointmentsTableProcessedTableManager =
       $$AppointmentsTableUpdateCompanionBuilder,
       (Appointment, $$AppointmentsTableReferences),
       Appointment,
-      PrefetchHooks Function({bool workingHoursId})
+      PrefetchHooks Function({
+        bool workingHoursId,
+        bool patientSharedFoldersRefs,
+      })
     >;
 typedef $$PatientFoldersTableCreateCompanionBuilder =
     PatientFoldersCompanion Function({
@@ -7629,6 +8833,34 @@ final class $$PatientFoldersTableReferences
     ).filter((f) => f.folderId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_patientFilesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $PatientSharedFoldersTable,
+    List<PatientSharedFolder>
+  >
+  _patientSharedFoldersRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.patientSharedFolders,
+        aliasName: $_aliasNameGenerator(
+          db.patientFolders.id,
+          db.patientSharedFolders.folderId,
+        ),
+      );
+
+  $$PatientSharedFoldersTableProcessedTableManager
+  get patientSharedFoldersRefs {
+    final manager = $$PatientSharedFoldersTableTableManager(
+      $_db,
+      $_db.patientSharedFolders,
+    ).filter((f) => f.folderId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _patientSharedFoldersRefsTable($_db),
+    );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -7690,6 +8922,31 @@ class $$PatientFoldersTableFilterComposer
           }) => $$PatientFilesTableFilterComposer(
             $db: $db,
             $table: $db.patientFiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> patientSharedFoldersRefs(
+    Expression<bool> Function($$PatientSharedFoldersTableFilterComposer f) f,
+  ) {
+    final $$PatientSharedFoldersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.patientSharedFolders,
+      getReferencedColumn: (t) => t.folderId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatientSharedFoldersTableFilterComposer(
+            $db: $db,
+            $table: $db.patientSharedFolders,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -7793,6 +9050,32 @@ class $$PatientFoldersTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> patientSharedFoldersRefs<T extends Object>(
+    Expression<T> Function($$PatientSharedFoldersTableAnnotationComposer a) f,
+  ) {
+    final $$PatientSharedFoldersTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.patientSharedFolders,
+          getReferencedColumn: (t) => t.folderId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$PatientSharedFoldersTableAnnotationComposer(
+                $db: $db,
+                $table: $db.patientSharedFolders,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$PatientFoldersTableTableManager
@@ -7808,7 +9091,10 @@ class $$PatientFoldersTableTableManager
           $$PatientFoldersTableUpdateCompanionBuilder,
           (PatientFolder, $$PatientFoldersTableReferences),
           PatientFolder,
-          PrefetchHooks Function({bool patientFilesRefs})
+          PrefetchHooks Function({
+            bool patientFilesRefs,
+            bool patientSharedFoldersRefs,
+          })
         > {
   $$PatientFoldersTableTableManager(
     _$AppDatabase db,
@@ -7869,10 +9155,16 @@ class $$PatientFoldersTableTableManager
                         ),
                       )
                       .toList(),
-          prefetchHooksCallback: ({patientFilesRefs = false}) {
+          prefetchHooksCallback: ({
+            patientFilesRefs = false,
+            patientSharedFoldersRefs = false,
+          }) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [if (patientFilesRefs) db.patientFiles],
+              explicitlyWatchedTables: [
+                if (patientFilesRefs) db.patientFiles,
+                if (patientSharedFoldersRefs) db.patientSharedFolders,
+              ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
                 return [
@@ -7892,6 +9184,28 @@ class $$PatientFoldersTableTableManager
                                 table,
                                 p0,
                               ).patientFilesRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) => referencedItems.where(
+                            (e) => e.folderId == item.id,
+                          ),
+                      typedResults: items,
+                    ),
+                  if (patientSharedFoldersRefs)
+                    await $_getPrefetchedData<
+                      PatientFolder,
+                      $PatientFoldersTable,
+                      PatientSharedFolder
+                    >(
+                      currentTable: table,
+                      referencedTable: $$PatientFoldersTableReferences
+                          ._patientSharedFoldersRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$PatientFoldersTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).patientSharedFoldersRefs,
                       referencedItemsForCurrentItem:
                           (item, referencedItems) => referencedItems.where(
                             (e) => e.folderId == item.id,
@@ -7918,7 +9232,10 @@ typedef $$PatientFoldersTableProcessedTableManager =
       $$PatientFoldersTableUpdateCompanionBuilder,
       (PatientFolder, $$PatientFoldersTableReferences),
       PatientFolder,
-      PrefetchHooks Function({bool patientFilesRefs})
+      PrefetchHooks Function({
+        bool patientFilesRefs,
+        bool patientSharedFoldersRefs,
+      })
     >;
 typedef $$PatientFilesTableCreateCompanionBuilder =
     PatientFilesCompanion Function({
@@ -8274,6 +9591,454 @@ typedef $$PatientFilesTableProcessedTableManager =
       PatientFile,
       PrefetchHooks Function({bool folderId})
     >;
+typedef $$PatientSharedFoldersTableCreateCompanionBuilder =
+    PatientSharedFoldersCompanion Function({
+      Value<int> id,
+      required String patientId,
+      required String doctorId,
+      required int folderId,
+      Value<int?> appointmentId,
+      required SharingType sharingType,
+      required String createdAt,
+    });
+typedef $$PatientSharedFoldersTableUpdateCompanionBuilder =
+    PatientSharedFoldersCompanion Function({
+      Value<int> id,
+      Value<String> patientId,
+      Value<String> doctorId,
+      Value<int> folderId,
+      Value<int?> appointmentId,
+      Value<SharingType> sharingType,
+      Value<String> createdAt,
+    });
+
+final class $$PatientSharedFoldersTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $PatientSharedFoldersTable,
+          PatientSharedFolder
+        > {
+  $$PatientSharedFoldersTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $PatientFoldersTable _folderIdTable(_$AppDatabase db) =>
+      db.patientFolders.createAlias(
+        $_aliasNameGenerator(
+          db.patientSharedFolders.folderId,
+          db.patientFolders.id,
+        ),
+      );
+
+  $$PatientFoldersTableProcessedTableManager get folderId {
+    final $_column = $_itemColumn<int>('folder_id')!;
+
+    final manager = $$PatientFoldersTableTableManager(
+      $_db,
+      $_db.patientFolders,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_folderIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $AppointmentsTable _appointmentIdTable(_$AppDatabase db) =>
+      db.appointments.createAlias(
+        $_aliasNameGenerator(
+          db.patientSharedFolders.appointmentId,
+          db.appointments.id,
+        ),
+      );
+
+  $$AppointmentsTableProcessedTableManager? get appointmentId {
+    final $_column = $_itemColumn<int>('appointment_id');
+    if ($_column == null) return null;
+    final manager = $$AppointmentsTableTableManager(
+      $_db,
+      $_db.appointments,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_appointmentIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$PatientSharedFoldersTableFilterComposer
+    extends Composer<_$AppDatabase, $PatientSharedFoldersTable> {
+  $$PatientSharedFoldersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<SharingType, SharingType, String>
+  get sharingType => $composableBuilder(
+    column: $table.sharingType,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$PatientFoldersTableFilterComposer get folderId {
+    final $$PatientFoldersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.folderId,
+      referencedTable: $db.patientFolders,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatientFoldersTableFilterComposer(
+            $db: $db,
+            $table: $db.patientFolders,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$AppointmentsTableFilterComposer get appointmentId {
+    final $$AppointmentsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.appointmentId,
+      referencedTable: $db.appointments,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AppointmentsTableFilterComposer(
+            $db: $db,
+            $table: $db.appointments,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PatientSharedFoldersTableOrderingComposer
+    extends Composer<_$AppDatabase, $PatientSharedFoldersTable> {
+  $$PatientSharedFoldersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sharingType => $composableBuilder(
+    column: $table.sharingType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$PatientFoldersTableOrderingComposer get folderId {
+    final $$PatientFoldersTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.folderId,
+      referencedTable: $db.patientFolders,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatientFoldersTableOrderingComposer(
+            $db: $db,
+            $table: $db.patientFolders,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$AppointmentsTableOrderingComposer get appointmentId {
+    final $$AppointmentsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.appointmentId,
+      referencedTable: $db.appointments,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AppointmentsTableOrderingComposer(
+            $db: $db,
+            $table: $db.appointments,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PatientSharedFoldersTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PatientSharedFoldersTable> {
+  $$PatientSharedFoldersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<SharingType, String> get sharingType =>
+      $composableBuilder(
+        column: $table.sharingType,
+        builder: (column) => column,
+      );
+
+  GeneratedColumn<String> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  $$PatientFoldersTableAnnotationComposer get folderId {
+    final $$PatientFoldersTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.folderId,
+      referencedTable: $db.patientFolders,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatientFoldersTableAnnotationComposer(
+            $db: $db,
+            $table: $db.patientFolders,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$AppointmentsTableAnnotationComposer get appointmentId {
+    final $$AppointmentsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.appointmentId,
+      referencedTable: $db.appointments,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AppointmentsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.appointments,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PatientSharedFoldersTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PatientSharedFoldersTable,
+          PatientSharedFolder,
+          $$PatientSharedFoldersTableFilterComposer,
+          $$PatientSharedFoldersTableOrderingComposer,
+          $$PatientSharedFoldersTableAnnotationComposer,
+          $$PatientSharedFoldersTableCreateCompanionBuilder,
+          $$PatientSharedFoldersTableUpdateCompanionBuilder,
+          (PatientSharedFolder, $$PatientSharedFoldersTableReferences),
+          PatientSharedFolder,
+          PrefetchHooks Function({bool folderId, bool appointmentId})
+        > {
+  $$PatientSharedFoldersTableTableManager(
+    _$AppDatabase db,
+    $PatientSharedFoldersTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer:
+              () => $$PatientSharedFoldersTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer:
+              () => $$PatientSharedFoldersTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer:
+              () => $$PatientSharedFoldersTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> patientId = const Value.absent(),
+                Value<String> doctorId = const Value.absent(),
+                Value<int> folderId = const Value.absent(),
+                Value<int?> appointmentId = const Value.absent(),
+                Value<SharingType> sharingType = const Value.absent(),
+                Value<String> createdAt = const Value.absent(),
+              }) => PatientSharedFoldersCompanion(
+                id: id,
+                patientId: patientId,
+                doctorId: doctorId,
+                folderId: folderId,
+                appointmentId: appointmentId,
+                sharingType: sharingType,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String patientId,
+                required String doctorId,
+                required int folderId,
+                Value<int?> appointmentId = const Value.absent(),
+                required SharingType sharingType,
+                required String createdAt,
+              }) => PatientSharedFoldersCompanion.insert(
+                id: id,
+                patientId: patientId,
+                doctorId: doctorId,
+                folderId: folderId,
+                appointmentId: appointmentId,
+                sharingType: sharingType,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper:
+              (p0) =>
+                  p0
+                      .map(
+                        (e) => (
+                          e.readTable(table),
+                          $$PatientSharedFoldersTableReferences(db, table, e),
+                        ),
+                      )
+                      .toList(),
+          prefetchHooksCallback: ({folderId = false, appointmentId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                T extends TableManagerState<
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic
+                >
+              >(state) {
+                if (folderId) {
+                  state =
+                      state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.folderId,
+                            referencedTable:
+                                $$PatientSharedFoldersTableReferences
+                                    ._folderIdTable(db),
+                            referencedColumn:
+                                $$PatientSharedFoldersTableReferences
+                                    ._folderIdTable(db)
+                                    .id,
+                          )
+                          as T;
+                }
+                if (appointmentId) {
+                  state =
+                      state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.appointmentId,
+                            referencedTable:
+                                $$PatientSharedFoldersTableReferences
+                                    ._appointmentIdTable(db),
+                            referencedColumn:
+                                $$PatientSharedFoldersTableReferences
+                                    ._appointmentIdTable(db)
+                                    .id,
+                          )
+                          as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$PatientSharedFoldersTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PatientSharedFoldersTable,
+      PatientSharedFolder,
+      $$PatientSharedFoldersTableFilterComposer,
+      $$PatientSharedFoldersTableOrderingComposer,
+      $$PatientSharedFoldersTableAnnotationComposer,
+      $$PatientSharedFoldersTableCreateCompanionBuilder,
+      $$PatientSharedFoldersTableUpdateCompanionBuilder,
+      (PatientSharedFolder, $$PatientSharedFoldersTableReferences),
+      PatientSharedFolder,
+      PrefetchHooks Function({bool folderId, bool appointmentId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -8299,4 +10064,6 @@ class $AppDatabaseManager {
       $$PatientFoldersTableTableManager(_db, _db.patientFolders);
   $$PatientFilesTableTableManager get patientFiles =>
       $$PatientFilesTableTableManager(_db, _db.patientFiles);
+  $$PatientSharedFoldersTableTableManager get patientSharedFolders =>
+      $$PatientSharedFoldersTableTableManager(_db, _db.patientSharedFolders);
 }

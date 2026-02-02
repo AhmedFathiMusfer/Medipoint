@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:diagno_bot/core/auth/authManager.dart';
 import 'package:diagno_bot/core/database/drift_db.dart';
 import 'package:diagno_bot/core/database/tables/appointments_tables.dart';
 import 'package:diagno_bot/core/helpers/networkHelper.dart';
@@ -8,8 +11,8 @@ import 'package:diagno_bot/core/networking/remote/remoteProvider.dart';
 import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/features/appointment/bookAppointment/cubit/bookAppointment.state.dart';
+import 'package:diagno_bot/core/notifaction/notifaction.dart';
 import 'package:drift/drift.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BookAppointmentCubit extends Cubit<BookAppointmentState> {
@@ -91,7 +94,9 @@ class BookAppointmentCubit extends Cubit<BookAppointmentState> {
 
     for (var wh in workingHours) {
       final start = DateTime.parse(wh.startTime);
-      days.add(start);
+      if (start.isAfter(DateTime.now())) {
+        days.add(start);
+      }
     }
 
     return days.toList()..sort();
@@ -137,10 +142,19 @@ class BookAppointmentCubit extends Cubit<BookAppointmentState> {
         try {
           if (res.data != null) {
             await insertAppointment(res.data);
+            await NotificationService.scheduleAppointmentNotification(
+              id: res.data['id'],
+              appointmentTime: DateTime.parse(res.data['datetime']),
+              minutesBefore: 10,
+            );
           }
         } catch (ex) {
+          log(ex.toString());
           AppSnackBar.error(
-            ErrorMessages.instance.fromExceptionType(ExceptionTypes.unexpected),
+            ErrorMessages.instance.fromExceptionType(
+                  ExceptionTypes.unexpected,
+                ) +
+                ex.toString(),
           );
         }
       },
@@ -165,7 +179,7 @@ class BookAppointmentCubit extends Cubit<BookAppointmentState> {
           additionalInfo: Value(data['additional_info']),
           datetime: Value(data['datetime']),
           doctorId: Value(data['doctor']['user']['id']),
-          patientId: Value(data['patient']),
+          patientId: Value(data['patient'] ?? AuthManager().currentUser?.id),
           status: Value(
             const AppointmentStatusConverter().fromJson(data['status']),
           ),

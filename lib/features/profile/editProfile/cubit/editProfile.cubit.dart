@@ -9,17 +9,15 @@ import 'package:diagno_bot/core/networking/remote/requestOptions.dart';
 import 'package:diagno_bot/core/widgets/appSnackBar.dart';
 import 'package:diagno_bot/features/profile/editProfile/cubit/editProfile.state.dart';
 import 'package:diagno_bot/features/profile/editProfile/form/editProfile.form.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfileCubit extends Cubit<EditProfileState> {
-  String? newImagePath;
-  EditProfileCubit(this.newImagePath) : super(EditProfileState.initial());
-  late EditProfileForm form = EditProfileForm(
-    user: AuthManager().currentUser!,
-    newImagePath: newImagePath,
-  );
+  EditProfileCubit() : super(EditProfileState.initial());
+
+  late EditProfileForm form = EditProfileForm(user: AuthManager().currentUser!);
   Future pickImage(ImageSource source) async {
     try {
       final image = await ImagePicker().pickImage(
@@ -30,9 +28,8 @@ class EditProfileCubit extends Cubit<EditProfileState> {
       );
       if (image == null) return;
       var filePath = image.path;
-      newImagePath = filePath;
       form.imagePath = filePath;
-      emit(EditProfileState.success(changeProfileImage: filePath));
+      emit(EditProfileState.changeProfileImage(imagePath: filePath));
     } on PlatformException catch (e) {
       // print('Failed to pick a photo $e');
     }
@@ -40,18 +37,22 @@ class EditProfileCubit extends Cubit<EditProfileState> {
 
   save() async {
     if (form.key.currentState!.validate()) {
+      emit(EditProfileState.loading(loading: true));
       bool isConnected = await NetworkHelper.isConnected();
       if (isConnected) {
+        var data = await form.data;
+
         await RemoteProvider().send(
-          request: Request(url: ApiConstants.profileEndpoint, body: form.body),
+          request: Request(url: ApiConstants.profileEndpoint, body: data),
           method: RemoteMethod.put,
           onSuccess: (res, statsCode) async {
-            log(res.toString());
+            await AuthManager().setUser(res.data);
+            emit(EditProfileState.success());
           },
           onError: (_, statsCode) {
+            emit(EditProfileState.loading(loading: false));
             if (statsCode == 400) {
-              AppSnackBar.error('the data entry is inValid');
-              // emit(LoginState.initial(loading: false));
+              AppSnackBar.error('error_invalid_data_entry'.tr());
             } else {
               AppSnackBar.error(
                 ErrorMessages.instance.fromExceptionType(
@@ -62,6 +63,7 @@ class EditProfileCubit extends Cubit<EditProfileState> {
           },
         );
       } else {
+        emit(EditProfileState.loading(loading: false));
         AppSnackBar.error(
           ErrorMessages.instance.fromExceptionType(ExceptionTypes.connection),
         );

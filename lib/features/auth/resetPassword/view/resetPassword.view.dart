@@ -3,8 +3,9 @@ import 'package:diagno_bot/core/routing/router.dart';
 import 'package:diagno_bot/core/theming/color.dart';
 import 'package:diagno_bot/core/widgets/TextField.dart';
 import 'package:diagno_bot/core/widgets/simpleButton.dart';
-import 'package:diagno_bot/features/auth/forgetPassword/cubit/resetPassword.cubit.dart';
-import 'package:diagno_bot/features/auth/forgetPassword/cubit/resetPassword.state.dart';
+import 'package:diagno_bot/features/auth/resetPassword/cubit/resetPassword.cubit.dart';
+import 'package:diagno_bot/features/auth/resetPassword/cubit/resetPassword.state.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,7 +13,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class ResetPasswordView extends StatefulWidget {
   final String token;
-  
+
   const ResetPasswordView({super.key, required this.token});
 
   @override
@@ -29,10 +30,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: ColorManager.primaryColor,
-          ),
+          icon: Icon(Icons.arrow_back, color: ColorManager.primaryColor),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -43,9 +41,10 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
               // Navigate back to login page
               Future.delayed(const Duration(seconds: 1), () {
                 if (mounted) {
-                  Navigator.of(context).popUntil((route) => 
-                    route.isFirst || 
-                    route.settings.name == Routers.loginView
+                  Navigator.of(context).popUntil(
+                    (route) =>
+                        route.isFirst ||
+                        route.settings.name == Routers.loginView,
                   );
                 }
               });
@@ -69,7 +68,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                   ),
                   10.verticalSpace,
                   Text(
-                    "HealthPal",
+                    "healthpal".tr(),
                     style: GoogleFonts.poppins(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w400,
@@ -78,7 +77,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                   ),
                   30.verticalSpace,
                   Text(
-                    "Reset Password",
+                    "reset_password".tr(),
                     style: GoogleFonts.poppins(
                       fontSize: 24.sp,
                       fontWeight: FontWeight.w600,
@@ -87,7 +86,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                   ),
                   10.verticalSpace,
                   Text(
-                    "Please enter your new password",
+                    "please_enter_new_password".tr(),
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
                       color: ColorManager.secondaryColor,
@@ -100,23 +99,26 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                     child: Column(
                       children: [
                         CustomTextField(
-                          controller: resetPasswordCubit.form.newPasswordController,
-                          hint: "New Password",
+                          controller:
+                              resetPasswordCubit.form.newPasswordController,
+                          hint: "new_password".tr(),
                           icon: Icons.lock_outline,
                           isPassword: true,
                         ),
                         30.verticalSpace,
                         CustomTextField(
-                          controller: resetPasswordCubit.form.confirmPasswordController,
-                          hint: "Confirm New Password",
+                          controller:
+                              resetPasswordCubit.form.confirmPasswordController,
+                          hint: "confirm_new_password".tr(),
                           icon: Icons.lock_outline,
                           isPassword: true,
                           isConfirmPassword: true,
-                          password: resetPasswordCubit.form.newPasswordController,
+                          password:
+                              resetPasswordCubit.form.newPasswordController,
                         ),
                         30.verticalSpace,
                         SimpleButton(
-                          text: "Reset Password",
+                          text: "reset_password".tr(),
                           isLoading: state.maybeWhen(
                             initial: (loading) => loading,
                             orElse: () => false,
