@@ -1,4 +1,4 @@
-# 🏥 Diagno Bot - تطبيق حجز المواعيد الطبية
+# 🏥  Medipoint - تطبيق حجز المواعيد الطبية
 
 <div align="center">
   <img src="assets/icons/logo.png" alt="Diagno Bot Logo" width="200"/>
